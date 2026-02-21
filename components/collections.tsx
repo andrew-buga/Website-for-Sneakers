@@ -1,18 +1,22 @@
 import Image from "next/image"
+import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 
 const collections = [
   {
     name: "Winter collection",
     image: "/images/winter-collection.jpg",
+    slug: "winter",
   },
   {
     name: "Summer collection",
     image: "/images/summer-collection.jpg",
+    slug: "summer",
   },
   {
     name: "Autumn collection",
     image: "/images/autumn-collection.jpg",
+    slug: "autumn",
   },
 ]
 
@@ -33,16 +37,16 @@ export default function Collections() {
         {/* Collection cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" suppressHydrationWarning>
           {collections.map((collection) => (
-            <a
+            <Link
               key={collection.name}
-              href="#"
+              href={`/collection/${collection.slug}`}
               className="group relative aspect-[4/5] rounded-2xl overflow-hidden"
             >
               <Image
                 src={collection.image || "/placeholder.svg"}
                 alt={collection.name}
                 fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                className="object-cover group-hover:scale-95 transition-transform duration-700"
               />
               {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" suppressHydrationWarning />
@@ -56,7 +60,7 @@ export default function Collections() {
                   <ArrowUpRight className="h-4 w-4" />
                 </span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

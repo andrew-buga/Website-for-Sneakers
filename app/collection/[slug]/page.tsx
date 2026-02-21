@@ -65,8 +65,8 @@ const collectionInfo: { [key: string]: { name: string; image: string; descriptio
   },
 }
 
-export default function CollectionPage({ params }: { params: { slug: string } }) {
-  const slug = params.slug
+export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const info = collectionInfo[slug]
 
   if (!info) {

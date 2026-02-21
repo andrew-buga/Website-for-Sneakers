@@ -2,9 +2,9 @@ export default function Footer() {
   return (
     <footer className="bg-background border-t border-border py-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10" suppressHydrationWarning>
           {/* Brand column */}
-          <div>
+          <div suppressHydrationWarning>
             <span className="text-2xl font-display font-bold tracking-wider text-foreground">
               NIKE
             </span>
@@ -14,7 +14,7 @@ export default function Footer() {
           </div>
 
           {/* Help & Information */}
-          <div>
+          <div suppressHydrationWarning>
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               Help & Information
             </h4>
@@ -43,7 +43,7 @@ export default function Footer() {
           </div>
 
           {/* About Us */}
-          <div>
+          <div suppressHydrationWarning>
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               About us
             </h4>
@@ -72,7 +72,7 @@ export default function Footer() {
           </div>
 
           {/* Contact */}
-          <div>
+          <div suppressHydrationWarning>
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               Contact
             </h4>
@@ -84,7 +84,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4" suppressHydrationWarning>
           <p className="text-xs text-muted-foreground">
             Thanks for watching. Crafted with care.
           </p>

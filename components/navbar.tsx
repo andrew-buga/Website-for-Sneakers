@@ -43,7 +43,7 @@ export default function Navbar() {
       </ul>
 
       {/* Icons */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4" suppressHydrationWarning>
         <button type="button" aria-label="Search" className="text-muted-foreground hover:text-foreground transition-colors">
           <Search className="h-5 w-5" />
         </button>

@@ -42,8 +42,8 @@ export default function ProductShowcase() {
     <section className="relative bg-background py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section header */}
-        <div className="flex items-end justify-between mb-12 lg:mb-16" suppressHydrationWarning>
-          <div suppressHydrationWarning>
+        <div className="flex items-end justify-between mb-12 lg:mb-16">
+          <div>
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
               Featured
             </span>
@@ -72,7 +72,7 @@ export default function ProductShowcase() {
         </div>
 
         {/* Product cards grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" suppressHydrationWarning>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {products.map((product, index) => (
             <Link
               key={product.id}
@@ -82,7 +82,7 @@ export default function ProductShowcase() {
               }`}
             >
               {/* Product Image */}
-              <div className="relative aspect-square overflow-hidden bg-secondary" suppressHydrationWarning>
+              <div className="relative aspect-square overflow-hidden bg-secondary">
                 <Image
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
@@ -92,11 +92,11 @@ export default function ProductShowcase() {
               </div>
 
               {/* Product Info */}
-              <div className="p-5" suppressHydrationWarning>
+              <div className="p-5">
                 <h3 className="font-display text-lg font-semibold text-foreground">
                   {product.name}
                 </h3>
-                <div className="mt-3 flex flex-col gap-1 text-sm text-muted-foreground" suppressHydrationWarning>
+                <div className="mt-3 flex flex-col gap-1 text-sm text-muted-foreground">
                   <p>
                     <span className="text-foreground/70">Colour Shown:</span>{" "}
                     {product.colorShown}
@@ -120,7 +120,7 @@ export default function ProductShowcase() {
         </div>
 
         {/* Mobile nav arrows */}
-        <div className="flex sm:hidden items-center justify-center gap-3 mt-8" suppressHydrationWarning>
+        <div className="flex sm:hidden items-center justify-center gap-3 mt-8">
           <button
             type="button"
             onClick={goPrev}

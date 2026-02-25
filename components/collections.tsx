@@ -23,9 +23,9 @@ const collections = [
 export default function Collections() {
   return (
     <section className="bg-background py-20 lg:py-28">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12" suppressHydrationWarning>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section header */}
-        <div className="mb-12 lg:mb-16" suppressHydrationWarning>
+        <div className="mb-12 lg:mb-16">
           <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
             Seasonal
           </span>
@@ -35,7 +35,7 @@ export default function Collections() {
         </div>
 
         {/* Collection cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" suppressHydrationWarning>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {collections.map((collection) => (
             <Link
               key={collection.name}
@@ -49,10 +49,10 @@ export default function Collections() {
                 className="object-cover group-hover:scale-95 transition-transform duration-700"
               />
               {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" suppressHydrationWarning />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
 
               {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between" suppressHydrationWarning>
+              <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
                 <h3 className="font-display text-xl font-bold uppercase text-foreground">
                   {collection.name}
                 </h3>

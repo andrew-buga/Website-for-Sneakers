@@ -1,5 +1,3 @@
-"use client"
-
 import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 
@@ -7,15 +5,15 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-background">
       {/* Large background text */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none" suppressHydrationWarning>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
         <span className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[26rem] font-display font-bold text-foreground/[0.03] leading-none tracking-tighter">
           NIKE
         </span>
       </div>
-      
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center pt-24 pb-16 lg:pt-0 lg:pb-0" suppressHydrationWarning>
+
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center pt-24 pb-16 lg:pt-0 lg:pb-0">
         {/* Left content */}
-        <div className="flex flex-col gap-6" suppressHydrationWarning>
+        <div className="flex flex-col gap-6">
           <div className="flex items-center gap-3">
             <span className="inline-block w-8 h-[2px] bg-primary" />
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
@@ -29,7 +27,7 @@ export default function Hero() {
             <span className="text-primary">Sneakers</span>
           </h1>
 
-          <div className="mt-2" suppressHydrationWarning>
+          <div className="mt-2">
             <p className="text-lg text-muted-foreground font-medium">
               {"Nike Impossible'20"}
             </p>
@@ -38,7 +36,7 @@ export default function Hero() {
             </p>
           </div>
 
-          <div className="flex items-center gap-4 mt-4" suppressHydrationWarning>
+          <div className="flex items-center gap-4 mt-4">
             <a
               href="#"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3 rounded-full text-sm font-semibold transition-all hover:opacity-90"
@@ -56,8 +54,8 @@ export default function Hero() {
         </div>
 
         {/* Right image */}
-        <div className="relative flex items-center justify-center" suppressHydrationWarning>
-          <div className="absolute w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] rounded-full bg-primary/10 blur-3xl" suppressHydrationWarning />
+        <div className="relative flex items-center justify-center">
+          <div className="absolute w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] rounded-full bg-primary/10 blur-3xl" />
           <Image
             src="/images/hero-sneaker.jpg"
             alt="Featured Nike sneaker"
@@ -70,7 +68,7 @@ export default function Hero() {
       </div>
 
       {/* Side vertical text */}
-      <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 flex-col items-center gap-4" suppressHydrationWarning>
+      <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 flex-col items-center gap-4">
         <span className="text-xs text-muted-foreground tracking-[0.3em] uppercase [writing-mode:vertical-lr] rotate-180">
           {"See What's New"}
         </span>

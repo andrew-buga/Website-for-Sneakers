@@ -5,10 +5,10 @@ import { Phone, Mail, Send } from "lucide-react"
 export default function Subscribe() {
   return (
     <section className="bg-card py-20 lg:py-28">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12" suppressHydrationWarning>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center" suppressHydrationWarning>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left side */}
-          <div suppressHydrationWarning>
+          <div>
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
               Stay Connected
             </span>
@@ -20,12 +20,12 @@ export default function Subscribe() {
             </p>
 
             {/* Contact details */}
-            <div className="flex flex-col gap-3 mt-8" suppressHydrationWarning>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground" suppressHydrationWarning>
+            <div className="flex flex-col gap-3 mt-8">
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4 text-primary" />
                 <span>123 456 7890</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground" suppressHydrationWarning>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
                 <span>streater@gmail.com</span>
               </div>
@@ -33,8 +33,8 @@ export default function Subscribe() {
           </div>
 
           {/* Right side - subscribe form */}
-          <div className="flex flex-col gap-6" suppressHydrationWarning>
-            <div className="relative" suppressHydrationWarning>
+          <div className="flex flex-col gap-6">
+            <div className="relative">
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -50,7 +50,7 @@ export default function Subscribe() {
             </div>
 
             {/* Social icons */}
-            <div className="flex items-center gap-4 mt-2" suppressHydrationWarning>
+            <div className="flex items-center gap-4 mt-2">
               <a
                 href="#"
                 aria-label="Facebook"

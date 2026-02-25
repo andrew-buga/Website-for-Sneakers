@@ -1,17 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import { Search, ShoppingBag, Heart, Menu, X } from "lucide-react"
+import Link from "next/link"
+import { ShoppingBag, Heart, Menu, X, User } from "lucide-react"
+import SearchBar from "./search-bar"
+import { useCart } from "@/lib/cart-context"
+import { useAuth } from "@/lib/auth-context"
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { items } = useCart()
+  const { isAuthenticated, user } = useAuth()
 
   return (
     <nav className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-5 lg:px-12">
       {/* Logo */}
-      <a href="#" className="text-2xl font-display font-bold tracking-wider text-foreground">
+      <Link href="/" className="text-2xl font-display font-bold tracking-wider text-foreground">
         NIKE
-      </a>
+      </Link>
 
       {/* Desktop Links */}
       <ul className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
@@ -44,15 +50,25 @@ export default function Navbar() {
 
       {/* Icons */}
       <div className="flex items-center gap-4" suppressHydrationWarning>
-        <button type="button" aria-label="Search" className="text-muted-foreground hover:text-foreground transition-colors">
-          <Search className="h-5 w-5" />
-        </button>
+        <SearchBar />
         <button type="button" aria-label="Wishlist" className="hidden sm:block text-muted-foreground hover:text-foreground transition-colors">
           <Heart className="h-5 w-5" />
         </button>
-        <button type="button" aria-label="Cart" className="text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/cart" aria-label="Cart" className="relative text-muted-foreground hover:text-foreground transition-colors">
           <ShoppingBag className="h-5 w-5" />
-        </button>
+          <span suppressHydrationWarning className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" style={{display: items.length > 0 ? 'flex' : 'none'}}>
+            {items.length}
+          </span>
+        </Link>
+        {isAuthenticated && user ? (
+          <Link href="/account/profile" aria-label="Account" className="text-muted-foreground hover:text-foreground transition-colors">
+            <User className="h-5 w-5" />
+          </Link>
+        ) : (
+          <Link href="/account/login" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
+            Sign In
+          </Link>
+        )}
         <button
           type="button"
           aria-label="Menu"

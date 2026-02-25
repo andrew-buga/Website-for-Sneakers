@@ -1,196 +1,123 @@
+"use client"
+
+import { useState, use } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useCart } from "@/lib/cart-context"
+import { useWishlist } from "@/lib/wishlist-context"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import ProductGallery from "@/components/product-gallery"
+import ProductReviews from "@/components/product-reviews"
+import { ArrowLeft, Heart, ShoppingCart } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
-// Всі продукти — в реальному проекті це була б база даних
 const allProducts = [
-  {
-    id: 1,
-    image: "/images/product-1.jpg",
-    name: "Nike Air Max Plus III",
-    colorShown: "Black/Black/Wolf Grey",
-    style: "CJ9684-002",
-    country: "Vietnam",
-    collection: "summer",
-    price: "$180",
-    description:
-      "The Nike Air Max Plus III brings the TN silhouette into the future. Updated cushioning and a fresh upper keep the iconic look alive while delivering all-day comfort.",
-  },
-  {
-    id: 2,
-    image: "/images/product-2.jpg",
-    name: "Nike Air Max Plus III",
-    colorShown: "White/University Red",
-    style: "CJ9684-100",
-    country: "Vietnam",
-    collection: "summer",
-    price: "$180",
-    description:
-      "The Nike Air Max Plus III brings the TN silhouette into the future. Updated cushioning and a fresh upper keep the iconic look alive while delivering all-day comfort.",
-  },
-  {
-    id: 3,
-    image: "/images/product-3.jpg",
-    name: "Nike Air Max Plus III",
-    colorShown: "Midnight Navy/White",
-    style: "CJ9684-400",
-    country: "Vietnam",
-    collection: "summer",
-    price: "$180",
-    description:
-      "The Nike Air Max Plus III brings the TN silhouette into the future. Updated cushioning and a fresh upper keep the iconic look alive while delivering all-day comfort.",
-  },
+  { id: 1, image: "/images/product-1.jpg", images: ["/images/product-1.jpg"], name: "Nike Air Max Plus III", price: "$180", collection: "summer", description: "Experience maximum comfort with the Nike Air Max Plus III. Built with responsive cushioning.", sizes: ["6", "7", "8", "9", "10", "11", "12", "13"], colors: [{ name: "Black", hex: "#1a1a1a" }, { name: "White", hex: "#ffffff" }, { name: "Navy", hex: "#001f3f" }], inStock: true },
+  { id: 2, image: "/images/product-2.jpg", images: ["/images/product-2.jpg"], name: "Nike Air Max Plus III", price: "$180", collection: "summer", description: "Classic design meets modern comfort.", sizes: ["6", "7", "8", "9", "10", "11", "12", "13"], colors: [{ name: "Black", hex: "#1a1a1a" }, { name: "White", hex: "#ffffff" }, { name: "Navy", hex: "#001f3f" }], inStock: true },
+  { id: 3, image: "/images/product-3.jpg", images: ["/images/product-3.jpg"], name: "Nike Air Max Plus III", price: "$180", collection: "summer", description: "Premium construction and superior comfort.", sizes: ["6", "7", "8", "9", "10", "11", "12", "13"], colors: [{ name: "Black", hex: "#1a1a1a" }, { name: "White", hex: "#ffffff" }, { name: "Navy", hex: "#001f3f" }], inStock: false },
 ]
 
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const productId = parseInt(id)
-  const product = allProducts.find((p) => p.id === productId)
+export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
+  const product = allProducts.find(p => p.id === parseInt(id))
+  const { addItem } = useCart()
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
+
+  const [selectedSize, setSelectedSize] = useState("")
+  const [selectedColor, setSelectedColor] = useState(product?.colors[0]?.name || "")
+  const [quantity, setQuantity] = useState(1)
+  const [isAdded, setIsAdded] = useState(false)
+  const [isWishlisted, setIsWishlisted] = useState(product ? isInWishlist(product.id) : false)
 
   if (!product) {
-    return (
-      <main>
-        <Navbar />
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-muted-foreground">Product not found.</p>
-        </div>
-        <Footer />
-      </main>
-    )
+    return <main><Navbar /><div className="min-h-screen flex items-center justify-center"><p className="text-muted-foreground">Product not found</p></div><Footer /></main>
   }
 
-  // Схожі продукти — з тієї ж колекції, крім поточного
-  const similar = allProducts.filter(
-    (p) => p.collection === product.collection && p.id !== product.id
-  )
+  const handleAddToCart = () => {
+    if (!selectedSize) return alert("Please select a size")
+    addItem({ id: product.id, name: product.name, price: product.price, image: product.image, quantity, size: selectedSize, color: selectedColor })
+    setIsAdded(true)
+    setTimeout(() => setIsAdded(false), 2000)
+  }
+
+  const handleWishlist = () => {
+    if (isWishlisted) {
+      removeFromWishlist(product.id)
+    } else {
+      addToWishlist(product.id, product.name)
+    }
+    setIsWishlisted(!isWishlisted)
+  }
 
   return (
     <main>
       <Navbar />
-
-      {/* Back link */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-28 pb-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-6">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" />
-          Back to home
+          Back
         </Link>
       </div>
 
-      {/* Product detail */}
-      <section className="max-w-7xl mx-auto px-6 lg:px-12 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Image */}
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-secondary">
-            <Image
-              src={product.image || "/placeholder.svg"}
-              alt={product.name}
-              fill
-              className="object-cover"
-              priority
-            />
+      <section className="max-w-7xl mx-auto px-6 lg:px-12 py-8 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+        <ProductGallery images={product.images} productName={product.name} />
+
+        <div className="flex flex-col justify-start space-y-6">
+          <div>
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">{product.collection}</span>
+            <h1 className="font-display text-4xl lg:text-5xl font-bold text-foreground mt-2">{product.name}</h1>
           </div>
 
-          {/* Info */}
-          <div className="flex flex-col gap-6">
-            <div>
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
-                {product.collection} collection
-              </span>
-              <h1 className="font-display text-4xl lg:text-5xl font-bold uppercase text-foreground mt-2">
-                {product.name}
-              </h1>
+          <p className="text-lg text-foreground">{product.description}</p>
+
+          <div className="flex items-center justify-between">
+            <div className="text-3xl font-bold text-primary">{product.price}</div>
+            <span className={"text-sm font-semibold px-3 py-1 rounded-full " + (product.inStock ? "bg-green-500/20 text-green-600" : "bg-red-500/20 text-red-600")}>
+              {product.inStock ? "In Stock" : "Out of Stock"}
+            </span>
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-foreground block mb-3">Color: <span className="text-primary">{selectedColor}</span></label>
+            <div className="flex gap-3 flex-wrap">
+              {product.colors.map((color) => (
+                <button key={color.name} onClick={() => setSelectedColor(color.name)} className={"w-12 h-12 rounded-full border-2 transition-all " + (selectedColor === color.name ? "border-primary scale-110" : "border-border hover:border-foreground")} style={{ backgroundColor: color.hex }} />
+              ))}
             </div>
+          </div>
 
-            <p className="text-3xl font-bold text-primary">{product.price}</p>
-
-            <p className="text-muted-foreground leading-relaxed">
-              {product.description}
-            </p>
-
-            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-              <p>
-                <span className="text-foreground/70">Colour Shown:</span>{" "}
-                {product.colorShown}
-              </p>
-              <p>
-                <span className="text-foreground/70">Style:</span>{" "}
-                {product.style}
-              </p>
-              <p>
-                <span className="text-foreground/70">Country:</span>{" "}
-                {product.country}
-              </p>
+          <div>
+            <label className="text-sm font-semibold text-foreground block mb-3">Size: <span className="text-primary">{selectedSize || "Choose size"}</span></label>
+            <div className="grid grid-cols-4 gap-2">
+              {product.sizes.map((size) => (
+                <button key={size} onClick={() => setSelectedSize(size)} className={"py-2 px-3 rounded-lg border-2 font-semibold transition-all " + (selectedSize === size ? "bg-primary text-primary-foreground border-primary" : "border-border text-foreground hover:border-foreground")}>{size}</button>
+              ))}
             </div>
+          </div>
 
-            <div className="flex items-center gap-4 mt-4">
-              <button
-                type="button"
-                className="flex-1 bg-primary text-primary-foreground px-7 py-4 rounded-full text-sm font-semibold transition-all hover:opacity-90"
-              >
-                Add to Cart
-              </button>
-              <Link
-                href={`/collection/${product.collection}`}
-                className="inline-flex items-center gap-2 border border-border text-foreground px-7 py-4 rounded-full text-sm font-semibold transition-all hover:bg-secondary"
-              >
-                View Collection
-              </Link>
+          <div>
+            <label className="text-sm font-semibold text-foreground block mb-3">Quantity</label>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-4 py-2 border border-border rounded-lg hover:bg-secondary transition-colors">−</button>
+              <span className="text-lg font-semibold min-w-[2rem] text-center">{quantity}</span>
+              <button onClick={() => setQuantity(quantity + 1)} className="px-4 py-2 border border-border rounded-lg hover:bg-secondary transition-colors">+</button>
             </div>
+          </div>
+
+          <div className="flex gap-3 pt-6">
+            <Button onClick={handleAddToCart} size="lg" className="flex-1 gap-2 text-base" disabled={isAdded || !product.inStock}>
+              <ShoppingCart className="h-5 w-5" />
+              {isAdded ? "Added to Cart!" : !product.inStock ? "Out of Stock" : "Add to Cart"}
+            </Button>
+            <Button variant="outline" size="lg" className="px-6" onClick={handleWishlist}>
+              <Heart className={`h-5 w-5 ${isWishlisted ? "fill-primary text-primary" : ""}`} />
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Similar products */}
-      {similar.length > 0 && (
-        <section className="bg-card py-20">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
-            <div className="mb-10">
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
-                From the same collection
-              </span>
-              <h2 className="font-display text-3xl font-bold uppercase text-foreground mt-2">
-                You might also like
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {similar.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/product/${item.id}`}
-                  className="group relative rounded-2xl overflow-hidden bg-background border border-border transition-all duration-300"
-                >
-                  <div className="relative aspect-square overflow-hidden bg-secondary">
-                    <Image
-                      src={item.image || "/placeholder.svg"}
-                      alt={item.name}
-                      fill
-                      className="object-cover group-hover:scale-95 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-display text-lg font-semibold text-foreground">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {item.colorShown}
-                    </p>
-                    <span className="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-primary group-hover:underline">
-                      View product
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <ProductReviews />
 
       <Footer />
     </main>

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState, useEffect } from "react"
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react"
 
 export interface Address {
   id: string
@@ -41,239 +41,211 @@ export interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+async function parseApiResponse(response: Response) {
+  const body = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(body.error ?? "Request failed")
+  }
+  return body
+}
+
+function normalizeUser(payload: any): User {
+  return {
+    ...payload,
+    createdAt: typeof payload.createdAt === "string" ? payload.createdAt : new Date(payload.createdAt).toISOString(),
+    addresses: payload.addresses ?? [],
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [mounted, setMounted] = useState(false)
+
+  const loadSession = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch("/api/auth/me", {
+        method: "GET",
+        credentials: "include",
+      })
+
+      if (!response.ok) {
+        setUser(null)
+        return
+      }
+
+      const body = await response.json()
+      setUser(body.user ? normalizeUser(body.user) : null)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
-    setMounted(true)
-    const savedUser = localStorage.getItem("user")
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser))
-      } catch (error) {
-        console.error("Failed to load user:", error)
-      }
-    }
-    setIsLoading(false)
+    void loadSession()
   }, [])
 
   const register = async (email: string, password: string, name: string) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]")
-    if (users.some((u: any) => u.email === email)) {
-      throw new Error("Email already registered")
-    }
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email, password, name }),
+    })
 
-    const newUser: User = {
-      id: Math.random().toString(36).substr(2, 9),
-      email,
-      name,
-      addresses: [],
-      emailVerified: false,
-      createdAt: new Date().toISOString(),
-    }
-
-    const hashedPassword = btoa(password)
-    users.push({ ...newUser, password: hashedPassword })
-    localStorage.setItem("users", JSON.stringify(users))
-    localStorage.setItem("user", JSON.stringify(newUser))
-    setUser(newUser)
+    const body = await parseApiResponse(response)
+    setUser(normalizeUser({ ...body.user, addresses: [] }))
   }
 
   const login = async (email: string, password: string) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]")
-    const userRecord = users.find((u: any) => u.email === email)
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email, password }),
+    })
 
-    if (!userRecord) {
-      throw new Error("User not found")
+    const body = await parseApiResponse(response)
+
+    const meResponse = await fetch("/api/auth/me", {
+      method: "GET",
+      credentials: "include",
+    })
+
+    if (!meResponse.ok) {
+      setUser(normalizeUser({ ...body.user, addresses: [] }))
+      return
     }
 
-    const hashedPassword = btoa(password)
-    if (userRecord.password !== hashedPassword) {
-      throw new Error("Invalid password")
-    }
-
-    const { password: _, ...userWithoutPassword } = userRecord
-    localStorage.setItem("user", JSON.stringify(userWithoutPassword))
-    setUser(userWithoutPassword)
+    const meBody = await meResponse.json()
+    setUser(meBody.user ? normalizeUser(meBody.user) : normalizeUser({ ...body.user, addresses: [] }))
   }
 
-  const logout = () => {
-    localStorage.removeItem("user")
+  const logout = async () => {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    })
+
     setUser(null)
   }
 
   const updateProfile = async (updates: Partial<User>) => {
-    if (!user) throw new Error("No user logged in")
+    const response = await fetch("/api/account/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        name: updates.name,
+        phone: updates.phone,
+      }),
+    })
 
-    const updatedUser = { ...user, ...updates }
-    const users = JSON.parse(localStorage.getItem("users") || "[]")
-    const userIndex = users.findIndex((u: any) => u.id === user.id)
+    const body = await parseApiResponse(response)
 
-    if (userIndex !== -1) {
-      users[userIndex] = { ...users[userIndex], ...updates }
-      localStorage.setItem("users", JSON.stringify(users))
-    }
-
-    localStorage.setItem("user", JSON.stringify(updatedUser))
-    setUser(updatedUser)
+    setUser((prev) => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        ...body.user,
+        addresses: prev.addresses,
+        defaultAddressId: prev.defaultAddressId,
+      }
+    })
   }
 
-  const addAddress = async (addressData: Omit<Address, "id">) => {
+  const addAddress = async (address: Omit<Address, "id">) => {
     if (!user) throw new Error("No user logged in")
 
-    const newAddress: Address = {
-      id: Math.random().toString(36).substr(2, 9),
-      ...addressData,
-    }
+    const response = await fetch(`/api/users/${user.id}/addresses`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        fullName: address.name,
+        line1: address.address,
+        city: address.city,
+        postalCode: address.zipCode,
+        country: address.country,
+        isDefault: address.isDefault,
+      }),
+    })
 
-    const updatedAddresses = [...user.addresses, newAddress]
-    const updatedUser = { ...user, addresses: updatedAddresses }
-
-    const users = JSON.parse(localStorage.getItem("users") || "[]")
-    const userIndex = users.findIndex((u: any) => u.id === user.id)
-    if (userIndex !== -1) {
-      users[userIndex].addresses = updatedAddresses
-      localStorage.setItem("users", JSON.stringify(users))
-    }
-
-    localStorage.setItem("user", JSON.stringify(updatedUser))
-    setUser(updatedUser)
+    await parseApiResponse(response)
+    await loadSession()
   }
 
   const updateAddress = async (addressId: string, updates: Partial<Address>) => {
     if (!user) throw new Error("No user logged in")
 
-    const updatedAddresses = user.addresses.map(addr =>
-      addr.id === addressId ? { ...addr, ...updates } : addr
-    )
-    const updatedUser = { ...user, addresses: updatedAddresses }
+    const response = await fetch(`/api/users/${user.id}/addresses/${addressId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        fullName: updates.name,
+        line1: updates.address,
+        city: updates.city,
+        postalCode: updates.zipCode,
+        country: updates.country,
+        isDefault: updates.isDefault,
+      }),
+    })
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]")
-    const userIndex = users.findIndex((u: any) => u.id === user.id)
-    if (userIndex !== -1) {
-      users[userIndex].addresses = updatedAddresses
-      localStorage.setItem("users", JSON.stringify(users))
-    }
-
-    localStorage.setItem("user", JSON.stringify(updatedUser))
-    setUser(updatedUser)
+    await parseApiResponse(response)
+    await loadSession()
   }
 
   const deleteAddress = async (addressId: string) => {
     if (!user) throw new Error("No user logged in")
 
-    const updatedAddresses = user.addresses.filter(addr => addr.id !== addressId)
-    const updatedUser = {
-      ...user,
-      addresses: updatedAddresses,
-      defaultAddressId: user.defaultAddressId === addressId ? undefined : user.defaultAddressId,
-    }
+    const response = await fetch(`/api/users/${user.id}/addresses/${addressId}`, {
+      method: "DELETE",
+      credentials: "include",
+    })
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]")
-    const userIndex = users.findIndex((u: any) => u.id === user.id)
-    if (userIndex !== -1) {
-      users[userIndex].addresses = updatedAddresses
-      if (users[userIndex].defaultAddressId === addressId) {
-        users[userIndex].defaultAddressId = undefined
-      }
-      localStorage.setItem("users", JSON.stringify(users))
-    }
-
-    localStorage.setItem("user", JSON.stringify(updatedUser))
-    setUser(updatedUser)
+    await parseApiResponse(response)
+    await loadSession()
   }
 
   const setDefaultAddress = async (addressId: string) => {
-    if (!user) throw new Error("No user logged in")
-
-    const updatedUser = { ...user, defaultAddressId: addressId }
-
-    const users = JSON.parse(localStorage.getItem("users") || "[]")
-    const userIndex = users.findIndex((u: any) => u.id === user.id)
-    if (userIndex !== -1) {
-      users[userIndex].defaultAddressId = addressId
-      localStorage.setItem("users", JSON.stringify(users))
-    }
-
-    localStorage.setItem("user", JSON.stringify(updatedUser))
-    setUser(updatedUser)
+    await updateAddress(addressId, { isDefault: true })
   }
 
-  const requestPasswordReset = async (email: string) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]")
-    const userRecord = users.find((u: any) => u.email === email)
-
-    if (!userRecord) {
-      throw new Error("Email not found")
-    }
-
-    const token = Math.random().toString(36).substr(2, 20)
-    const expiresAt = Date.now() + 3600000 // 1 hour
-
-    let resetTokens = JSON.parse(localStorage.getItem("resetTokens") || "{}")
-    resetTokens[token] = { email, expiresAt }
-    localStorage.setItem("resetTokens", JSON.stringify(resetTokens))
-
-    // In production, send email with reset link
-    console.log(`Password reset token: ${token}`)
+  const requestPasswordReset = async (_email: string) => {
+    throw new Error("Password reset flow is not implemented yet")
   }
 
-  const resetPassword = async (token: string, newPassword: string) => {
-    let resetTokens = JSON.parse(localStorage.getItem("resetTokens") || "{}")
-
-    if (!resetTokens[token]) {
-      throw new Error("Invalid or expired reset token")
-    }
-
-    const { email, expiresAt } = resetTokens[token]
-    if (Date.now() > expiresAt) {
-      delete resetTokens[token]
-      localStorage.setItem("resetTokens", JSON.stringify(resetTokens))
-      throw new Error("Reset token has expired")
-    }
-
-    const users = JSON.parse(localStorage.getItem("users") || "[]")
-    const userIndex = users.findIndex((u: any) => u.email === email)
-
-    if (userIndex !== -1) {
-      const hashedPassword = btoa(newPassword)
-      users[userIndex].password = hashedPassword
-      localStorage.setItem("users", JSON.stringify(users))
-    }
-
-    delete resetTokens[token]
-    localStorage.setItem("resetTokens", JSON.stringify(resetTokens))
+  const resetPassword = async (_token: string, _newPassword: string) => {
+    throw new Error("Password reset flow is not implemented yet")
   }
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        register,
-        login,
-        logout,
-        updateProfile,
-        addAddress,
-        updateAddress,
-        deleteAddress,
-        setDefaultAddress,
-        requestPasswordReset,
-        resetPassword,
-        isAuthenticated: !!user,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      isLoading,
+      register,
+      login,
+      logout,
+      updateProfile,
+      addAddress,
+      updateAddress,
+      deleteAddress,
+      setDefaultAddress,
+      requestPasswordReset,
+      resetPassword,
+      isAuthenticated: !!user,
+    }),
+    [user, isLoading]
   )
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
   const context = useContext(AuthContext)
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider")
+    throw new Error("useAuth must be used within a AuthProvider")
   }
   return context
 }

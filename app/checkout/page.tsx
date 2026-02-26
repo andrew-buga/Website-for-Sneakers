@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, ChangeEvent, FormEvent } from "react"
 import Link from "next/link"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
@@ -25,7 +25,7 @@ export default function CheckoutPage() {
         name: user.name || "",
         email: user.email || "",
         phone: user.phone || "",
-        address: user.address || "",
+        address: user.addresses.find((addr) => addr.id === user.defaultAddressId)?.address || user.addresses[0]?.address || "",
       }))
     }
   }, [user])
@@ -35,17 +35,17 @@ export default function CheckoutPage() {
   const tax = subtotal * 0.1
   const finalTotal = subtotal + shipping + tax
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleCardChange = (e) => {
+  const handleCardChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setCardData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsProcessing(true)
 
@@ -148,16 +148,16 @@ export default function CheckoutPage() {
                   <div className="mt-4 p-6 bg-card rounded-lg border border-border space-y-4">
                     <div>
                       <label className="block text-sm font-semibold text-foreground mb-2">Card Number</label>
-                      <input type="text" name="cardNumber" required value={cardData.cardNumber} onChange={handleCardChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="1234 5678 9012 3456" maxLength="19" />
+                      <input type="text" name="cardNumber" required value={cardData.cardNumber} onChange={handleCardChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="1234 5678 9012 3456" maxLength={19} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-foreground mb-2">Expiry Date</label>
-                        <input type="text" name="expiry" required value={cardData.expiry} onChange={handleCardChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="MM/YY" maxLength="5" />
+                        <input type="text" name="expiry" required value={cardData.expiry} onChange={handleCardChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="MM/YY" maxLength={5} />
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-foreground mb-2">CVC</label>
-                        <input type="text" name="cvc" required value={cardData.cvc} onChange={handleCardChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="123" maxLength="4" />
+                        <input type="text" name="cvc" required value={cardData.cvc} onChange={handleCardChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="123" maxLength={4} />
                       </div>
                     </div>
                   </div>

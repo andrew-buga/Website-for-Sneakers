@@ -24,6 +24,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [quantity, setQuantity] = useState(1)
   const [isAdded, setIsAdded] = useState(false)
   const [isWishlisted, setIsWishlisted] = useState(false)
+  const [addToCartError, setAddToCartError] = useState("")
 
   useEffect(() => {
     const load = async () => {
@@ -55,7 +56,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }
 
   const handleAddToCart = () => {
-    if (product.sizes.length > 0 && !selectedSize) return alert("Please select a size")
+    if (product.sizes.length > 0 && !selectedSize) {
+      setAddToCartError("Please choose a size before adding this product to cart.")
+      return
+    }
+    setAddToCartError("")
     addItem({
       id: product.id,
       name: product.name,
@@ -150,6 +155,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               <Heart className={`h-5 w-5 ${isWishlisted ? "fill-primary text-primary" : ""}`} />
             </Button>
           </div>
+          {addToCartError ? <p className="text-sm text-red-400">{addToCartError}</p> : null}
         </div>
       </section>
 

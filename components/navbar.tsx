@@ -66,15 +66,14 @@ export default function Navbar() {
             {items.length}
           </span>
         </Link>
-        {isAuthenticated && user ? (
-          <Link href="/account/profile" aria-label="Account" className="text-muted-foreground hover:text-foreground transition-colors">
-            <User className="h-5 w-5" />
-          </Link>
-        ) : (
+        <Link href={isAuthenticated && user ? "/account/profile" : "/account/login"} aria-label="Account" className="text-muted-foreground hover:text-foreground transition-colors">
+          <User className="h-5 w-5" />
+        </Link>
+        {!isAuthenticated ? (
           <Link href="/account/login" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
             Sign In
           </Link>
-        )}
+        ) : null}
         <button
           type="button"
           aria-label="Menu"
@@ -102,6 +101,22 @@ export default function Navbar() {
             <li>
               <Link href="/favorites" className={`block py-2 transition-colors ${pathname === "/favorites" ? "text-foreground" : "hover:text-foreground"}`} onClick={() => setMobileOpen(false)}>Favorites</Link>
             </li>
+            <li>
+              <Link
+                href={isAuthenticated && user ? "/account/profile" : "/account/login"}
+                className={`block py-2 transition-colors ${pathname.startsWith("/account") ? "text-foreground" : "hover:text-foreground"}`}
+                onClick={() => setMobileOpen(false)}
+              >
+                {isAuthenticated && user ? "My account" : "Sign in"}
+              </Link>
+            </li>
+            {!isAuthenticated ? (
+              <li>
+                <Link href="/account/register" className="block py-2 transition-colors hover:text-foreground" onClick={() => setMobileOpen(false)}>
+                  Register
+                </Link>
+              </li>
+            ) : null}
           </ul>
         </div>
       )}

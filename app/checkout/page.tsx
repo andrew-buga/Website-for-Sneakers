@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect, ChangeEvent, FormEvent } from "react"
+import { useEffect, useMemo, useState, FormEvent } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import Navbar from "@/components/navbar"
@@ -9,25 +10,29 @@ import Footer from "@/components/footer"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
+function parsePrice(value: string) {
+  return Number(value.replace(/[^0-9.]/g, "")) || 0
+}
+
 export default function CheckoutPage() {
+  const router = useRouter()
   const { items, total, clearCart } = useCart()
-  const { user } = useAuth()
-  const [formData, setFormData] = useState({ name: "", email: "", address: "", phone: "" })
+  const { user, isAuthenticated } = useAuth()
   const [paymentMethod, setPaymentMethod] = useState("card")
   const [cardData, setCardData] = useState({ cardNumber: "", expiry: "", cvc: "" })
   const [isProcessing, setIsProcessing] = useState(false)
   const [orderPlaced, setOrderPlaced] = useState(false)
+  const [error, setError] = useState("")
 
   useEffect(() => {
-    if (user) {
-      setFormData(prev => ({
-        ...prev,
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        address: user.addresses.find((addr) => addr.id === user.defaultAddressId)?.address || user.addresses[0]?.address || "",
-      }))
+    if (!isAuthenticated) {
+      router.push("/account/login")
     }
+  }, [isAuthenticated, router])
+
+  const defaultAddress = useMemo(() => {
+    if (!user) return null
+    return user.addresses.find((addr) => addr.id === user.defaultAddressId) || user.addresses[0] || null
   }, [user])
 
   const subtotal = total
@@ -35,45 +40,67 @@ export default function CheckoutPage() {
   const tax = subtotal * 0.1
   const finalTotal = subtotal + shipping + tax
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleCardChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setCardData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsProcessing(true)
+    setError("")
 
-    setTimeout(() => {
-      if (user) {
-        const order = {
-          id: Math.random().toString(36).substr(2, 9),
+    if (!user) {
+      setError("Please sign in before checkout")
+      return
+    }
+
+    if (!defaultAddress) {
+      setError("Add a delivery address in your profile before placing an order")
+      return
+    }
+
+    if (items.length === 0) {
+      setError("Your cart is empty")
+      return
+    }
+
+    setIsProcessing(true)
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
           userId: user.id,
-          date: new Date().toISOString(),
-          total: finalTotal,
-          status: "Processing",
-          items: items.map(item => ({
-            name: item.name,
+          addressId: defaultAddress.id,
+          shippingCents: Math.round(shipping * 100),
+          items: items.map((item) => ({
+            productId: item.id,
             quantity: item.quantity,
-            price: item.price,
-            color: item.color,
             size: item.size,
+            color: item.color,
           })),
+        }),
+      })
+
+      const body = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        const apiError = String(body.error ?? "Failed to create order")
+        if (apiError.startsWith("INSUFFICIENT_STOCK:")) {
+          setError("Some products are out of stock in requested quantity")
+        } else if (apiError.startsWith("SIZE_NOT_AVAILABLE:")) {
+          setError("Selected size is no longer available")
+        } else if (apiError.startsWith("COLOR_NOT_AVAILABLE:")) {
+          setError("Selected color is no longer available")
+        } else {
+          setError(apiError)
         }
-        const allOrders = JSON.parse(localStorage.getItem("orders") || "[]")
-        allOrders.push(order)
-        localStorage.setItem("orders", JSON.stringify(allOrders))
+        return
       }
+
       setOrderPlaced(true)
       clearCart()
+    } finally {
       setIsProcessing(false)
-    }, 2000)
+    }
   }
+
+  if (!isAuthenticated) return null
 
   if (orderPlaced) {
     return (
@@ -83,11 +110,9 @@ export default function CheckoutPage() {
           <h1 className="font-display text-5xl font-bold text-primary">Order Placed!</h1>
           <p className="text-muted-foreground text-xl max-w-xl">Thank you for your purchase.</p>
           <div className="flex gap-4">
-            {user && (
-              <Link href="/account/orders">
-                <Button size="lg" variant="outline">View Order History</Button>
-              </Link>
-            )}
+            <Link href="/account/orders">
+              <Button size="lg" variant="outline">View Order History</Button>
+            </Link>
             <Link href="/">
               <Button size="lg">Continue Shopping</Button>
             </Link>
@@ -107,39 +132,30 @@ export default function CheckoutPage() {
           Back to Cart
         </Link>
 
-        <h1 className="font-display text-4xl lg:text-5xl font-bold text-foreground mb-12">Checkout</h1>
+        <h1 className="font-display text-4xl lg:text-5xl font-bold text-foreground mb-6">Checkout</h1>
+
+        {!defaultAddress ? (
+          <div className="mb-8 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-amber-200 text-sm">
+            No delivery address found. <Link href="/account/profile" className="underline">Add one in profile</Link> to place an order.
+          </div>
+        ) : (
+          <div className="mb-8 rounded-lg border border-border bg-card p-4 text-sm">
+            <p className="font-semibold text-foreground">Delivery to:</p>
+            <p className="text-muted-foreground">{defaultAddress.name}, {defaultAddress.address}, {defaultAddress.city}, {defaultAddress.zipCode}, {defaultAddress.country}</p>
+          </div>
+        )}
+
+        {error ? (
+          <div className="mb-6 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-red-300 text-sm">{error}</div>
+        ) : null}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-6">
-              <h2 className="font-display text-2xl font-bold text-foreground">Shipping</h2>
-
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Full Name</label>
-                <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="John Doe" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Email</label>
-                <input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="john@example.com" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Address</label>
-                <input type="text" name="address" required value={formData.address} onChange={handleChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="123 Main St" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Phone</label>
-                <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="+1 555 123 4567" />
-              </div>
-            </div>
-
             <div className="space-y-6 border-t border-border pt-8">
               <h2 className="font-display text-2xl font-bold text-foreground">Payment</h2>
 
               <div className="space-y-3">
-                <label className="flex items-center gap-3 cursor-pointer p-4 border border-border rounded-lg hover:border-foreground" style={{borderColor: paymentMethod === "card" ? "var(--primary)" : ""}}>
+                <label className="flex items-center gap-3 cursor-pointer p-4 border border-border rounded-lg hover:border-foreground" style={{ borderColor: paymentMethod === "card" ? "var(--primary)" : "" }}>
                   <input type="radio" name="payment" value="card" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("card")} />
                   <span className="font-semibold text-foreground">Credit Card</span>
                 </label>
@@ -148,35 +164,29 @@ export default function CheckoutPage() {
                   <div className="mt-4 p-6 bg-card rounded-lg border border-border space-y-4">
                     <div>
                       <label className="block text-sm font-semibold text-foreground mb-2">Card Number</label>
-                      <input type="text" name="cardNumber" required value={cardData.cardNumber} onChange={handleCardChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="1234 5678 9012 3456" maxLength={19} />
+                      <input type="text" name="cardNumber" required value={cardData.cardNumber} onChange={(e) => setCardData((prev) => ({ ...prev, cardNumber: e.target.value }))} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="1234 5678 9012 3456" maxLength={19} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-foreground mb-2">Expiry Date</label>
-                        <input type="text" name="expiry" required value={cardData.expiry} onChange={handleCardChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="MM/YY" maxLength={5} />
+                        <input type="text" name="expiry" required value={cardData.expiry} onChange={(e) => setCardData((prev) => ({ ...prev, expiry: e.target.value }))} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="MM/YY" maxLength={5} />
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-foreground mb-2">CVC</label>
-                        <input type="text" name="cvc" required value={cardData.cvc} onChange={handleCardChange} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="123" maxLength={4} />
+                        <input type="text" name="cvc" required value={cardData.cvc} onChange={(e) => setCardData((prev) => ({ ...prev, cvc: e.target.value }))} className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground" placeholder="123" maxLength={4} />
                       </div>
                     </div>
                   </div>
                 )}
 
-                <label className="flex items-center gap-3 cursor-pointer p-4 border border-border rounded-lg hover:border-foreground" style={{borderColor: paymentMethod === "paypal" ? "var(--primary)" : ""}}>
+                <label className="flex items-center gap-3 cursor-pointer p-4 border border-border rounded-lg hover:border-foreground" style={{ borderColor: paymentMethod === "paypal" ? "var(--primary)" : "" }}>
                   <input type="radio" name="payment" value="paypal" checked={paymentMethod === "paypal"} onChange={() => setPaymentMethod("paypal")} className="w-4 h-4" />
                   <span className="font-semibold text-foreground">PayPal</span>
                 </label>
-
-                {paymentMethod === "paypal" && (
-                  <div className="mt-4 p-6 bg-card rounded-lg border border-border">
-                    <p className="text-sm text-muted-foreground">You will be redirected to PayPal to complete the payment.</p>
-                  </div>
-                )}
               </div>
             </div>
 
-            <Button type="submit" size="lg" className="w-full text-base" disabled={isProcessing}>
+            <Button type="submit" size="lg" className="w-full text-base" disabled={isProcessing || !defaultAddress}>
               {isProcessing ? "Processing..." : "Place Order"}
             </Button>
           </form>
@@ -188,7 +198,7 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.id + item.size + item.color} className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{item.name} x{item.quantity}</span>
-                  <span className="font-semibold text-foreground">{"$" + (parseFloat(item.price.replace("$", "")) * item.quantity).toFixed(2)}</span>
+                  <span className="font-semibold text-foreground">{"$" + (parsePrice(item.price) * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>

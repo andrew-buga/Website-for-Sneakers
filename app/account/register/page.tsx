@@ -41,8 +41,17 @@ export default function RegisterPage() {
         throw new Error("Passwords do not match")
       }
 
-      if (formData.password.length < 6) {
-        throw new Error("Password must be at least 6 characters")
+      if (formData.password.length < 8) {
+        throw new Error("Password must be at least 8 characters")
+      }
+
+      const hasUppercase = /[A-Z]/.test(formData.password)
+      const hasLowercase = /[a-z]/.test(formData.password)
+      const hasDigit = /\d/.test(formData.password)
+      const hasSpecial = /[^A-Za-z0-9]/.test(formData.password)
+
+      if (!hasUppercase || !hasLowercase || !hasDigit || !hasSpecial) {
+        throw new Error("Password must include uppercase, lowercase, number, and special character")
       }
 
       await register(formData.email, formData.password, formData.name)
@@ -105,7 +114,7 @@ export default function RegisterPage() {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
-              placeholder="At least 6 characters"
+              placeholder="8+ chars, upper/lower, number, special"
             />
           </div>
 

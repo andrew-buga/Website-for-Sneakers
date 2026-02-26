@@ -41,10 +41,11 @@ export async function POST(request: Request) {
         phone: true,
         emailVerified: true,
         createdAt: true,
+        role: true,
       },
     })
 
-    const token = signAuthToken({ sub: user.id, email: user.email })
+    const token = signAuthToken({ sub: user.id, email: user.email, role: user.role })
 
     const response = NextResponse.json({ user }, { status: 201 })
     response.cookies.set({

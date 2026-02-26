@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 
+import { requireAdmin } from "@/lib/server/guards"
 import { prisma } from "@/lib/server/prisma"
 
 const createProductSchema = z.object({
@@ -11,19 +12,27 @@ const createProductSchema = z.object({
   currency: z.string().length(3).optional(),
   imageUrl: z.string().url().optional(),
   stock: z.number().int().nonnegative().optional(),
+  sizes: z.array(z.string().min(1)).optional(),
+  colors: z.array(z.string().min(1)).optional(),
   isActive: z.boolean().optional(),
 })
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const includeInactive = searchParams.get("includeInactive") === "true"
+
   const products = await prisma.product.findMany({
-    where: { isActive: true },
+    where: includeInactive ? undefined : { isActive: true },
     orderBy: { createdAt: "desc" },
   })
 
   return NextResponse.json({ products })
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const admin = requireAdmin(request)
+  if ("error" in admin) return admin.error
+
   try {
     const payload = createProductSchema.parse(await request.json())
 

@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
       name: user.name,
       phone: user.phone,
       emailVerified: user.emailVerified,
+      role: user.role,
       createdAt: user.createdAt,
       addresses: user.addresses.map((addr) => ({
         id: addr.id,

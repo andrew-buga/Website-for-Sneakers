@@ -7,9 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
 enum OrderStatus {
   PENDING
-  PROCESSING
+  PAID
   SHIPPED
   DELIVERED
   CANCELLED
@@ -22,6 +27,7 @@ model User {
   passwordHash  String
   phone         String?
   emailVerified Boolean  @default(false)
+  role          UserRole @default(CUSTOMER)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -59,6 +65,8 @@ model Product {
   currency    String   @default("USD")
   imageUrl    String?
   stock       Int      @default(0)
+  sizes       String[] @default([])
+  colors      String[] @default([])
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

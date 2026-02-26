@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
@@ -7,6 +8,7 @@ const COOKIE_NAME = "auth_token"
 export type AuthTokenPayload = {
   sub: string
   email: string
+  role: UserRole
 }
 
 function getJwtSecret() {

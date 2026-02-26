@@ -20,6 +20,7 @@ export interface User {
   addresses: Address[]
   defaultAddressId?: string
   emailVerified: boolean
+  role: "CUSTOMER" | "ADMIN"
   createdAt: string
 }
 

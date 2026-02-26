@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { Phone, Mail, Send } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function Subscribe() {
   return (
@@ -41,13 +42,14 @@ export default function Subscribe() {
                 placeholder="Enter your email"
                 className="w-full bg-secondary text-foreground placeholder:text-muted-foreground rounded-full px-6 py-4 pr-14 text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
               />
-              <button
+              <Button
                 type="button"
+                size="icon"
                 aria-label="Subscribe"
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full"
               >
                 <Send className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
 
             {/* Social icons */}

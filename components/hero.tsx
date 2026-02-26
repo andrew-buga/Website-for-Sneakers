@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function Hero() {
   return (
@@ -38,19 +39,15 @@ export default function Hero() {
           </div>
 
           <div className="flex items-center gap-4 mt-4">
-            <Link
-              href="/trends"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3 rounded-full text-sm font-semibold transition-all hover:opacity-90"
-            >
-              Buy now
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/collections"
-              className="inline-flex items-center gap-2 border border-border text-foreground px-7 py-3 rounded-full text-sm font-semibold transition-all hover:bg-secondary"
-            >
-              Explore
-            </Link>
+            <Button asChild size="lg" className="rounded-full">
+              <Link href="/trends">
+                Buy now
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="rounded-full">
+              <Link href="/collections">Explore</Link>
+            </Button>
           </div>
         </div>
 

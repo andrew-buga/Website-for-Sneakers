@@ -48,11 +48,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }, [id, isInWishlist])
 
   if (isLoading) {
-    return <main><Navbar /><div className="min-h-screen flex items-center justify-center"><p className="text-muted-foreground">Loading product...</p></div><Footer /></main>
+    return <main><div className="hidden md:block"><Navbar /></div><div className="min-h-screen flex items-center justify-center"><p className="text-muted-foreground">Loading product...</p></div><Footer /></main>
   }
 
   if (!product) {
-    return <main><Navbar /><div className="min-h-screen flex items-center justify-center"><p className="text-muted-foreground">Product not found</p></div><Footer /></main>
+    return <main><div className="hidden md:block"><Navbar /></div><div className="min-h-screen flex items-center justify-center"><p className="text-muted-foreground">Product not found</p></div><Footer /></main>
   }
 
   const handleAddToCart = () => {
@@ -85,7 +85,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   return (
     <main>
-      <Navbar />
+      <div className="hidden md:block"><Navbar /></div>
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-6">
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" />

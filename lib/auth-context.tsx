@@ -71,7 +71,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       if (!response.ok) {
-        setUser(null)
+        if (response.status === 401) {
+          setUser(null)
+        }
         return
       }
 

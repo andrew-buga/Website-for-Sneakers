@@ -23,6 +23,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<ApiOrder[]>([])
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [error, setError] = useState("")
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
@@ -32,10 +33,14 @@ export default function OrdersPage() {
 
     const load = async () => {
       const response = await fetch(`/api/orders?page=${page}&pageSize=10`, { credentials: "include" })
-      if (!response.ok) return
+      if (!response.ok) {
+        setError("Failed to load orders. Please try again.")
+        return
+      }
       const body = await response.json()
       setOrders(body.orders ?? [])
       setTotalPages(body.pagination?.totalPages ?? 1)
+      setError("")
     }
 
     void load()
@@ -52,6 +57,14 @@ export default function OrdersPage() {
         </Link>
 
         <h1 className="font-display text-4xl font-bold text-foreground mb-6">My Orders</h1>
+
+        {error ? <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">{error}</div> : null}
+
+        {orders.length === 0 ? (
+          <div className="rounded-xl border p-6 text-sm text-muted-foreground">
+            No orders yet. Complete checkout to see orders here.
+          </div>
+        ) : null}
 
         <div className="space-y-4">
           {orders.map((order) => (

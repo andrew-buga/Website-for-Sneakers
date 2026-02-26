@@ -8,6 +8,9 @@ const createProductSchema = z.object({
   sku: z.string().min(1),
   name: z.string().min(1),
   description: z.string().optional(),
+  category: z.enum(["men", "women"]).optional(),
+  collection: z.enum(["summer", "winter", "autumn"]).optional(),
+  isTrending: z.boolean().optional(),
   priceCents: z.number().int().nonnegative(),
   currency: z.string().length(3).optional(),
   imageUrl: z.string().min(1).refine((value) => value.startsWith("/") || /^https?:\/\//.test(value), {
@@ -22,10 +25,20 @@ const createProductSchema = z.object({
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const includeInactive = searchParams.get("includeInactive") === "true"
+  const category = searchParams.get("category")
+  const collection = searchParams.get("collection")
+  const trending = searchParams.get("trending")
+  const limit = Number(searchParams.get("limit") ?? "0")
 
   const products = await prisma.product.findMany({
-    where: includeInactive ? undefined : { isActive: true },
+    where: {
+      ...(includeInactive ? {} : { isActive: true }),
+      ...(category ? { category } : {}),
+      ...(collection ? { collection } : {}),
+      ...(trending === "true" ? { isTrending: true } : {}),
+    },
     orderBy: { createdAt: "desc" },
+    ...(limit > 0 ? { take: limit } : {}),
   })
 
   return NextResponse.json({ products })

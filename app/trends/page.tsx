@@ -1,10 +1,10 @@
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import CatalogProductGrid from "@/components/catalog-product-grid"
-import { catalogProducts } from "@/lib/catalog"
+import { getStoreProducts } from "@/lib/server/storefront"
 
-export default function TrendsPage() {
-  const products = catalogProducts.filter((item) => item.isTrending)
+export default async function TrendsPage() {
+  const products = await getStoreProducts({ trending: true })
 
   return (
     <main>

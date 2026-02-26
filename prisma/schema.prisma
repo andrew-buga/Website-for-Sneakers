@@ -63,6 +63,9 @@ model Product {
   sku         String   @unique
   name        String
   description String?
+  category    String   @default("men")
+  collection  String   @default("summer")
+  isTrending  Boolean  @default(false)
   priceCents  Int
   currency    String   @default("USD")
   imageUrl    String?

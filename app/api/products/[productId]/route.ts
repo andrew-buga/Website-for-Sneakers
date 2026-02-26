@@ -8,6 +8,9 @@ const updateProductSchema = z.object({
   sku: z.string().min(1).optional(),
   name: z.string().min(1).optional(),
   description: z.string().nullable().optional(),
+  category: z.enum(["men", "women"]).optional(),
+  collection: z.enum(["summer", "winter", "autumn"]).optional(),
+  isTrending: z.boolean().optional(),
   priceCents: z.number().int().nonnegative().optional(),
   currency: z.string().length(3).optional(),
   imageUrl: z.string().min(1).refine((value) => value.startsWith("/") || /^https?:\/\//.test(value), {
@@ -20,6 +23,19 @@ const updateProductSchema = z.object({
 })
 
 type Params = { params: Promise<{ productId: string }> }
+
+export async function GET(_request: NextRequest, { params }: Params) {
+  const { productId } = await params
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+  })
+
+  if (!product || !product.isActive) {
+    return NextResponse.json({ error: "Product not found" }, { status: 404 })
+  }
+
+  return NextResponse.json({ product })
+}
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   const admin = await requireAdmin(request)

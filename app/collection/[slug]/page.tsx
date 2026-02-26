@@ -4,12 +4,13 @@ import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { ArrowLeft } from "lucide-react"
 import CatalogProductGrid from "@/components/catalog-product-grid"
-import { catalogProducts, collectionsMeta } from "@/lib/catalog"
+import { getStoreProducts } from "@/lib/server/storefront"
+import { collectionsMeta } from "@/lib/storefront-types"
 
 export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const meta = collectionsMeta[slug as keyof typeof collectionsMeta]
-  const products = catalogProducts.filter((p) => p.collection === slug)
+  const key = slug as keyof typeof collectionsMeta
+  const meta = collectionsMeta[key]
 
   if (!meta) {
     return (
@@ -20,6 +21,8 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
       </main>
     )
   }
+
+  const products = await getStoreProducts({ collection: key })
 
   return (
     <main>

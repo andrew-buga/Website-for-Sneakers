@@ -1,10 +1,10 @@
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import CatalogProductGrid from "@/components/catalog-product-grid"
-import { catalogProducts } from "@/lib/catalog"
+import { getStoreProducts } from "@/lib/server/storefront"
 
-export default function WomenPage() {
-  const products = catalogProducts.filter((item) => item.category === "women")
+export default async function WomenPage() {
+  const products = await getStoreProducts({ category: "women" })
 
   return (
     <main>

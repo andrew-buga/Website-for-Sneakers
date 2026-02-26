@@ -3,15 +3,15 @@
 import React, { createContext, useContext, useState, useEffect } from "react"
 
 interface WishlistItem {
-  id: number
+  id: string
   name: string
 }
 
 interface WishlistContextType {
   items: WishlistItem[]
-  addToWishlist: (id: number, name: string) => void
-  removeFromWishlist: (id: number) => void
-  isInWishlist: (id: number) => boolean
+  addToWishlist: (id: string, name: string) => void
+  removeFromWishlist: (id: string) => void
+  isInWishlist: (id: string) => boolean
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined)
@@ -25,7 +25,10 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     const savedWishlist = localStorage.getItem("wishlist")
     if (savedWishlist) {
       try {
-        setItems(JSON.parse(savedWishlist))
+        const parsed = JSON.parse(savedWishlist)
+        if (Array.isArray(parsed)) {
+          setItems(parsed.map((item) => ({ ...item, id: String(item.id) })))
+        }
       } catch (error) {
         console.error("Failed to load wishlist:", error)
       }
@@ -38,7 +41,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, mounted])
 
-  const addToWishlist = (id: number, name: string) => {
+  const addToWishlist = (id: string, name: string) => {
     setItems((prev) => {
       const exists = prev.find((item) => item.id === id)
       if (exists) return prev
@@ -46,11 +49,11 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  const removeFromWishlist = (id: number) => {
+  const removeFromWishlist = (id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id))
   }
 
-  const isInWishlist = (id: number) => {
+  const isInWishlist = (id: string) => {
     return items.some((item) => item.id === id)
   }
 

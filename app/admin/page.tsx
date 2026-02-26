@@ -11,6 +11,9 @@ type Product = {
   sku: string
   name: string
   description: string | null
+  category: "men" | "women"
+  collection: "summer" | "winter" | "autumn"
+  isTrending: boolean
   currency: string
   imageUrl: string | null
   priceCents: number
@@ -24,6 +27,9 @@ type ProductDraft = {
   sku: string
   name: string
   description: string
+  category: "men" | "women"
+  collection: "summer" | "winter" | "autumn"
+  isTrending: boolean
   imageUrl: string
   priceCents: number
   stock: number
@@ -39,6 +45,9 @@ export default function AdminPage() {
     sku: "",
     name: "",
     description: "",
+    category: "men",
+    collection: "summer",
+    isTrending: false,
     imageUrl: "",
     currency: "USD",
     priceCents: 0,
@@ -69,6 +78,9 @@ export default function AdminPage() {
               sku: p.sku,
               name: p.name,
               description: p.description ?? "",
+              category: p.category,
+              collection: p.collection,
+              isTrending: p.isTrending,
               imageUrl: p.imageUrl ?? "",
               priceCents: p.priceCents,
               stock: p.stock,
@@ -128,6 +140,9 @@ export default function AdminPage() {
         sku: form.sku,
         name: form.name,
         description: form.description || undefined,
+        category: form.category,
+        collection: form.collection,
+        isTrending: form.isTrending,
         imageUrl: form.imageUrl || undefined,
         currency: form.currency || "USD",
         priceCents: Number(form.priceCents),
@@ -148,6 +163,9 @@ export default function AdminPage() {
       sku: "",
       name: "",
       description: "",
+      category: "men",
+      collection: "summer",
+      isTrending: false,
       imageUrl: "",
       currency: "USD",
       priceCents: 0,
@@ -170,6 +188,9 @@ export default function AdminPage() {
         sku: draft.sku,
         name: draft.name,
         description: draft.description || null,
+        category: draft.category,
+        collection: draft.collection,
+        isTrending: draft.isTrending,
         imageUrl: draft.imageUrl || null,
         priceCents: Number(draft.priceCents),
         stock: Number(draft.stock),
@@ -260,6 +281,31 @@ export default function AdminPage() {
           <Input placeholder="SKU" value={form.sku} onChange={(e) => setForm((p) => ({ ...p, sku: e.target.value }))} />
           <Input placeholder="Name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
           <Input placeholder="Description" value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
+          <select
+            className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+            value={form.category}
+            onChange={(e) => setForm((p) => ({ ...p, category: e.target.value as "men" | "women" }))}
+          >
+            <option value="men">Men</option>
+            <option value="women">Women</option>
+          </select>
+          <select
+            className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+            value={form.collection}
+            onChange={(e) => setForm((p) => ({ ...p, collection: e.target.value as "summer" | "winter" | "autumn" }))}
+          >
+            <option value="summer">Summer</option>
+            <option value="winter">Winter</option>
+            <option value="autumn">Autumn</option>
+          </select>
+          <label className="flex items-center gap-2 text-sm text-foreground">
+            <input
+              type="checkbox"
+              checked={form.isTrending}
+              onChange={(e) => setForm((p) => ({ ...p, isTrending: e.target.checked }))}
+            />
+            Trending product
+          </label>
           <Input placeholder="Image URL (/uploads/... or https://...)" value={form.imageUrl} onChange={(e) => setForm((p) => ({ ...p, imageUrl: e.target.value }))} />
           <Input placeholder="Currency (USD)" value={form.currency} onChange={(e) => setForm((p) => ({ ...p, currency: e.target.value.toUpperCase() }))} />
           <Input type="number" placeholder="Price cents" value={form.priceCents} onChange={(e) => setForm((p) => ({ ...p, priceCents: Number(e.target.value) }))} />
@@ -289,6 +335,31 @@ export default function AdminPage() {
                   <Input value={draft.sku} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], sku: e.target.value } }))} />
                   <Input value={draft.name} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], name: e.target.value } }))} />
                   <Input value={draft.description} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], description: e.target.value } }))} placeholder="Description" />
+                  <select
+                    className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    value={draft.category}
+                    onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], category: e.target.value as "men" | "women" } }))}
+                  >
+                    <option value="men">Men</option>
+                    <option value="women">Women</option>
+                  </select>
+                  <select
+                    className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    value={draft.collection}
+                    onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], collection: e.target.value as "summer" | "winter" | "autumn" } }))}
+                  >
+                    <option value="summer">Summer</option>
+                    <option value="winter">Winter</option>
+                    <option value="autumn">Autumn</option>
+                  </select>
+                  <label className="flex items-center gap-2 text-sm text-foreground">
+                    <input
+                      type="checkbox"
+                      checked={draft.isTrending}
+                      onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], isTrending: e.target.checked } }))}
+                    />
+                    Trending product
+                  </label>
                   <Input value={draft.imageUrl} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], imageUrl: e.target.value } }))} placeholder="Image URL" />
                   <Input type="number" min={0} value={draft.priceCents} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], priceCents: Number(e.target.value) } }))} />
                   <Input type="number" min={0} value={draft.stock} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], stock: Number(e.target.value) } }))} />

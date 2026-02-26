@@ -5,9 +5,12 @@ import { ArrowUpRight } from "lucide-react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import CatalogProductGrid from "@/components/catalog-product-grid"
-import { catalogProducts, collectionsMeta } from "@/lib/catalog"
+import { getStoreProducts } from "@/lib/server/storefront"
+import { collectionsMeta } from "@/lib/storefront-types"
 
-export default function CollectionsPage() {
+export default async function CollectionsPage() {
+  const products = await getStoreProducts()
+
   return (
     <main>
       <Navbar />
@@ -36,7 +39,7 @@ export default function CollectionsPage() {
 
       <section className="max-w-7xl mx-auto px-6 lg:px-12 py-8 lg:pb-24">
         <h2 className="font-display text-3xl font-bold text-foreground mb-8">All Products</h2>
-        <CatalogProductGrid products={catalogProducts} />
+        <CatalogProductGrid products={products} />
       </section>
       <Footer />
     </main>

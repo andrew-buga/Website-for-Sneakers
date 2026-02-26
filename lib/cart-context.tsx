@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react"
 
 export interface CartItem {
-  id: number
+  id: string
   name: string
   price: string
   image: string
@@ -15,8 +15,8 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[]
   addItem: (item: CartItem) => void
-  removeItem: (id: number, size: string, color: string) => void
-  updateQuantity: (id: number, size: string, color: string, quantity: number) => void
+  removeItem: (id: string, size: string, color: string) => void
+  updateQuantity: (id: string, size: string, color: string, quantity: number) => void
   clearCart: () => void
   total: number
 }
@@ -32,7 +32,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const savedCart = localStorage.getItem("cart")
     if (savedCart) {
       try {
-        setItems(JSON.parse(savedCart))
+        const parsed = JSON.parse(savedCart)
+        if (Array.isArray(parsed)) {
+          setItems(parsed.map((item) => ({ ...item, id: String(item.id) })))
+        }
       } catch (error) {
         console.error("Failed to load cart:", error)
       }
@@ -61,13 +64,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  const removeItem = (id: number, size: string, color: string) => {
+  const removeItem = (id: string, size: string, color: string) => {
     setItems((prevItems) =>
       prevItems.filter((item) => !(item.id === id && item.size === size && item.color === color))
     )
   }
 
-  const updateQuantity = (id: number, size: string, color: string, quantity: number) => {
+  const updateQuantity = (id: string, size: string, color: string, quantity: number) => {
     if (quantity <= 0) {
       removeItem(id, size, color)
       return

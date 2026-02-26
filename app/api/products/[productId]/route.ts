@@ -10,7 +10,9 @@ const updateProductSchema = z.object({
   description: z.string().nullable().optional(),
   priceCents: z.number().int().nonnegative().optional(),
   currency: z.string().length(3).optional(),
-  imageUrl: z.string().url().nullable().optional(),
+  imageUrl: z.string().min(1).refine((value) => value.startsWith("/") || /^https?:\/\//.test(value), {
+    message: "Image URL must be a local path (/uploads/...) or a valid http(s) URL",
+  }).nullable().optional(),
   stock: z.number().int().nonnegative().optional(),
   sizes: z.array(z.string().min(1)).optional(),
   colors: z.array(z.string().min(1)).optional(),
@@ -20,7 +22,7 @@ const updateProductSchema = z.object({
 type Params = { params: Promise<{ productId: string }> }
 
 export async function PATCH(request: NextRequest, { params }: Params) {
-  const admin = requireAdmin(request)
+  const admin = await requireAdmin(request)
   if ("error" in admin) return admin.error
 
   try {
@@ -43,15 +45,29 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 }
 
 export async function DELETE(request: NextRequest, { params }: Params) {
-  const admin = requireAdmin(request)
+  const admin = await requireAdmin(request)
   if ("error" in admin) return admin.error
 
   const { productId } = await params
+  const { searchParams } = new URL(request.url)
+  const hardDelete = searchParams.get("hard") === "true"
+
+  if (hardDelete) {
+    try {
+      await prisma.product.delete({
+        where: { id: productId },
+      })
+
+      return NextResponse.json({ ok: true, mode: "hard" })
+    } catch {
+      return NextResponse.json({ error: "Cannot hard delete product that is linked to orders" }, { status: 409 })
+    }
+  }
 
   await prisma.product.update({
     where: { id: productId },
     data: { isActive: false },
   })
 
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ ok: true, mode: "soft" })
 }

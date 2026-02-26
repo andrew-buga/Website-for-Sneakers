@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,6 +10,9 @@ type Product = {
   id: string
   sku: string
   name: string
+  description: string | null
+  currency: string
+  imageUrl: string | null
   priceCents: number
   stock: number
   sizes: string[]
@@ -17,11 +20,34 @@ type Product = {
   isActive: boolean
 }
 
+type ProductDraft = {
+  sku: string
+  name: string
+  description: string
+  imageUrl: string
+  priceCents: number
+  stock: number
+  sizes: string
+  colors: string
+  isActive: boolean
+}
+
 export default function AdminPage() {
   const { user } = useAuth()
   const [products, setProducts] = useState<Product[]>([])
-  const [form, setForm] = useState({ sku: "", name: "", priceCents: 0, stock: 0, sizes: "", colors: "" })
-  const [stockDrafts, setStockDrafts] = useState<Record<string, string>>({})
+  const [form, setForm] = useState({
+    sku: "",
+    name: "",
+    description: "",
+    imageUrl: "",
+    currency: "USD",
+    priceCents: 0,
+    stock: 0,
+    sizes: "",
+    colors: "",
+  })
+  const [productDrafts, setProductDrafts] = useState<Record<string, ProductDraft>>({})
+  const [uploading, setUploading] = useState(false)
   const [message, setMessage] = useState("")
 
   const loadProducts = async () => {
@@ -33,9 +59,27 @@ export default function AdminPage() {
         return
       }
 
-      const nextProducts = data.products ?? []
+      const nextProducts: Product[] = data.products ?? []
       setProducts(nextProducts)
-      setStockDrafts(Object.fromEntries(nextProducts.map((p: Product) => [p.id, String(p.stock)])))
+      setProductDrafts(
+        Object.fromEntries(
+          nextProducts.map((p) => [
+            p.id,
+            {
+              sku: p.sku,
+              name: p.name,
+              description: p.description ?? "",
+              imageUrl: p.imageUrl ?? "",
+              priceCents: p.priceCents,
+              stock: p.stock,
+              sizes: p.sizes.join(", "),
+              colors: p.colors.join(", "),
+              isActive: p.isActive,
+            },
+          ])
+        )
+      )
+      setMessage("")
     } catch {
       setMessage("Failed to load products")
     }
@@ -45,6 +89,36 @@ export default function AdminPage() {
     void loadProducts()
   }, [])
 
+  const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const formData = new FormData()
+    formData.append("file", file)
+
+    setUploading(true)
+    try {
+      const res = await fetch("/api/admin/upload-image", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      })
+
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setMessage(data.error ?? "Upload failed")
+        return
+      }
+
+      setForm((prev) => ({ ...prev, imageUrl: data.imageUrl }))
+      setMessage("Image uploaded")
+    } catch {
+      setMessage("Upload failed")
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const createProduct = async () => {
     const res = await fetch("/api/products", {
       method: "POST",
@@ -53,6 +127,9 @@ export default function AdminPage() {
       body: JSON.stringify({
         sku: form.sku,
         name: form.name,
+        description: form.description || undefined,
+        imageUrl: form.imageUrl || undefined,
+        currency: form.currency || "USD",
         priceCents: Number(form.priceCents),
         stock: Number(form.stock),
         sizes: form.sizes.split(",").map((s) => s.trim()).filter(Boolean),
@@ -60,73 +137,93 @@ export default function AdminPage() {
       }),
     })
 
+    const data = await res.json().catch(() => ({}))
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
       setMessage(data.error ?? "Failed to create product")
       return
     }
 
     setMessage("Product created")
-    setForm({ sku: "", name: "", priceCents: 0, stock: 0, sizes: "", colors: "" })
+    setForm({
+      sku: "",
+      name: "",
+      description: "",
+      imageUrl: "",
+      currency: "USD",
+      priceCents: 0,
+      stock: 0,
+      sizes: "",
+      colors: "",
+    })
     await loadProducts()
   }
 
-  const updateStock = async (productId: string) => {
-    const stockValue = Number(stockDrafts[productId] ?? "0")
-    if (!Number.isInteger(stockValue) || stockValue < 0) {
-      setMessage("Stock must be a non-negative integer")
-      return
-    }
+  const updateProduct = async (productId: string) => {
+    const draft = productDrafts[productId]
+    if (!draft) return
 
     const res = await fetch(`/api/products/${productId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ stock: stockValue }),
+      body: JSON.stringify({
+        sku: draft.sku,
+        name: draft.name,
+        description: draft.description || null,
+        imageUrl: draft.imageUrl || null,
+        priceCents: Number(draft.priceCents),
+        stock: Number(draft.stock),
+        sizes: draft.sizes.split(",").map((s) => s.trim()).filter(Boolean),
+        colors: draft.colors.split(",").map((s) => s.trim()).filter(Boolean),
+        isActive: draft.isActive,
+      }),
     })
 
+    const data = await res.json().catch(() => ({}))
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      setMessage(data.error ?? "Failed to update stock")
+      setMessage(data.error ?? "Failed to update product")
       return
     }
 
-    setMessage("Stock updated")
+    setMessage("Product updated")
     await loadProducts()
   }
 
-  const deactivateProduct = async (productId: string) => {
+  const setProductActive = async (productId: string, isActive: boolean) => {
     const res = await fetch(`/api/products/${productId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ isActive }),
+    })
+
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      setMessage(data.error ?? "Failed to update status")
+      return
+    }
+
+    setMessage(isActive ? "Product activated" : "Product deactivated")
+    await loadProducts()
+  }
+
+  const hardDeleteProduct = async (productId: string) => {
+    const confirmed = window.confirm("Delete this product permanently? It will fail if linked to orders.")
+    if (!confirmed) return
+
+    const res = await fetch(`/api/products/${productId}?hard=true`, {
       method: "DELETE",
       credentials: "include",
     })
 
+    const data = await res.json().catch(() => ({}))
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      setMessage(data.error ?? "Failed to deactivate product")
+      setMessage(data.error ?? "Failed to delete product")
       return
     }
 
-    setMessage("Product deactivated")
+    setMessage("Product deleted")
     await loadProducts()
-  }
-
-  const exportCustomers = async () => {
-    const res = await fetch("/api/admin/export/customers", { credentials: "include" })
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      setMessage(data.error ?? "Export failed")
-      return
-    }
-
-    const blob = await res.blob()
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `customers-${new Date().toISOString().slice(0, 10)}.xlsx`
-    a.click()
-    URL.revokeObjectURL(url)
-    setMessage("Customers exported")
   }
 
   if (!user || user.role !== "ADMIN") {
@@ -138,7 +235,23 @@ export default function AdminPage() {
       <h1 className="text-3xl font-bold">Admin Panel</h1>
       <div className="space-y-3 rounded-xl border p-5">
         <h2 className="font-semibold">Customers</h2>
-        <Button onClick={exportCustomers}>Export customers to Excel</Button>
+        <Button onClick={async () => {
+          const res = await fetch("/api/admin/export/customers", { credentials: "include" })
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}))
+            setMessage(data.error ?? "Export failed")
+            return
+          }
+
+          const blob = await res.blob()
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement("a")
+          a.href = url
+          a.download = `customers-${new Date().toISOString().slice(0, 10)}.xlsx`
+          a.click()
+          URL.revokeObjectURL(url)
+          setMessage("Customers exported")
+        }}>Export customers to Excel</Button>
       </div>
 
       <div className="space-y-3 rounded-xl border p-5">
@@ -146,37 +259,60 @@ export default function AdminPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Input placeholder="SKU" value={form.sku} onChange={(e) => setForm((p) => ({ ...p, sku: e.target.value }))} />
           <Input placeholder="Name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
+          <Input placeholder="Description" value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
+          <Input placeholder="Image URL (/uploads/... or https://...)" value={form.imageUrl} onChange={(e) => setForm((p) => ({ ...p, imageUrl: e.target.value }))} />
+          <Input placeholder="Currency (USD)" value={form.currency} onChange={(e) => setForm((p) => ({ ...p, currency: e.target.value.toUpperCase() }))} />
           <Input type="number" placeholder="Price cents" value={form.priceCents} onChange={(e) => setForm((p) => ({ ...p, priceCents: Number(e.target.value) }))} />
           <Input type="number" placeholder="Stock" value={form.stock} onChange={(e) => setForm((p) => ({ ...p, stock: Number(e.target.value) }))} />
           <Input placeholder="Sizes: 40,41,42" value={form.sizes} onChange={(e) => setForm((p) => ({ ...p, sizes: e.target.value }))} />
           <Input placeholder="Colors: Black,White" value={form.colors} onChange={(e) => setForm((p) => ({ ...p, colors: e.target.value }))} />
+          <Input type="file" accept="image/*" onChange={uploadImage} disabled={uploading} />
         </div>
-        <Button onClick={createProduct}>Create product</Button>
+        {form.imageUrl ? (
+          <div className="rounded-md border p-2 inline-block">
+            <img src={form.imageUrl} alt="New product preview" className="rounded object-cover h-[120px] w-[120px]" />
+          </div>
+        ) : null}
+        <Button onClick={createProduct} disabled={uploading}>{uploading ? "Uploading image..." : "Create product"}</Button>
       </div>
 
       <div className="rounded-xl border p-5">
         <h2 className="font-semibold mb-3">Products</h2>
-        <div className="space-y-3">
-          {products.map((product) => (
-            <div key={product.id} className="text-sm border rounded p-3 space-y-2">
-              <div>
-                {product.sku} · {product.name} · ${(product.priceCents / 100).toFixed(2)} · sizes [{product.sizes.join(", ")}] · colors [{product.colors.join(", ")}] {product.isActive ? "" : "(inactive)"}
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <Input
-                  className="w-36"
-                  type="number"
-                  min={0}
-                  value={stockDrafts[product.id] ?? String(product.stock)}
-                  onChange={(e) => setStockDrafts((prev) => ({ ...prev, [product.id]: e.target.value }))}
-                />
-                <Button size="sm" onClick={() => updateStock(product.id)}>Update stock</Button>
-                {product.isActive ? (
-                  <Button size="sm" variant="outline" onClick={() => deactivateProduct(product.id)}>Deactivate</Button>
+        <div className="space-y-4">
+          {products.map((product) => {
+            const draft = productDrafts[product.id]
+            if (!draft) return null
+
+            return (
+              <div key={product.id} className="text-sm border rounded p-3 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <Input value={draft.sku} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], sku: e.target.value } }))} />
+                  <Input value={draft.name} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], name: e.target.value } }))} />
+                  <Input value={draft.description} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], description: e.target.value } }))} placeholder="Description" />
+                  <Input value={draft.imageUrl} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], imageUrl: e.target.value } }))} placeholder="Image URL" />
+                  <Input type="number" min={0} value={draft.priceCents} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], priceCents: Number(e.target.value) } }))} />
+                  <Input type="number" min={0} value={draft.stock} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], stock: Number(e.target.value) } }))} />
+                  <Input value={draft.sizes} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], sizes: e.target.value } }))} placeholder="Sizes: 40,41,42" />
+                  <Input value={draft.colors} onChange={(e) => setProductDrafts((prev) => ({ ...prev, [product.id]: { ...prev[product.id], colors: e.target.value } }))} placeholder="Colors: Black,White" />
+                </div>
+                {draft.imageUrl ? (
+                  <div className="rounded-md border p-2 inline-block">
+                    <img src={draft.imageUrl} alt={draft.name} className="rounded object-cover h-[100px] w-[100px]" />
+                  </div>
                 ) : null}
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button size="sm" onClick={() => updateProduct(product.id)}>Save changes</Button>
+                  {product.isActive ? (
+                    <Button size="sm" variant="outline" onClick={() => setProductActive(product.id, false)}>Deactivate</Button>
+                  ) : (
+                    <Button size="sm" variant="outline" onClick={() => setProductActive(product.id, true)}>Activate</Button>
+                  )}
+                  <Button size="sm" variant="destructive" onClick={() => hardDeleteProduct(product.id)}>Delete permanently</Button>
+                  {!product.isActive ? <span className="text-xs text-muted-foreground">inactive</span> : null}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 

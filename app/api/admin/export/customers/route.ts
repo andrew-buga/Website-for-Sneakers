@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/server/guards"
 import { prisma } from "@/lib/server/prisma"
 
 export async function GET(request: NextRequest) {
-  const admin = requireAdmin(request)
+  const admin = await requireAdmin(request)
   if ("error" in admin) {
     return admin.error
   }

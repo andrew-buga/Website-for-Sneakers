@@ -10,7 +10,9 @@ const createProductSchema = z.object({
   description: z.string().optional(),
   priceCents: z.number().int().nonnegative(),
   currency: z.string().length(3).optional(),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.string().min(1).refine((value) => value.startsWith("/") || /^https?:\/\//.test(value), {
+    message: "Image URL must be a local path (/uploads/...) or a valid http(s) URL",
+  }).optional(),
   stock: z.number().int().nonnegative().optional(),
   sizes: z.array(z.string().min(1)).optional(),
   colors: z.array(z.string().min(1)).optional(),
@@ -30,7 +32,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const admin = requireAdmin(request)
+  const admin = await requireAdmin(request)
   if ("error" in admin) return admin.error
 
   try {

@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, use } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { useCart } from "@/lib/cart-context"
 import { useWishlist } from "@/lib/wishlist-context"
@@ -11,16 +10,11 @@ import ProductGallery from "@/components/product-gallery"
 import ProductReviews from "@/components/product-reviews"
 import { ArrowLeft, Heart, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-const allProducts = [
-  { id: 1, image: "/images/product-1.jpg", images: ["/images/product-1.jpg"], name: "Nike Air Max Plus III", price: "$180", collection: "summer", description: "Experience maximum comfort with the Nike Air Max Plus III. Built with responsive cushioning.", sizes: ["6", "7", "8", "9", "10", "11", "12", "13"], colors: [{ name: "Black", hex: "#1a1a1a" }, { name: "White", hex: "#ffffff" }, { name: "Navy", hex: "#001f3f" }], inStock: true },
-  { id: 2, image: "/images/product-2.jpg", images: ["/images/product-2.jpg"], name: "Nike Air Max Plus III", price: "$180", collection: "summer", description: "Classic design meets modern comfort.", sizes: ["6", "7", "8", "9", "10", "11", "12", "13"], colors: [{ name: "Black", hex: "#1a1a1a" }, { name: "White", hex: "#ffffff" }, { name: "Navy", hex: "#001f3f" }], inStock: true },
-  { id: 3, image: "/images/product-3.jpg", images: ["/images/product-3.jpg"], name: "Nike Air Max Plus III", price: "$180", collection: "summer", description: "Premium construction and superior comfort.", sizes: ["6", "7", "8", "9", "10", "11", "12", "13"], colors: [{ name: "Black", hex: "#1a1a1a" }, { name: "White", hex: "#ffffff" }, { name: "Navy", hex: "#001f3f" }], inStock: false },
-]
+import { formatPrice, getProductById } from "@/lib/catalog"
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
-  const product = allProducts.find(p => p.id === parseInt(id))
+  const product = getProductById(parseInt(id, 10))
   const { addItem } = useCart()
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
 
@@ -36,7 +30,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   const handleAddToCart = () => {
     if (!selectedSize) return alert("Please select a size")
-    addItem({ id: product.id, name: product.name, price: product.price, image: product.image, quantity, size: selectedSize, color: selectedColor })
+    addItem({ id: product.id, name: product.name, price: formatPrice(product.price), image: product.image, quantity, size: selectedSize, color: selectedColor })
     setIsAdded(true)
     setTimeout(() => setIsAdded(false), 2000)
   }
@@ -72,7 +66,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           <p className="text-lg text-foreground">{product.description}</p>
 
           <div className="flex items-center justify-between">
-            <div className="text-3xl font-bold text-primary">{product.price}</div>
+            <div className="text-3xl font-bold text-primary">{formatPrice(product.price)}</div>
             <span className={"text-sm font-semibold px-3 py-1 rounded-full " + (product.inStock ? "bg-green-500/20 text-green-600" : "bg-red-500/20 text-red-600")}>
               {product.inStock ? "In Stock" : "Out of Stock"}
             </span>
@@ -99,7 +93,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           <div>
             <label className="text-sm font-semibold text-foreground block mb-3">Quantity</label>
             <div className="flex items-center gap-3">
-              <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-4 py-2 border border-border rounded-lg hover:bg-secondary transition-colors">−</button>
+              <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-4 py-2 border border-border rounded-lg hover:bg-secondary transition-colors">-</button>
               <span className="text-lg font-semibold min-w-[2rem] text-center">{quantity}</span>
               <button onClick={() => setQuantity(quantity + 1)} className="px-4 py-2 border border-border rounded-lg hover:bg-secondary transition-colors">+</button>
             </div>
@@ -117,7 +111,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </section>
 
-      <ProductReviews />
+      <ProductReviews productId={product.id.toString()} />
 
       <Footer />
     </main>

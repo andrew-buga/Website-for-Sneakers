@@ -4,35 +4,10 @@ import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-
-const products = [
-  {
-    id: 1,
-    image: "/images/product-1.jpg",
-    name: "Nike Air Max Plus III",
-    colorShown: "Black/Black/Wolf Grey",
-    style: "CJ9684-002",
-    country: "Vietnam",
-  },
-  {
-    id: 2,
-    image: "/images/product-2.jpg",
-    name: "Nike Air Max Plus III",
-    colorShown: "Black/Black/Wolf Grey",
-    style: "CJ9684-002",
-    country: "Vietnam",
-  },
-  {
-    id: 3,
-    image: "/images/product-3.jpg",
-    name: "Nike Air Max Plus III",
-    colorShown: "Black/Black/Wolf Grey",
-    style: "CJ9684-002",
-    country: "Vietnam",
-  },
-]
+import { catalogProducts } from "@/lib/catalog"
 
 export default function ProductShowcase() {
+  const products = catalogProducts.slice(0, 3)
   const [active, setActive] = useState(0)
 
   const goNext = () => setActive((prev) => (prev + 1) % products.length)

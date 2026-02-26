@@ -247,6 +247,22 @@ export default function AdminPage() {
     await loadProducts()
   }
 
+  const seedDemoProducts = async () => {
+    const res = await fetch("/api/admin/seed-products", {
+      method: "POST",
+      credentials: "include",
+    })
+
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      setMessage(data.error ?? "Failed to seed demo products")
+      return
+    }
+
+    setMessage(`Seeded ${data.seeded} products. Total in DB: ${data.totalProducts}`)
+    await loadProducts()
+  }
+
   if (!user || user.role !== "ADMIN") {
     return <main className="max-w-5xl mx-auto px-6 py-10">Admin access only.</main>
   }
@@ -256,6 +272,7 @@ export default function AdminPage() {
       <h1 className="text-3xl font-bold">Admin Panel</h1>
       <div className="space-y-3 rounded-xl border p-5">
         <h2 className="font-semibold">Customers</h2>
+        <div className="flex flex-wrap gap-2">
         <Button onClick={async () => {
           const res = await fetch("/api/admin/export/customers", { credentials: "include" })
           if (!res.ok) {
@@ -273,6 +290,8 @@ export default function AdminPage() {
           URL.revokeObjectURL(url)
           setMessage("Customers exported")
         }}>Export customers to Excel</Button>
+        <Button variant="outline" onClick={seedDemoProducts}>Seed demo products</Button>
+        </div>
       </div>
 
       <div className="space-y-3 rounded-xl border p-5">

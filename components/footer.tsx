@@ -87,7 +87,7 @@ export default function Footer() {
             Thanks for watching. Crafted with care.
           </p>
           <p className="text-xs text-muted-foreground">
-            {("(c) 2026 Nike. All rights reserved.")}
+            (c) 2026 Nike. All rights reserved.
           </p>
         </div>
       </div>

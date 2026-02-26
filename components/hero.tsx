@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 export default function Hero() {
@@ -37,19 +38,19 @@ export default function Hero() {
           </div>
 
           <div className="flex items-center gap-4 mt-4">
-            <a
-              href="#"
+            <Link
+              href="/trends"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3 rounded-full text-sm font-semibold transition-all hover:opacity-90"
             >
               Buy now
               <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href="/collections"
               className="inline-flex items-center gap-2 border border-border text-foreground px-7 py-3 rounded-full text-sm font-semibold transition-all hover:bg-secondary"
             >
               Explore
-            </a>
+            </Link>
           </div>
         </div>
 

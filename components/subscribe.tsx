@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { Phone, Mail, Send } from "lucide-react"
 
 export default function Subscribe() {
@@ -52,7 +53,9 @@ export default function Subscribe() {
             {/* Social icons */}
             <div className="flex items-center gap-4 mt-2">
               <a
-                href="#"
+                href="https://www.facebook.com/nike"
+                target="_blank"
+                rel="noreferrer"
                 aria-label="Facebook"
                 className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
               >
@@ -61,7 +64,9 @@ export default function Subscribe() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://x.com/nike"
+                target="_blank"
+                rel="noreferrer"
                 aria-label="Twitter"
                 className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
               >
@@ -70,7 +75,9 @@ export default function Subscribe() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/nike/"
+                target="_blank"
+                rel="noreferrer"
                 aria-label="Instagram"
                 className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
               >
@@ -79,7 +86,9 @@ export default function Subscribe() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://www.youtube.com/@nike"
+                target="_blank"
+                rel="noreferrer"
                 aria-label="YouTube"
                 className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
               >
@@ -87,6 +96,13 @@ export default function Subscribe() {
                   <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                 </svg>
               </a>
+              <Link
+                href="/contact"
+                aria-label="Contact page"
+                className="text-sm text-primary hover:underline ml-2"
+              >
+                Contact us
+              </Link>
             </div>
           </div>
         </div>

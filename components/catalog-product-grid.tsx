@@ -11,7 +11,11 @@ export default function CatalogProductGrid({ products }: { products: CatalogProd
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
       {products.map((product) => (
-        <Link key={product.id} href={`/product/${product.id}`} className="group relative rounded-2xl overflow-hidden bg-card border border-border">
+        <Link
+          key={product.id}
+          href={`/product/${product.id}`}
+          className="group relative rounded-2xl overflow-hidden bg-card border border-border transition-all duration-500 hover:-translate-y-1 hover:ring-2 hover:ring-primary/80 hover:shadow-[0_0_40px_rgba(255,115,0,0.35)]"
+        >
           <div className="relative aspect-square overflow-hidden bg-secondary">
             <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-95 transition-transform duration-500" />
           </div>

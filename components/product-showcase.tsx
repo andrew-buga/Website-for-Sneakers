@@ -8,7 +8,7 @@ import { catalogProducts } from "@/lib/catalog"
 
 export default function ProductShowcase() {
   const products = catalogProducts.slice(0, 3)
-  const [active, setActive] = useState(0)
+  const [active, setActive] = useState(-1)
 
   const goNext = () => setActive((prev) => (prev + 1) % products.length)
   const goPrev = () => setActive((prev) => (prev - 1 + products.length) % products.length)
@@ -52,7 +52,7 @@ export default function ProductShowcase() {
             <Link
               key={product.id}
               href={`/product/${product.id}`}
-              className={`group relative rounded-2xl overflow-hidden bg-card border border-border transition-all duration-500 ${
+              className={`group relative rounded-2xl overflow-hidden bg-card border border-border transition-all duration-500 hover:-translate-y-1 hover:ring-2 hover:ring-primary/80 hover:shadow-[0_0_40px_rgba(255,115,0,0.35)] ${
                 index === active ? "ring-2 ring-primary" : ""
               }`}
             >

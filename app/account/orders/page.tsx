@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
@@ -23,34 +23,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<ApiOrder[]>([])
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-<<<<<<< ours
   const [error, setError] = useState("")
-=======
->>>>>>> theirs
-
-  useEffect(() => {
-    if (!isAuthenticated || !user) {
-      router.push("/account/login")
-      return
-    }
-
-    const load = async () => {
-      const response = await fetch(`/api/orders?page=${page}&pageSize=10`, { credentials: "include" })
-<<<<<<< ours
-      if (!response.ok) {
-        setError("Failed to load orders. Please try again.")
-        return
-      }
-      const body = await response.json()
-      setOrders(body.orders ?? [])
-      setTotalPages(body.pagination?.totalPages ?? 1)
-      setError("")
-=======
-      if (!response.ok) return
-      const body = await response.json()
-      setOrders(body.orders ?? [])
-      setTotalPages(body.pagination?.totalPages ?? 1)
->>>>>>> theirs
     }
 
     void load()
@@ -86,7 +59,7 @@ export default function OrdersPage() {
                 <span className="font-semibold">Order #{order.id.slice(-8).toUpperCase()}</span>
                 <span>{new Date(order.createdAt).toLocaleDateString()}</span>
               </div>
-              <div className="mt-2 text-sm text-muted-foreground">Status: {order.status} · Total: ${(order.totalCents / 100).toFixed(2)}</div>
+              <div className="mt-2 text-sm text-muted-foreground">Status: {order.status} В· Total: ${(order.totalCents / 100).toFixed(2)}</div>
             </Link>
           ))}
         </div>

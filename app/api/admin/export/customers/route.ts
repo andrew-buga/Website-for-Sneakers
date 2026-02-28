@@ -1,15 +1,11 @@
-import ExcelJS from "exceljs"
+﻿import ExcelJS from "exceljs"
 import { NextRequest, NextResponse } from "next/server"
 
 import { requireAdmin } from "@/lib/server/guards"
 import { prisma } from "@/lib/server/prisma"
 
 export async function GET(request: NextRequest) {
-<<<<<<< ours
   const admin = await requireAdmin(request)
-=======
-  const admin = requireAdmin(request)
->>>>>>> theirs
   if ("error" in admin) {
     return admin.error
   }

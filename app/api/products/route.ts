@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+﻿import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 
 import { requireAdmin } from "@/lib/server/guards"
@@ -8,7 +8,6 @@ const createProductSchema = z.object({
   sku: z.string().min(1),
   name: z.string().min(1),
   description: z.string().optional(),
-<<<<<<< ours
   category: z.enum(["men", "women"]).optional(),
   collection: z.enum(["summer", "winter", "autumn"]).optional(),
   isTrending: z.boolean().optional(),
@@ -17,11 +16,6 @@ const createProductSchema = z.object({
   imageUrl: z.string().min(1).refine((value) => value.startsWith("/") || /^https?:\/\//.test(value), {
     message: "Image URL must be a local path (/uploads/...) or a valid http(s) URL",
   }).optional(),
-=======
-  priceCents: z.number().int().nonnegative(),
-  currency: z.string().length(3).optional(),
-  imageUrl: z.string().url().optional(),
->>>>>>> theirs
   stock: z.number().int().nonnegative().optional(),
   sizes: z.array(z.string().min(1)).optional(),
   colors: z.array(z.string().min(1)).optional(),
@@ -31,7 +25,6 @@ const createProductSchema = z.object({
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const includeInactive = searchParams.get("includeInactive") === "true"
-<<<<<<< ours
   const category = searchParams.get("category")
   const collection = searchParams.get("collection")
   const trending = searchParams.get("trending")
@@ -46,23 +39,13 @@ export async function GET(request: NextRequest) {
     },
     orderBy: { createdAt: "desc" },
     ...(limit > 0 ? { take: limit } : {}),
-=======
-
-  const products = await prisma.product.findMany({
-    where: includeInactive ? undefined : { isActive: true },
-    orderBy: { createdAt: "desc" },
->>>>>>> theirs
   })
 
   return NextResponse.json({ products })
 }
 
 export async function POST(request: NextRequest) {
-<<<<<<< ours
   const admin = await requireAdmin(request)
-=======
-  const admin = requireAdmin(request)
->>>>>>> theirs
   if ("error" in admin) return admin.error
 
   try {

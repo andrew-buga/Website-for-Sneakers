@@ -23,7 +23,10 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<ApiOrder[]>([])
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+<<<<<<< ours
   const [error, setError] = useState("")
+=======
+>>>>>>> theirs
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
@@ -33,6 +36,7 @@ export default function OrdersPage() {
 
     const load = async () => {
       const response = await fetch(`/api/orders?page=${page}&pageSize=10`, { credentials: "include" })
+<<<<<<< ours
       if (!response.ok) {
         setError("Failed to load orders. Please try again.")
         return
@@ -41,6 +45,12 @@ export default function OrdersPage() {
       setOrders(body.orders ?? [])
       setTotalPages(body.pagination?.totalPages ?? 1)
       setError("")
+=======
+      if (!response.ok) return
+      const body = await response.json()
+      setOrders(body.orders ?? [])
+      setTotalPages(body.pagination?.totalPages ?? 1)
+>>>>>>> theirs
     }
 
     void load()
@@ -58,6 +68,7 @@ export default function OrdersPage() {
 
         <h1 className="font-display text-4xl font-bold text-foreground mb-6">My Orders</h1>
 
+<<<<<<< ours
         {error ? <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">{error}</div> : null}
 
         {orders.length === 0 ? (
@@ -66,6 +77,8 @@ export default function OrdersPage() {
           </div>
         ) : null}
 
+=======
+>>>>>>> theirs
         <div className="space-y-4">
           {orders.map((order) => (
             <Link key={order.id} href={`/account/orders/${order.id}`} className="block rounded-xl border p-4 hover:bg-muted/40 transition-colors">

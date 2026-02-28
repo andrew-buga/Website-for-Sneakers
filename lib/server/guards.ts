@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 
 import { authCookieName, verifyAuthToken } from "@/lib/server/auth"
+<<<<<<< ours
 import { prisma } from "@/lib/server/prisma"
+=======
+>>>>>>> theirs
 
 export function requireAuth(request: NextRequest) {
   const token = request.cookies.get(authCookieName)?.value
@@ -13,6 +16,7 @@ export function requireAuth(request: NextRequest) {
   return { payload }
 }
 
+<<<<<<< ours
 export async function requireAdmin(request: NextRequest) {
   const auth = requireAuth(request)
   if ("error" in auth) return auth
@@ -23,6 +27,13 @@ export async function requireAdmin(request: NextRequest) {
   })
 
   if (!user || user.role !== "ADMIN") {
+=======
+export function requireAdmin(request: NextRequest) {
+  const auth = requireAuth(request)
+  if ("error" in auth) return auth
+
+  if (auth.payload.role !== "ADMIN") {
+>>>>>>> theirs
     return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
   }
 

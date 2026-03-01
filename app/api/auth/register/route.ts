@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server"
+﻿import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 
 import { hashPassword, isStrongPassword, signAuthToken, authCookieName } from "@/lib/server/auth"
+import { checkRateLimit } from "@/lib/server/rate-limit"
 import { prisma } from "@/lib/server/prisma"
 
 const registerSchema = z.object({
@@ -10,8 +11,15 @@ const registerSchema = z.object({
   password: z.string().min(8),
 })
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
+    const limit = checkRateLimit(`register:${ip}`, 5, 60 * 60 * 1000)
+
+    if (!limit.allowed) {
+      return NextResponse.json({ error: "Too many registration attempts. Please try again later." }, { status: 429 })
+    }
+
     const payload = registerSchema.parse(await request.json())
 
     if (!isStrongPassword(payload.password)) {

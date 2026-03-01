@@ -29,6 +29,7 @@ export async function GET(request: NextRequest) {
   const collection = searchParams.get("collection")
   const trending = searchParams.get("trending")
   const limit = Number(searchParams.get("limit") ?? "0")
+  const search = searchParams.get("search")
 
   const products = await prisma.product.findMany({
     where: {
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest) {
       ...(category ? { category } : {}),
       ...(collection ? { collection } : {}),
       ...(trending === "true" ? { isTrending: true } : {}),
+      ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
     },
     orderBy: { createdAt: "desc" },
     ...(limit > 0 ? { take: limit } : {}),

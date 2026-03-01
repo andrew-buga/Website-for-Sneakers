@@ -16,7 +16,7 @@ export function requireAuth(request: NextRequest) {
 export async function requireAdmin(request: NextRequest) {
   const auth = requireAuth(request)
   if ("error" in auth) return auth
-
+  
   const user = await prisma.user.findUnique({
     where: { id: auth.payload.sub },
     select: { role: true },

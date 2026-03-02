@@ -27,17 +27,15 @@ model User {
   passwordHash  String
   phone         String?
   emailVerified Boolean  @default(false)
+  emailVerifyToken String?
   role          UserRole @default(CUSTOMER)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   addresses Address[]
   orders    Order[]
-<<<<<<< ours
   reviews   ProductReview[]
   reviewLikes ReviewLike[]
-=======
->>>>>>> theirs
 }
 
 model Address {
@@ -66,12 +64,9 @@ model Product {
   sku         String   @unique
   name        String
   description String?
-<<<<<<< ours
   category    String   @default("men")
   collection  String   @default("summer")
   isTrending  Boolean  @default(false)
-=======
->>>>>>> theirs
   priceCents  Int
   currency    String   @default("USD")
   imageUrl    String?
@@ -123,7 +118,6 @@ model OrderItem {
   @@index([orderId])
   @@index([productId])
 }
-<<<<<<< ours
 
 model ProductReview {
   id         String   @id @default(cuid())
@@ -152,5 +146,3 @@ model ReviewLike {
   @@id([reviewId, userId])
   @@index([userId])
 }
-=======
->>>>>>> theirs

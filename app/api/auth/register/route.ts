@@ -1,9 +1,11 @@
-﻿import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
+import { randomBytes } from "crypto"
 
 import { hashPassword, isStrongPassword, signAuthToken, authCookieName } from "@/lib/server/auth"
 import { checkRateLimit } from "@/lib/server/rate-limit"
 import { prisma } from "@/lib/server/prisma"
+import { sendVerificationEmail } from "@/lib/server/email"
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -35,12 +37,14 @@ export async function POST(request: NextRequest) {
     }
 
     const passwordHash = await hashPassword(payload.password)
+    const emailVerifyToken = randomBytes(32).toString("hex")
 
     const user = await prisma.user.create({
       data: {
         email: payload.email,
         name: payload.name,
         passwordHash,
+        emailVerifyToken,
       },
       select: {
         id: true,
@@ -52,6 +56,8 @@ export async function POST(request: NextRequest) {
         role: true,
       },
     })
+
+    await sendVerificationEmail(payload.email, payload.name, emailVerifyToken)
 
     const token = signAuthToken({ sub: user.id, email: user.email, role: user.role })
 

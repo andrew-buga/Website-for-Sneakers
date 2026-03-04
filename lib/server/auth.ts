@@ -1,5 +1,6 @@
 import { UserRole } from "@prisma/client"
 import bcrypt from "bcryptjs"
+import { createHash } from "crypto"
 import jwt from "jsonwebtoken"
 
 const JWT_EXPIRES_IN = "7d"
@@ -50,4 +51,8 @@ export function isStrongPassword(password: string) {
   const hasSpecial = /[^A-Za-z0-9]/.test(password)
 
   return password.length >= 8 && hasUppercase && hasLowercase && hasDigit && hasSpecial
+}
+
+export function hashToken(token: string) {
+  return createHash("sha256").update(token).digest("hex")
 }

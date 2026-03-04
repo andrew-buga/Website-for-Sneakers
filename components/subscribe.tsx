@@ -15,7 +15,7 @@ export default function Subscribe() {
               Stay Connected
             </span>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-foreground mt-2">
-              Subscribe to us
+              Join Our Updates
             </h2>
             <p className="text-muted-foreground mt-4 max-w-md leading-relaxed">
               Get the latest updates on new arrivals, exclusive deals, and more delivered straight to your inbox.
@@ -25,20 +25,21 @@ export default function Subscribe() {
             <div className="flex flex-col gap-3 mt-8">
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4 text-primary" />
-                <span>123 456 7890</span>
+                <span>+40 740 116 669</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
-                <span>streater@gmail.com</span>
+                <span>mykhailo.buha@student.usv.ro</span>
               </div>
             </div>
           </div>
 
           {/* Right side - subscribe form */}
-          <div className="flex flex-col gap-6">
+          <form className="flex flex-col gap-6" onSubmit={(event) => event.preventDefault()}>
             <div className="relative">
               <input
                 type="email"
+                aria-label="Email address"
                 placeholder="Enter your email"
                 className="w-full bg-secondary text-foreground placeholder:text-muted-foreground rounded-full px-6 py-4 pr-14 text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
               />
@@ -106,7 +107,7 @@ export default function Subscribe() {
                 Contact us
               </Link>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </section>

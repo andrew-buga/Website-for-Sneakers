@@ -8,8 +8,11 @@ instrumentation-client.ts
 # Common ignores
 node_modules/
 .next/
+package-lock.json
+.env
 .env*.local
 .DS_Store
 
 # Temporary files
-tmpclaude-*.cwd
+tmpclaude-*
+h --forcegit*

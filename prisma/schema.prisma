@@ -28,6 +28,8 @@ model User {
   phone         String?
   emailVerified Boolean  @default(false)
   emailVerifyToken String?
+  passwordResetTokenHash String?
+  passwordResetTokenExpiresAt DateTime?
   role          UserRole @default(CUSTOMER)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

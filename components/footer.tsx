@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export default function Footer() {
   return (
-    <footer className="bg-background border-t border-border py-16" suppressHydrationWarning>
+    <footer className="bg-background border-t border-border py-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
@@ -31,12 +31,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/terms-conditions" className="hover:text-foreground transition-colors">
-                  Terms & Condition
+                  Terms & Conditions
                 </Link>
               </li>
               <li>
                 <Link href="/store-locator" className="hover:text-foreground transition-colors">
-                  Address store
+                  Store Locator
                 </Link>
               </li>
             </ul>
@@ -84,10 +84,10 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            Thanks for watching. Crafted with care.
+            Built for performance, comfort, and everyday style.
           </p>
           <p className="text-xs text-muted-foreground">
-            (c) 2026 Nike. All rights reserved.
+            © 2026 Nike. All rights reserved.
           </p>
         </div>
       </div>

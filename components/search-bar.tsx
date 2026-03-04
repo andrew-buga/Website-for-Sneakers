@@ -39,7 +39,7 @@ export default function SearchBar() {
       </button>
 
       {isOpen && (
-        <div className="absolute inset-x-0 top-full mt-4 w-96 bg-card border border-border rounded-2xl shadow-2xl z-50">
+        <div className="absolute right-0 top-full mt-4 w-[min(24rem,calc(100vw-2rem))] bg-card border border-border rounded-2xl shadow-2xl z-50">
           <div className="relative p-4 border-b border-border">
             <input
               type="text"

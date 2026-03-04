@@ -29,7 +29,7 @@ export default function Hero() {
             <span className="text-primary">Sneakers</span>
           </h1>
 
-          <div className="mt-2">
+          <div className="mt-2 space-y-1">
             <p className="text-lg text-muted-foreground font-medium">
               {"Nike Impossible'20"}
             </p>
@@ -38,15 +38,15 @@ export default function Hero() {
             </p>
           </div>
 
-          <div className="flex items-center gap-4 mt-4">
+          <div className="flex flex-wrap items-center gap-4 mt-4">
             <Button asChild size="lg" className="rounded-full">
               <Link href="/trends">
-                Buy now
+                Shop now
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="rounded-full">
-              <Link href="/collections">Explore</Link>
+              <Link href="/collections">Explore collections</Link>
             </Button>
           </div>
         </div>
@@ -59,7 +59,7 @@ export default function Hero() {
             alt="Featured Nike sneaker"
             width={700}
             height={500}
-            className="relative z-10 w-full max-w-lg lg:max-w-xl object-contain drop-shadow-2xl hover:scale-95 transition-transform duration-500 cursor-pointer"
+            className="relative z-10 w-full max-w-lg lg:max-w-xl object-contain drop-shadow-2xl hover:scale-95 transition-transform duration-500 cursor-pointer motion-safe:animate-[float_6s_ease-in-out_infinite]"
             priority
           />
         </div>

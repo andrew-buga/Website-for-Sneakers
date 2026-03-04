@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
@@ -16,10 +16,13 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  if (isAuthenticated) {
-    router.push("/account/profile")
-    return null
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace("/account/profile")
+    }
+  }, [isAuthenticated, router])
+
+  if (isAuthenticated) return null
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target

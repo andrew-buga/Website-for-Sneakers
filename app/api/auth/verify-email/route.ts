@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token")
 
   if (!token) {
-    return NextResponse.redirect(new URL("/auth/login?error=invalid-token", request.url))
+    return NextResponse.redirect(new URL("/account/login?error=invalid-token", request.url))
   }
 
   const user = await prisma.user.findFirst({
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   })
 
   if (!user) {
-    return NextResponse.redirect(new URL("/auth/login?error=invalid-token", request.url))
+    return NextResponse.redirect(new URL("/account/login?error=invalid-token", request.url))
   }
 
   await prisma.user.update({
@@ -24,5 +24,5 @@ export async function GET(request: NextRequest) {
     },
   })
 
-  return NextResponse.redirect(new URL("/auth/login?verified=true", request.url))
+  return NextResponse.redirect(new URL("/account/login?verified=true", request.url))
 }

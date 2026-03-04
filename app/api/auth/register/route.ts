@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     const payload = registerSchema.parse(await request.json())
+    const email = payload.email.trim().toLowerCase()
 
     if (!isStrongPassword(payload.password)) {
       return NextResponse.json(
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const existing = await prisma.user.findUnique({ where: { email: payload.email } })
+    const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 })
     }
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     const user = await prisma.user.create({
       data: {
-        email: payload.email,
+        email,
         name: payload.name,
         passwordHash,
         emailVerifyToken,
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    await sendVerificationEmail(payload.email, payload.name, emailVerifyToken)
+    await sendVerificationEmail(email, payload.name, emailVerifyToken)
 
     const token = signAuthToken({ sub: user.id, email: user.email, role: user.role })
 

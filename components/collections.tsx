@@ -32,6 +32,9 @@ export default function Collections() {
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-foreground mt-2">
             Collections
           </h2>
+          <p className="text-muted-foreground mt-3 max-w-2xl">
+            Explore curated edits built for changing conditions and everyday comfort.
+          </p>
         </div>
 
         {/* Collection cards */}
@@ -49,7 +52,7 @@ export default function Collections() {
                 className="object-cover group-hover:scale-95 transition-transform duration-700"
               />
               {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/35 to-transparent" />
 
               {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
@@ -37,33 +37,62 @@ export default function OrderDetailsPage() {
   const { user, isAuthenticated } = useAuth()
   const router = useRouter()
   const params = useParams<{ orderId: string }>()
+
   const [order, setOrder] = useState<OrderDetails | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
-      router.push("/account/login")
+      router.replace("/account/login")
       return
     }
 
     const load = async () => {
+      setIsLoading(true)
       const response = await fetch(`/api/orders/${params.orderId}`, { credentials: "include" })
-      if (!response.ok) return
+      if (!response.ok) {
+        setOrder(null)
+        setIsLoading(false)
+        return
+      }
+
       const body = await response.json()
-      setOrder(body.order)
+      setOrder(body.order ?? null)
+      setIsLoading(false)
     }
 
     void load()
   }, [isAuthenticated, params.orderId, router, user])
 
+  if (!isAuthenticated || !user) return null
+
+  if (isLoading) {
+    return (
+      <main>
+        <Navbar />
+        <div className="max-w-5xl mx-auto px-6 py-10 min-h-screen">Loading order...</div>
+        <Footer />
+      </main>
+    )
+  }
+
   if (!order) {
-    return <main><Navbar /><div className="max-w-5xl mx-auto px-6 py-10">Loading order...</div><Footer /></main>
+    return (
+      <main>
+        <Navbar />
+        <div className="max-w-5xl mx-auto px-6 py-10 min-h-screen">Order not found.</div>
+        <Footer />
+      </main>
+    )
   }
 
   return (
     <main>
       <Navbar />
       <div className="max-w-5xl mx-auto px-6 py-10 space-y-6 min-h-screen">
-        <Link href="/account/orders" className="text-sm underline">Back to orders</Link>
+        <Link href="/account/orders" className="text-sm underline">
+          Back to orders
+        </Link>
         <h1 className="text-3xl font-bold">Order #{order.id.slice(-8).toUpperCase()}</h1>
         <p className="text-muted-foreground">Status: {order.status} · {new Date(order.createdAt).toLocaleString()}</p>
 
@@ -71,7 +100,9 @@ export default function OrderDetailsPage() {
           <h2 className="font-semibold mb-2">Shipping address</h2>
           <p>{order.address.fullName}</p>
           <p>{order.address.line1}</p>
-          <p>{order.address.city}, {order.address.postalCode}, {order.address.country}</p>
+          <p>
+            {order.address.city}, {order.address.postalCode}, {order.address.country}
+          </p>
         </div>
 
         <div className="rounded-xl border p-4 space-y-2">
@@ -95,3 +126,4 @@ export default function OrderDetailsPage() {
     </main>
   )
 }
+

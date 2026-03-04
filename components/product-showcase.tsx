@@ -9,13 +9,19 @@ import { formatPriceCents, StoreProduct } from "@/lib/storefront-types"
 
 export default function ProductShowcase() {
   const [products, setProducts] = useState<StoreProduct[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [active, setActive] = useState(-1)
 
   useEffect(() => {
     const load = async () => {
-      const response = await fetch("/api/products?limit=3", { credentials: "include" })
-      const body = await response.json().catch(() => ({}))
-      setProducts(body.products ?? [])
+      setIsLoading(true)
+      try {
+        const response = await fetch("/api/products?limit=3", { credentials: "include" })
+        const body = await response.json().catch(() => ({}))
+        setProducts(body.products ?? [])
+      } finally {
+        setIsLoading(false)
+      }
     }
 
     void load()
@@ -33,7 +39,7 @@ export default function ProductShowcase() {
               Featured
             </span>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-foreground mt-2">
-              Explore All
+              New Drops
             </h2>
           </div>
           <div className="hidden sm:flex items-center gap-3">
@@ -56,7 +62,9 @@ export default function ProductShowcase() {
           </div>
         </div>
 
-        {products.length === 0 ? (
+        {isLoading ? (
+          <p className="text-muted-foreground">Loading featured products...</p>
+        ) : products.length === 0 ? (
           <p className="text-muted-foreground">No products available yet.</p>
         ) : (
           <>

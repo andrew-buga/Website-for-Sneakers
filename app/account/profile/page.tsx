@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth, Address } from "@/lib/auth-context"
@@ -30,10 +30,13 @@ export default function ProfilePage() {
     isDefault: false,
   })
 
-  if (!isAuthenticated || !user) {
-    router.push("/account/login")
-    return null
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace("/account/login")
+    }
+  }, [isAuthenticated, router])
+
+  if (!isAuthenticated || !user) return null
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target

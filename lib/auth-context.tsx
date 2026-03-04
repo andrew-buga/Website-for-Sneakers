@@ -215,12 +215,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await updateAddress(addressId, { isDefault: true })
   }
 
-  const requestPasswordReset = async (_email: string) => {
-    throw new Error("Password reset flow is not implemented yet")
+  const requestPasswordReset = async (email: string) => {
+    const response = await fetch("/api/auth/password-reset/request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    })
+
+    await parseApiResponse(response)
   }
 
-  const resetPassword = async (_token: string, _newPassword: string) => {
-    throw new Error("Password reset flow is not implemented yet")
+  const resetPassword = async (token: string, newPassword: string) => {
+    const response = await fetch("/api/auth/password-reset/confirm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ token, password: newPassword }),
+    })
+
+    await parseApiResponse(response)
   }
 
   const value = useMemo(

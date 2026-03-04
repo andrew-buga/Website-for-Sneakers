@@ -28,18 +28,18 @@ export default function OrdersPage() {
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
-      router.push("/login")
+      router.replace("/account/login")
       return
     }
 
     const load = async () => {
       try {
-        const res = await fetch(`/api/orders?page=${page}`)
+        const res = await fetch(`/api/orders?page=${page}`, { credentials: "include" })
         if (!res.ok) throw new Error("Failed to load orders")
 
         const data = await res.json()
         setOrders(data.orders || [])
-        setTotalPages(data.totalPages || 1)
+        setTotalPages(data.pagination?.totalPages || 1)
       } catch (err) {
         setError("Failed to load orders")
       }

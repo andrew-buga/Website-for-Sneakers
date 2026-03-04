@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, Suspense } from "react"
+import { useEffect, useState, Suspense } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
@@ -19,7 +19,23 @@ function ResetPasswordContent() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isTokenValid, setIsTokenValid] = useState<boolean | null>(null)
   const { resetPassword } = useAuth()
+
+  useEffect(() => {
+    if (!token) {
+      setIsTokenValid(false)
+      return
+    }
+
+    const validateToken = async () => {
+      const response = await fetch(`/api/auth/password-reset/validate?token=${encodeURIComponent(token)}`)
+      const body = await response.json().catch(() => ({}))
+      setIsTokenValid(Boolean(body.valid))
+    }
+
+    void validateToken()
+  }, [token])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,8 +55,17 @@ function ResetPasswordContent() {
         throw new Error("Passwords do not match")
       }
 
-      if (password.length < 6) {
-        throw new Error("Password must be at least 6 characters")
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters")
+      }
+
+      const hasUppercase = /[A-Z]/.test(password)
+      const hasLowercase = /[a-z]/.test(password)
+      const hasDigit = /\d/.test(password)
+      const hasSpecial = /[^A-Za-z0-9]/.test(password)
+
+      if (!hasUppercase || !hasLowercase || !hasDigit || !hasSpecial) {
+        throw new Error("Password must include uppercase, lowercase, number, and special character")
       }
 
       await resetPassword(token, password)
@@ -72,11 +97,25 @@ function ResetPasswordContent() {
             </Button>
           </Link>
         </>
+      ) : isTokenValid === null ? (
+        <p className="text-muted-foreground">Validating reset link...</p>
+      ) : isTokenValid === false ? (
+        <>
+          <h1 className="font-display text-4xl font-bold text-foreground mb-2">Invalid Reset Link</h1>
+          <p className="text-muted-foreground mb-8">
+            This reset link is invalid or has expired. Please request a new password reset link.
+          </p>
+          <Link href="/account/forgot-password">
+            <Button size="lg" className="w-full">
+              Request New Link
+            </Button>
+          </Link>
+        </>
       ) : (
         <>
           <h1 className="font-display text-4xl font-bold text-foreground mb-2">Reset Password</h1>
           <p className="text-muted-foreground mb-8">
-            Enter your new password below. Make sure it's at least 6 characters long and different from your old password.
+            Enter your new password below. Use at least 8 characters with uppercase, lowercase, number, and special character.
           </p>
 
           {error && (
@@ -93,7 +132,7 @@ function ResetPasswordContent() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
-                placeholder="At least 6 characters"
+                placeholder="8+ chars, upper/lower, number, special"
               />
             </div>
 

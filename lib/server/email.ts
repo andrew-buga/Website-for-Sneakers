@@ -1,9 +1,20 @@
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) return null
+  return new Resend(apiKey)
+}
+
+function getAppUrl() {
+  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
+}
 
 export async function sendVerificationEmail(email: string, name: string, token: string) {
-  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email?token=${token}`
+  const resend = getResendClient()
+  if (!resend) return
+
+  const verifyUrl = `${getAppUrl()}/api/auth/verify-email?token=${token}`
 
   await resend.emails.send({
     from: "Nike Store <onboarding@resend.dev>",
@@ -23,7 +34,10 @@ export async function sendVerificationEmail(email: string, name: string, token: 
 }
 
 export async function sendPasswordResetEmail(email: string, name: string, token: string) {
-  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/account/reset-password?token=${token}`
+  const resend = getResendClient()
+  if (!resend) return
+
+  const resetUrl = `${getAppUrl()}/account/reset-password?token=${token}`
 
   await resend.emails.send({
     from: "Nike Store <onboarding@resend.dev>",

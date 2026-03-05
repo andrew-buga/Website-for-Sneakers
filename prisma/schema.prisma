@@ -21,29 +21,23 @@ enum OrderStatus {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  name          String
-  passwordHash  String
-  phone         String?
-  emailVerified Boolean  @default(false)
-<<<<<<< ours
-  emailVerifyToken String?
-  passwordResetTokenHash String?
+  id                          String   @id @default(cuid())
+  email                       String   @unique
+  name                        String
+  passwordHash                String
+  phone                       String?
+  emailVerified               Boolean  @default(false)
+  emailVerifyToken            String?
+  passwordResetTokenHash      String?
   passwordResetTokenExpiresAt DateTime?
-=======
->>>>>>> theirs
-  role          UserRole @default(CUSTOMER)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  role                        UserRole @default(CUSTOMER)
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
 
-  addresses Address[]
-  orders    Order[]
-<<<<<<< ours
-  reviews   ProductReview[]
+  addresses   Address[]
+  orders      Order[]
+  reviews     ProductReview[]
   reviewLikes ReviewLike[]
-=======
->>>>>>> theirs
 }
 
 model Address {
@@ -72,12 +66,9 @@ model Product {
   sku         String   @unique
   name        String
   description String?
-<<<<<<< ours
   category    String   @default("men")
   collection  String   @default("summer")
   isTrending  Boolean  @default(false)
-=======
->>>>>>> theirs
   priceCents  Int
   currency    String   @default("USD")
   imageUrl    String?
@@ -129,7 +120,6 @@ model OrderItem {
   @@index([orderId])
   @@index([productId])
 }
-<<<<<<< ours
 
 model ProductReview {
   id         String   @id @default(cuid())
@@ -140,7 +130,7 @@ model ProductReview {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes ReviewLike[]
 
   @@index([productKey])
@@ -148,9 +138,9 @@ model ProductReview {
 }
 
 model ReviewLike {
-  reviewId   String
-  userId     String
-  createdAt  DateTime @default(now())
+  reviewId  String
+  userId    String
+  createdAt DateTime @default(now())
 
   review ProductReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -158,5 +148,3 @@ model ReviewLike {
   @@id([reviewId, userId])
   @@index([userId])
 }
-=======
->>>>>>> theirs

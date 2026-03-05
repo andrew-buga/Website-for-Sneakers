@@ -7,13 +7,10 @@ on:
 jobs:
   quality:
     runs-on: ubuntu-latest
-<<<<<<< ours
     env:
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci?schema=public
       JWT_SECRET: ci-jwt-secret
       NEXT_PUBLIC_APP_URL: http://localhost:3000
-=======
->>>>>>> theirs
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -26,7 +23,4 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm exec tsc --noEmit
-<<<<<<< ours
       - run: pnpm build
-=======
->>>>>>> theirs

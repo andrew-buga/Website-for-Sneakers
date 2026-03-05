@@ -14,10 +14,7 @@
 
 ## Key features
 - Secure register/login with password policy + login rate limit.
-<<<<<<< ours
 - Password reset flow with expiring reset token.
-=======
->>>>>>> theirs
 - Product inventory model with `sku`, `sizes`, `colors`, and `stock`.
 - Checkout stock checks and option validation.
 - Order lifecycle: `PENDING -> PAID -> SHIPPED -> DELIVERED` (+ `CANCELLED`).
@@ -31,8 +28,4 @@
 4. Start: `pnpm dev`
 
 ## CI
-<<<<<<< ours
 GitHub Actions runs lint + typecheck + build on push/PR.
-=======
-GitHub Actions runs lint + typecheck on push/PR.
->>>>>>> theirs

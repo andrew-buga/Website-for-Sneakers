@@ -1,5 +1,4 @@
-import { mkdir, writeFile } from "fs/promises"
-import path from "path"
+import { put } from "@vercel/blob"
 import { NextRequest, NextResponse } from "next/server"
 
 import { requireAdmin } from "@/lib/server/guards"
@@ -26,18 +25,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Image must be less than 5MB" }, { status: 400 })
     }
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
     const extension = file.name.split(".").pop()?.toLowerCase() || "jpg"
-    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`
+    const fileName = `uploads/${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads")
-    await mkdir(uploadDir, { recursive: true })
+    const blob = await put(fileName, file, {
+      access: "public",
+      addRandomSuffix: false,
+      contentType: file.type,
+    })
 
-    const fullPath = path.join(uploadDir, fileName)
-    await writeFile(fullPath, buffer)
-
-    return NextResponse.json({ imageUrl: `/uploads/${fileName}` })
+    return NextResponse.json({ imageUrl: blob.url })
   } catch {
     return NextResponse.json({ error: "Failed to upload image" }, { status: 500 })
   }

@@ -13,17 +13,27 @@ const loginSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const payload = loginSchema.parse(await request.json())
+<<<<<<< ours
     const email = payload.email.trim().toLowerCase()
 
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
     const key = `login:${ip}:${email}`
+=======
+
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
+    const key = `login:${ip}:${payload.email.toLowerCase()}`
+>>>>>>> theirs
     const limit = checkRateLimit(key, 5, 15 * 60 * 1000)
 
     if (!limit.allowed) {
       return NextResponse.json({ error: "Too many login attempts. Please try again later." }, { status: 429 })
     }
 
+<<<<<<< ours
     const user = await prisma.user.findUnique({ where: { email } })
+=======
+    const user = await prisma.user.findUnique({ where: { email: payload.email } })
+>>>>>>> theirs
     if (!user) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }

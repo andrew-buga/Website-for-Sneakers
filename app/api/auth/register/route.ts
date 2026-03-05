@@ -1,3 +1,4 @@
+<<<<<<< ours
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { randomBytes } from "crypto"
@@ -6,6 +7,13 @@ import { hashPassword, isStrongPassword, signAuthToken, authCookieName } from "@
 import { checkRateLimit } from "@/lib/server/rate-limit"
 import { prisma } from "@/lib/server/prisma"
 import { sendVerificationEmail } from "@/lib/server/email"
+=======
+import { NextResponse } from "next/server"
+import { z } from "zod"
+
+import { hashPassword, isStrongPassword, signAuthToken, authCookieName } from "@/lib/server/auth"
+import { prisma } from "@/lib/server/prisma"
+>>>>>>> theirs
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -13,6 +21,7 @@ const registerSchema = z.object({
   password: z.string().min(8),
 })
 
+<<<<<<< ours
 export async function POST(request: NextRequest) {
   try {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
@@ -24,6 +33,11 @@ export async function POST(request: NextRequest) {
 
     const payload = registerSchema.parse(await request.json())
     const email = payload.email.trim().toLowerCase()
+=======
+export async function POST(request: Request) {
+  try {
+    const payload = registerSchema.parse(await request.json())
+>>>>>>> theirs
 
     if (!isStrongPassword(payload.password)) {
       return NextResponse.json(
@@ -32,12 +46,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
+<<<<<<< ours
     const existing = await prisma.user.findUnique({ where: { email } })
+=======
+    const existing = await prisma.user.findUnique({ where: { email: payload.email } })
+>>>>>>> theirs
     if (existing) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 })
     }
 
     const passwordHash = await hashPassword(payload.password)
+<<<<<<< ours
     const emailVerifyToken = randomBytes(32).toString("hex")
 
     const user = await prisma.user.create({
@@ -46,6 +65,14 @@ export async function POST(request: NextRequest) {
         name: payload.name,
         passwordHash,
         emailVerifyToken,
+=======
+
+    const user = await prisma.user.create({
+      data: {
+        email: payload.email,
+        name: payload.name,
+        passwordHash,
+>>>>>>> theirs
       },
       select: {
         id: true,
@@ -58,8 +85,11 @@ export async function POST(request: NextRequest) {
       },
     })
 
+<<<<<<< ours
     await sendVerificationEmail(email, payload.name, emailVerifyToken)
 
+=======
+>>>>>>> theirs
     const token = signAuthToken({ sub: user.id, email: user.email, role: user.role })
 
     const response = NextResponse.json({ user }, { status: 201 })

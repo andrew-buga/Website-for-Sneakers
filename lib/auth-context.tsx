@@ -71,9 +71,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       if (!response.ok) {
+<<<<<<< ours
         if (response.status === 401) {
           setUser(null)
         }
+=======
+        setUser(null)
+>>>>>>> theirs
         return
       }
 
@@ -215,6 +219,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await updateAddress(addressId, { isDefault: true })
   }
 
+<<<<<<< ours
   const requestPasswordReset = async (email: string) => {
     const response = await fetch("/api/auth/password-reset/request", {
       method: "POST",
@@ -235,6 +240,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
     await parseApiResponse(response)
+=======
+  const requestPasswordReset = async (_email: string) => {
+    throw new Error("Password reset flow is not implemented yet")
+  }
+
+  const resetPassword = async (_token: string, _newPassword: string) => {
+    throw new Error("Password reset flow is not implemented yet")
+>>>>>>> theirs
   }
 
   const value = useMemo(

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
 import { hashToken } from "@/lib/server/auth"
 import { prisma } from "@/lib/server/prisma"

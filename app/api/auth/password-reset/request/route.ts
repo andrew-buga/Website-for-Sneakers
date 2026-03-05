@@ -1,4 +1,4 @@
-﻿import { randomBytes } from "crypto"
+import { randomBytes } from "crypto"
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 

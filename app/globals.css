@@ -19,6 +19,8 @@
 
 @layer base {
   :root {
+    --font-inter: "Avenir Next", "Segoe UI", "Trebuchet MS", "Helvetica Neue", Arial, sans-serif;
+    --font-oswald: "Franklin Gothic Medium", "Arial Narrow", "Trebuchet MS", sans-serif;
     --background: 0 0% 7%;
     --foreground: 0 0% 98%;
     --card: 0 0% 10%;

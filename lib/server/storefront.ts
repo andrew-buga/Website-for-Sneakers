@@ -67,6 +67,10 @@ export async function getStoreProducts(filters?: {
   includeInactive?: boolean
   limit?: number
 }) {
+  if (!process.env.DATABASE_URL) {
+    return getFallbackProducts(filters)
+  }
+
   try {
     const products = await prisma.product.findMany({
       where: {
@@ -86,6 +90,11 @@ export async function getStoreProducts(filters?: {
 }
 
 export async function getStoreProductById(id: string) {
+  if (!process.env.DATABASE_URL) {
+    const fallback = getFallbackProducts({ includeInactive: true }).find((product) => product.id === id)
+    return fallback?.isActive ? fallback : null
+  }
+
   try {
     const product = await prisma.product.findUnique({
       where: { id },

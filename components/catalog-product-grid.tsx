@@ -16,8 +16,13 @@ export default function CatalogProductGrid({ products }: { products: StoreProduc
           href={`/product/${product.id}`}
           className="group relative rounded-2xl overflow-hidden bg-card border border-border transition-all duration-500 hover:-translate-y-1 hover:ring-2 hover:ring-primary/80 hover:shadow-[0_0_40px_rgba(255,115,0,0.35)]"
         >
-          <div className="relative aspect-square overflow-hidden bg-secondary">
-            <Image src={product.imageUrl} alt={product.name} fill className="object-cover group-hover:scale-95 transition-transform duration-500" />
+          <div className="relative aspect-square overflow-hidden rounded-2xl bg-secondary">
+            <Image
+              src={product.imageUrl}
+              alt={product.name}
+              fill
+              className="rounded-2xl object-cover group-hover:scale-95 transition-transform duration-500"
+            />
           </div>
           <div className="p-5">
             <h3 className="font-display text-lg font-semibold text-foreground">{product.name}</h3>

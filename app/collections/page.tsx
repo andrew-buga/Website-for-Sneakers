@@ -24,7 +24,7 @@ export default async function CollectionsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {Object.entries(collectionsMeta).map(([slug, meta]) => (
             <Link key={slug} href={`/collection/${slug}`} className="group relative aspect-[4/5] rounded-2xl overflow-hidden">
-              <Image src={meta.banner} alt={meta.title} fill className="object-cover group-hover:scale-95 transition-transform duration-700" />
+              <Image src={meta.banner} alt={meta.title} fill className="rounded-2xl object-cover group-hover:scale-95 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
                 <h3 className="font-display text-xl font-bold uppercase text-foreground">{meta.title}</h3>

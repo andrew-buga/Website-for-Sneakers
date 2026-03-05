@@ -49,7 +49,7 @@ export default function Collections() {
                 src={collection.image || "/placeholder.svg"}
                 alt={collection.name}
                 fill
-                className="object-cover group-hover:scale-95 transition-transform duration-700"
+                className="rounded-2xl object-cover group-hover:scale-95 transition-transform duration-700"
               />
               {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/35 to-transparent" />

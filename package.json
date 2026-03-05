@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "check:merge-markers": "node scripts/check-merge-markers.mjs",
+    "build": "pnpm run check:merge-markers && next build",
     "start": "next start",
     "lint": "eslint .",
     "prisma:generate": "prisma generate",

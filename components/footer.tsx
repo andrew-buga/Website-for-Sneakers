@@ -90,7 +90,7 @@ export default function Footer() {
             Built for performance, comfort, and everyday style.
           </p>
           <p className="text-xs text-muted-foreground">
-            © 2026 Nike. All rights reserved.
+            © 2026 Streater. All rights reserved.
           </p>
         </div>
       </div>

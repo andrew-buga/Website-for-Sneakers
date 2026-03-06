@@ -56,7 +56,7 @@ export default function Subscribe() {
             {/* Social icons */}
             <div className="flex items-center gap-4 mt-2">
               <a
-                href="https://www.facebook.com/nike"
+                href="https://www.facebook.com/Streater"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook"
@@ -67,7 +67,7 @@ export default function Subscribe() {
                 </svg>
               </a>
               <a
-                href="https://x.com/nike"
+                href="https://x.com/Streater"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Twitter"
@@ -78,7 +78,7 @@ export default function Subscribe() {
                 </svg>
               </a>
               <a
-                href="https://www.instagram.com/nike/"
+                href="https://www.instagram.com/Streater/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
@@ -89,7 +89,7 @@ export default function Subscribe() {
                 </svg>
               </a>
               <a
-                href="https://www.youtube.com/@nike"
+                href="https://www.youtube.com/@Streater"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="YouTube"

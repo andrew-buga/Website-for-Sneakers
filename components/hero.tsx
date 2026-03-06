@@ -56,7 +56,7 @@ export default function Hero() {
           <div className="absolute w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] rounded-full bg-primary/10 blur-3xl" />
           <Image
             src="/images/hero-sneaker.jpg"
-            alt="Featured Nike sneaker"
+            alt="Featured Streater Sneaker"
             width={700}
             height={500}
             className="relative z-10 w-full max-w-lg lg:max-w-xl object-contain drop-shadow-2xl hover:scale-95 transition-transform duration-500 cursor-pointer motion-safe:animate-[float_6s_ease-in-out_infinite]"

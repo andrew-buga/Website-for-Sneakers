@@ -13,7 +13,6 @@ export default function Footer() {
               Streater Store — modern sneaker portfolio, design, and innovation.
             </p>
           </div>
-
           <div>
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               Help & Information
@@ -41,7 +40,6 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
           <div>
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               About us
@@ -69,7 +67,6 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
           <div>
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               Contact
@@ -86,10 +83,8 @@ export default function Footer() {
                 <a href="https://www.behance.net/andrewbuga" target="_blank" rel="noreferrer" className="text-sm text-primary font-semibold underline underline-offset-4 hover:decoration-wavy transition">Behance</a>
               </div>
             </div>
-            </ul>
           </div>
         </div>
-
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
             Built for performance, comfort, and everyday style.

@@ -68,7 +68,6 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       return [...prev, item]
     })
   }
-  }
 
   const removeFromWishlist = (id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id))
@@ -78,11 +77,15 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     return items.some((item) => item.id === id)
   }
 
+}
+
+export function WishlistProvider({ children }: { children: React.ReactNode }) {
+  // All logic is already inside this function
   return (
     <WishlistContext.Provider value={{ items, addToWishlist, removeFromWishlist, isInWishlist, addSnapshotToWishlist }}>
       {children}
     </WishlistContext.Provider>
-  )
+  );
 }
 
 export function useWishlist() {

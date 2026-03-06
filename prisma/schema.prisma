@@ -24,6 +24,7 @@ model User {
   orders                      Order[]
   reviews                     ProductReview[]
   reviewLikes                 ReviewLike[]
+  emailVerifyTokenExpiresAt   DateTime?
 }
 
 model Address {

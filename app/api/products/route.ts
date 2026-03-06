@@ -3,6 +3,7 @@ import { z } from "zod"
 
 import { requireAdmin } from "@/lib/server/guards"
 import { prisma } from "@/lib/server/prisma"
+import { getStoreProducts } from "@/lib/server/storefront"
 
 const createProductSchema = z.object({
   sku: z.string().min(1),
@@ -27,32 +28,33 @@ const createProductSchema = z.object({
 })
 
 export async function GET(request: NextRequest) {
-  if (!process.env.DATABASE_URL) {
-    return NextResponse.json({ error: "Server database configuration error" }, { status: 500 })
-  }
-
   try {
     const { searchParams } = new URL(request.url)
     const includeInactive = searchParams.get("includeInactive") === "true"
-    const category = searchParams.get("category")
-    const collection = searchParams.get("collection")
+    const categoryParam = searchParams.get("category")
+    const category = categoryParam === "men" || categoryParam === "women" ? categoryParam : undefined
+    const collectionParam = searchParams.get("collection")
+    const collection =
+      collectionParam === "summer" || collectionParam === "winter" || collectionParam === "autumn"
+        ? collectionParam
+        : undefined
     const trending = searchParams.get("trending")
     const limit = Number(searchParams.get("limit") ?? "0")
-    const search = searchParams.get("search")
+    const search = searchParams.get("search")?.trim()
 
-    const products = await prisma.product.findMany({
-      where: {
-        ...(includeInactive ? {} : { isActive: true }),
-        ...(category ? { category } : {}),
-        ...(collection ? { collection } : {}),
-        ...(trending === "true" ? { isTrending: true } : {}),
-        ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
-      },
-      orderBy: { createdAt: "desc" },
-      ...(limit > 0 ? { take: limit } : {}),
+    const products = await getStoreProducts({
+      includeInactive,
+      category,
+      collection,
+      trending: trending === "true",
+      ...(limit > 0 ? { limit } : {}),
     })
 
-    return NextResponse.json({ products })
+    const filteredProducts = search
+      ? products.filter((product) => product.name.toLowerCase().includes(search.toLowerCase()))
+      : products
+
+    return NextResponse.json({ products: filteredProducts })
   } catch (error) {
     console.error("GET /api/products failed", error)
     return NextResponse.json({ error: "Failed to load products" }, { status: 500 })

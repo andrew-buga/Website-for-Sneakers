@@ -4,6 +4,10 @@ import { hashToken } from "@/lib/server/auth"
 import { prisma } from "@/lib/server/prisma"
 
 export async function GET(request: NextRequest) {
+  if (!process.env.DATABASE_URL) {
+    return NextResponse.json({ valid: false, error: "Server database configuration error" }, { status: 500 })
+  }
+
   const token = request.nextUrl.searchParams.get("token")
   if (!token) {
     return NextResponse.json({ valid: false }, { status: 400 })

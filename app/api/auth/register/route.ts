@@ -22,10 +22,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Server auth configuration error" }, { status: 500 })
   }
 
-  if (!process.env.RESEND_API_KEY) {
-    return NextResponse.json({ error: "Email service is not configured" }, { status: 500 })
-  }
-
   try {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
     const limit = checkRateLimit(`register:${ip}`, 5, 60 * 60 * 1000)
@@ -51,6 +47,7 @@ export async function POST(request: NextRequest) {
 
     const passwordHash = await hashPassword(payload.password)
     const emailVerifyToken = randomBytes(32).toString("hex")
+    const emailVerifyTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
 
     const user = await prisma.user.create({
       data: {
@@ -58,6 +55,7 @@ export async function POST(request: NextRequest) {
         name: payload.name,
         passwordHash,
         emailVerifyToken,
+        emailVerifyTokenExpiresAt,
       },
       select: {
         id: true,

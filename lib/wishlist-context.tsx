@@ -3,84 +3,80 @@
 import React, { createContext, useContext, useState, useEffect } from "react"
 
 interface WishlistItem {
-  id: string
-  name: string
-  imageUrl?: string
-  priceCents?: number
-  currency?: string
+  id: string;
+  name: string;
+  imageUrl?: string;
+  priceCents?: number;
+  currency?: string;
+  colors?: string[];
 }
 
 interface WishlistContextType {
-  items: WishlistItem[]
-  addToWishlist: (id: string, name: string) => void
-  removeFromWishlist: (id: string) => void
-  isInWishlist: (id: string) => boolean
+  items: WishlistItem[];
+  addToWishlist: (id: string, name: string) => void;
+  removeFromWishlist: (id: string) => void;
+  isInWishlist: (id: string) => boolean;
+  addSnapshotToWishlist: (item: WishlistItem) => void;
 }
 
-const WishlistContext = createContext<WishlistContextType | undefined>(undefined)
+const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<WishlistItem[]>([])
-  const [mounted, setMounted] = useState(false)
+  const [items, setItems] = useState<WishlistItem[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-    const savedWishlist = localStorage.getItem("wishlist")
+    setMounted(true);
+    const savedWishlist = localStorage.getItem("wishlist");
     if (savedWishlist) {
       try {
-        const parsed = JSON.parse(savedWishlist)
+        const parsed = JSON.parse(savedWishlist);
         if (Array.isArray(parsed)) {
-          // Backward compatibility: support old format {id, name}
           setItems(parsed.map((item) => ({
             id: String(item.id),
             name: item.name,
             imageUrl: item.imageUrl,
             priceCents: item.priceCents,
             currency: item.currency,
-          })))
+            colors: item.colors,
+          })));
         }
       } catch (error) {
-        console.error("Failed to load wishlist:", error)
+        console.error("Failed to load wishlist:", error);
       }
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem("wishlist", JSON.stringify(items))
+      localStorage.setItem("wishlist", JSON.stringify(items));
     }
-  }, [items, mounted])
+  }, [items, mounted]);
 
   const addToWishlist = (id: string, name: string) => {
-    // Deprecated: use addToWishlist(item: WishlistItem)
     setItems((prev) => {
-      const exists = prev.find((item) => item.id === id)
-      if (exists) return prev
-      return [...prev, { id, name }]
-    })
-  }
+      const exists = prev.find((item) => item.id === id);
+      if (exists) return prev;
+      return [...prev, { id, name }];
+    });
+  };
 
-  // New: add snapshot item
   const addSnapshotToWishlist = (item: WishlistItem) => {
     setItems((prev) => {
-      const exists = prev.find((i) => i.id === item.id)
-      if (exists) return prev
-      return [...prev, item]
-    })
-  }
+      const exists = prev.find((i) => i.id === item.id);
+      if (exists) return prev;
+      return [...prev, item];
+    });
+  };
 
   const removeFromWishlist = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id))
-  }
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  };
 
   const isInWishlist = (id: string) => {
-    return items.some((item) => item.id === id)
-  }
+    return items.some((item) => item.id === id);
+  };
 
-}
-
-export function WishlistProvider({ children }: { children: React.ReactNode }) {
-  // All logic is already inside this function
   return (
     <WishlistContext.Provider value={{ items, addToWishlist, removeFromWishlist, isInWishlist, addSnapshotToWishlist }}>
       {children}

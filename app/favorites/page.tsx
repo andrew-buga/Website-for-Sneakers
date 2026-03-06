@@ -14,20 +14,28 @@ import { Button } from "@/components/ui/button"
 export default function FavoritesPage() {
   const { items, removeFromWishlist } = useWishlist()
   const [products, setProducts] = useState<StoreProduct[]>([])
+  const [apiAvailable, setApiAvailable] = useState(true)
 
   useEffect(() => {
     const load = async () => {
-      const response = await fetch("/api/products", { credentials: "include" })
-      const body = await response.json().catch(() => ({}))
-      setProducts(body.products ?? [])
+      try {
+        const response = await fetch("/api/products", { credentials: "include" })
+        const body = await response.json().catch(() => ({}))
+        setProducts(body.products ?? [])
+        setApiAvailable(true)
+      } catch {
+        setApiAvailable(false)
+      }
     }
-
     void load()
   }, [])
 
+  // Merge API products and local snapshot
   const favoriteProducts = useMemo(() => {
     const ids = new Set(items.map((item) => item.id))
-    return products.filter((product) => ids.has(product.id))
+    const apiMap = new Map(products.map((p) => [p.id, p]))
+    // Prefer API product, fallback to local snapshot
+    return items.map((item) => apiMap.get(item.id) || item)
   }, [items, products])
 
   return (
@@ -49,13 +57,19 @@ export default function FavoritesPage() {
               <div key={product.id} className="rounded-2xl border border-border bg-card p-5">
                 <Link href={`/product/${product.id}`} className="block">
                   <div className="aspect-square rounded-xl bg-secondary overflow-hidden mb-4">
-                    <Image src={product.imageUrl} alt={product.name} width={600} height={600} className="h-full w-full object-cover" />
+                    {product.imageUrl ? (
+                      <Image src={product.imageUrl} alt={product.name} width={600} height={600} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center text-muted-foreground text-2xl">No image</div>
+                    )}
                   </div>
                   <h3 className="font-display text-lg font-semibold text-foreground">{product.name}</h3>
                 </Link>
-                <p className="text-sm text-muted-foreground mt-1">{product.colors.join("/") || "Standard colorway"}</p>
+                <p className="text-sm text-muted-foreground mt-1">{product.colors ? product.colors.join("/") : "Standard colorway"}</p>
                 <div className="mt-3 flex items-center justify-between">
-                  <span className="font-semibold text-primary">{formatPriceCents(product.priceCents, product.currency)}</span>
+                  <span className="font-semibold text-primary">
+                    {typeof product.priceCents === "number" && product.currency ? formatPriceCents(product.priceCents, product.currency) : ""}
+                  </span>
                   <Button variant="outline" size="sm" onClick={() => removeFromWishlist(product.id)}>
                     <Heart className="h-4 w-4 fill-primary text-primary" />
                   </Button>

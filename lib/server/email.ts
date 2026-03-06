@@ -11,7 +11,7 @@ function getAppUrl() {
 }
 
 function getFromAddress() {
-  return process.env.RESEND_FROM_EMAIL ?? "Nike Store <onboarding@resend.dev>"
+  return process.env.RESEND_FROM_EMAIL ?? "Streater Store <onboarding@resend.dev>"
 }
 
 function emailLayout(title: string, body: string) {
@@ -24,7 +24,7 @@ function emailLayout(title: string, body: string) {
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
         <tr>
           <td style="background:#111111;padding:28px 40px;">
-            <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Nike Store</span>
+            <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Streater Store</span>
           </td>
         </tr>
         <tr>
@@ -34,7 +34,7 @@ function emailLayout(title: string, body: string) {
         </tr>
         <tr>
           <td style="background:#f4f4f5;padding:24px 40px;border-top:1px solid #e5e7eb;">
-            <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">Nike Store &bull; You received this email because you have an account with us. If you did not request this, please ignore this email.</p>
+            <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">Streater Store &bull; You received this email because you have an account with us. If you did not request this, please ignore this email.</p>
           </td>
         </tr>
       </table>

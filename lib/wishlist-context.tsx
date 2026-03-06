@@ -5,6 +5,9 @@ import React, { createContext, useContext, useState, useEffect } from "react"
 interface WishlistItem {
   id: string
   name: string
+  imageUrl?: string
+  priceCents?: number
+  currency?: string
 }
 
 interface WishlistContextType {
@@ -27,7 +30,14 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       try {
         const parsed = JSON.parse(savedWishlist)
         if (Array.isArray(parsed)) {
-          setItems(parsed.map((item) => ({ ...item, id: String(item.id) })))
+          // Backward compatibility: support old format {id, name}
+          setItems(parsed.map((item) => ({
+            id: String(item.id),
+            name: item.name,
+            imageUrl: item.imageUrl,
+            priceCents: item.priceCents,
+            currency: item.currency,
+          })))
         }
       } catch (error) {
         console.error("Failed to load wishlist:", error)
@@ -42,11 +52,22 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   }, [items, mounted])
 
   const addToWishlist = (id: string, name: string) => {
+    // Deprecated: use addToWishlist(item: WishlistItem)
     setItems((prev) => {
       const exists = prev.find((item) => item.id === id)
       if (exists) return prev
       return [...prev, { id, name }]
     })
+  }
+
+  // New: add snapshot item
+  const addSnapshotToWishlist = (item: WishlistItem) => {
+    setItems((prev) => {
+      const exists = prev.find((i) => i.id === item.id)
+      if (exists) return prev
+      return [...prev, item]
+    })
+  }
   }
 
   const removeFromWishlist = (id: string) => {
@@ -58,7 +79,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <WishlistContext.Provider value={{ items, addToWishlist, removeFromWishlist, isInWishlist }}>
+    <WishlistContext.Provider value={{ items, addToWishlist, removeFromWishlist, isInWishlist, addSnapshotToWishlist }}>
       {children}
     </WishlistContext.Provider>
   )

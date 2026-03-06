@@ -7,8 +7,8 @@ import { AuthProvider } from '@/lib/auth-context'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Nike Sneakers - New Collection',
-  description: 'Discover the latest Nike sneakers. Easy. Airy. Universal.',
+  title: 'Streater Sneakers - New Collection',
+  description: 'Discover the latest Streater sneakers. Easy. Airy. Universal.',
 }
 
 export default function RootLayout({

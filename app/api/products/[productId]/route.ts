@@ -31,14 +31,11 @@ type Params = { params: Promise<{ productId: string }> }
 
 export async function GET(_request: NextRequest, { params }: Params) {
   const { productId } = await params
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
-  })
-
-  if (!product || !product.isActive) {
+  // Use storefront fallback logic
+  const product = await (await import("@/lib/server/storefront")).getStoreProductById(productId)
+  if (!product) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 })
   }
-
   return NextResponse.json({ product })
 }
 

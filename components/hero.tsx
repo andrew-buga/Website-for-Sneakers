@@ -9,7 +9,7 @@ export default function Hero() {
       {/* Large background text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
         <span className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[26rem] font-display font-bold text-foreground/[0.03] leading-none tracking-tighter">
-          NIKE
+          STREATER
         </span>
       </div>
 
@@ -31,7 +31,7 @@ export default function Hero() {
 
           <div className="mt-2 space-y-1">
             <p className="text-lg text-muted-foreground font-medium">
-              {"Nike Impossible'20"}
+              {"Streater Impossible'20"}
             </p>
             <p className="text-sm text-muted-foreground mt-1">
               Easy. Airy. Universal.

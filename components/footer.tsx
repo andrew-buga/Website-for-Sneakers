@@ -7,10 +7,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
             <span className="text-2xl font-display font-bold tracking-wider text-foreground">
-              NIKE
+              STREATER
             </span>
             <p className="text-sm text-muted-foreground mt-4 leading-relaxed">
-              Bringing you the best in athletic footwear and innovation since 1964.
+              Streater Store — modern sneaker portfolio, design, and innovation.
             </p>
           </div>
 
@@ -76,8 +76,16 @@ export default function Footer() {
             </h4>
             <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
               <li><a href="tel:+40740116669" className="hover:text-foreground transition-colors">+40 740 116 669</a></li>
-              <li><a href="mailto:mykhailo.buha@student.usv.ro" className="hover:text-foreground transition-colors">mykhailo.buha@student.usv.ro</a></li>
+              <li><a href="mailto:official.andrew.buga@gmail.com" className="hover:text-foreground transition-colors">official.andrew.buga@gmail.com</a></li>
               <li><Link href="/contact" className="hover:text-foreground transition-colors">Contact page</Link></li>
+            </ul>
+            <div className="mt-6">
+              <span className="text-xs font-semibold text-muted-foreground">Portfolio:</span>
+              <div className="flex gap-4 mt-2">
+                <a href="https://github.com/andrew-buga" target="_blank" rel="noreferrer" className="text-sm text-primary font-semibold underline underline-offset-4 hover:decoration-wavy transition">GitHub</a>
+                <a href="https://www.behance.net/andrewbuga" target="_blank" rel="noreferrer" className="text-sm text-primary font-semibold underline underline-offset-4 hover:decoration-wavy transition">Behance</a>
+              </div>
+            </div>
             </ul>
           </div>
         </div>

@@ -29,7 +29,7 @@ export default function Subscribe() {
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
-                <span>mykhailo.buha@student.usv.ro</span>
+                <span>official.andrew.buga@gmail.com</span>
               </div>
             </div>
           </div>

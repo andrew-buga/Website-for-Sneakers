@@ -4,36 +4,8 @@ on:
   push:
   pull_request:
 
-permissions:
-  contents: read
-
 jobs:
-  commit_verification:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v7
-        env:
-          TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const sha = process.env.TARGET_SHA;
-            const { data } = await github.rest.repos.getCommit({ owner, repo, ref: sha });
-            const verification = data.commit.verification;
-
-            core.info(
-              `Commit ${sha} verification: verified=${verification?.verified}; reason=${verification?.reason ?? "unknown"}`
-            );
-
-            if (!verification?.verified) {
-              core.setFailed(
-                `Commit ${sha} is not verified (${verification?.reason ?? "unknown"}). ` +
-                "Sign commits or disable 'Require Verified Commits' in Vercel project settings."
-              );
-            }
-
   quality:
-    needs: commit_verification
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci?schema=public

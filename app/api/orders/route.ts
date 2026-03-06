@@ -65,17 +65,27 @@ export async function POST(request: NextRequest) {
       const address = await tx.address.findUnique({ where: { id: payload.addressId }, select: { id: true, userId: true } })
       if (!address || address.userId !== payload.userId) throw new Error("ADDRESS_NOT_FOUND")
 
+      const requestedQtyByProductId = new Map<string, number>()
+      for (const item of payload.items) {
+        requestedQtyByProductId.set(item.productId, (requestedQtyByProductId.get(item.productId) ?? 0) + item.quantity)
+      }
+
       const products = await tx.product.findMany({
-        where: { id: { in: payload.items.map((item) => item.productId) }, isActive: true },
+        where: { id: { in: [...requestedQtyByProductId.keys()] }, isActive: true },
       })
 
       const productsById = new Map(products.map((product) => [product.id, product]))
       let subtotalCents = 0
 
+      for (const [productId, requestedQty] of requestedQtyByProductId) {
+        const product = productsById.get(productId)
+        if (!product) throw new Error(`PRODUCT_NOT_FOUND:${productId}`)
+        if (product.stock < requestedQty) throw new Error(`INSUFFICIENT_STOCK:${productId}`)
+      }
+
       const validatedItems = payload.items.map((item) => {
         const product = productsById.get(item.productId)
         if (!product) throw new Error(`PRODUCT_NOT_FOUND:${item.productId}`)
-        if (product.stock < item.quantity) throw new Error(`INSUFFICIENT_STOCK:${item.productId}`)
         if (item.size && !product.sizes.includes(item.size)) throw new Error(`SIZE_NOT_AVAILABLE:${item.productId}`)
         if (item.color && !product.colors.includes(item.color)) throw new Error(`COLOR_NOT_AVAILABLE:${item.productId}`)
 
@@ -105,10 +115,24 @@ export async function POST(request: NextRequest) {
         },
       })
 
-      await Promise.all(validatedItems.map((item) => tx.product.update({
-        where: { id: item.productId },
-        data: { stock: { decrement: item.quantity } },
-      })))
+      const stockUpdateResults = await Promise.all(
+        [...requestedQtyByProductId.entries()].map(([productId, quantity]) =>
+          tx.product.updateMany({
+            where: {
+              id: productId,
+              isActive: true,
+              stock: { gte: quantity },
+            },
+            data: {
+              stock: { decrement: quantity },
+            },
+          })
+        )
+      )
+
+      if (stockUpdateResults.some((resultItem) => resultItem.count !== 1)) {
+        throw new Error("INSUFFICIENT_STOCK:race_condition")
+      }
 
       return order
     })

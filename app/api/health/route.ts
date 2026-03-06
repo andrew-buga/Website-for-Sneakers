@@ -5,6 +5,7 @@ import { prisma } from "@/lib/server/prisma"
 export async function GET() {
   const checks = {
     database: "ok" as "ok" | "error",
+    databaseUrlConfigured: Boolean(process.env.DATABASE_URL),
     jwtSecretConfigured: Boolean(process.env.JWT_SECRET),
     resendConfigured: Boolean(process.env.RESEND_API_KEY),
     blobConfigured: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
@@ -28,4 +29,3 @@ export async function GET() {
     { status: ok ? 200 : 503 }
   )
 }
-

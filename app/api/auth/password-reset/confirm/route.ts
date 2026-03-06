@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid request payload", details: error.flatten() }, { status: 400 })
     }
 
+    console.error("POST /api/auth/password-reset/confirm failed", error)
     return NextResponse.json({ error: "Failed to reset password" }, { status: 500 })
   }
 }

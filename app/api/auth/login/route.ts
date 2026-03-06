@@ -63,6 +63,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid request payload", details: error.flatten() }, { status: 400 })
     }
 
+    if (error instanceof Error && error.message.includes("JWT_SECRET is not configured")) {
+      console.error("POST /api/auth/login failed: JWT_SECRET is not configured")
+      return NextResponse.json({ error: "Server auth configuration error" }, { status: 500 })
+    }
+
+    console.error("POST /api/auth/login failed", error)
     return NextResponse.json({ error: "Login failed" }, { status: 500 })
   }
 }

@@ -49,7 +49,8 @@ export async function GET(request: NextRequest) {
     })
 
     return NextResponse.json({ products })
-  } catch {
+  } catch (error) {
+    console.error("GET /api/products failed", error)
     return NextResponse.json({ error: "Failed to load products" }, { status: 500 })
   }
 }

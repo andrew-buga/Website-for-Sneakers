@@ -38,7 +38,11 @@ export async function POST(request: NextRequest) {
         },
       })
 
-      await sendPasswordResetEmail(user.email, user.name, rawToken)
+      try {
+        await sendPasswordResetEmail(user.email, user.name, rawToken)
+      } catch (emailError) {
+        console.error("POST /api/auth/password-reset/request: failed to send reset email", emailError)
+      }
     }
 
     return NextResponse.json({ ok: true })
@@ -47,6 +51,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid request payload", details: error.flatten() }, { status: 400 })
     }
 
+    console.error("POST /api/auth/password-reset/request failed", error)
     return NextResponse.json({ error: "Failed to request password reset" }, { status: 500 })
   }
 }

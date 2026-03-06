@@ -58,7 +58,11 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    await sendVerificationEmail(email, payload.name, emailVerifyToken)
+    try {
+      await sendVerificationEmail(email, payload.name, emailVerifyToken)
+    } catch (emailError) {
+      console.error("POST /api/auth/register: failed to send verification email", emailError)
+    }
 
     const token = signAuthToken({ sub: user.id, email: user.email, role: user.role })
 
@@ -79,6 +83,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid request payload", details: error.flatten() }, { status: 400 })
     }
 
+    if (error instanceof Error && error.message.includes("JWT_SECRET is not configured")) {
+      console.error("POST /api/auth/register failed: JWT_SECRET is not configured")
+      return NextResponse.json({ error: "Server auth configuration error" }, { status: 500 })
+    }
+
+    console.error("POST /api/auth/register failed", error)
     return NextResponse.json({ error: "Registration failed" }, { status: 500 })
   }
 }

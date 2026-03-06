@@ -7,38 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  CUSTOMER
-  ADMIN
-}
-
-enum OrderStatus {
-  PENDING
-  PAID
-  SHIPPED
-  DELIVERED
-  CANCELLED
-}
-
 model User {
-  id                          String   @id @default(cuid())
-  email                       String   @unique
+  id                          String          @id @default(cuid())
+  email                       String          @unique
   name                        String
   passwordHash                String
   phone                       String?
-  emailVerified               Boolean  @default(false)
+  emailVerified               Boolean         @default(false)
+  createdAt                   DateTime        @default(now())
+  updatedAt                   DateTime        @updatedAt
+  role                        UserRole        @default(CUSTOMER)
   emailVerifyToken            String?
-  emailVerifyTokenExpiresAt   DateTime?
   passwordResetTokenHash      String?
   passwordResetTokenExpiresAt DateTime?
-  role                        UserRole @default(CUSTOMER)
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @updatedAt
-
-  addresses   Address[]
-  orders      Order[]
-  reviews     ProductReview[]
-  reviewLikes ReviewLike[]
+  addresses                   Address[]
+  orders                      Order[]
+  reviews                     ProductReview[]
+  reviewLikes                 ReviewLike[]
 }
 
 model Address {
@@ -55,32 +40,30 @@ model Address {
   isDefault  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orders Order[]
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders     Order[]
 
   @@index([userId])
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  sku         String   @unique
+  id          String      @id @default(cuid())
+  sku         String      @unique
   name        String
   description String?
-  category    String   @default("men")
-  collection  String   @default("summer")
-  isTrending  Boolean  @default(false)
   priceCents  Int
-  currency    String   @default("USD")
+  currency    String      @default("USD")
   imageUrl    String?
-  stock       Int      @default(0)
-  sizes       String[] @default([])
-  colors      String[] @default([])
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  orderItems OrderItem[]
+  stock       Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  colors      String[]    @default([])
+  sizes       String[]    @default([])
+  category    String      @default("men")
+  collection  String      @default("summer")
+  isTrending  Boolean     @default(false)
+  orderItems  OrderItem[]
 }
 
 model Order {
@@ -95,10 +78,9 @@ model Order {
   notes         String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-
-  user    User        @relation(fields: [userId], references: [id], onDelete: Restrict)
-  address Address     @relation(fields: [addressId], references: [id], onDelete: Restrict)
-  items   OrderItem[]
+  address       Address     @relation(fields: [addressId], references: [id])
+  user          User        @relation(fields: [userId], references: [id])
+  items         OrderItem[]
 
   @@index([userId])
   @@index([addressId])
@@ -114,25 +96,23 @@ model OrderItem {
   size            String?
   color           String?
   createdAt       DateTime @default(now())
-
-  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product         Product  @relation(fields: [productId], references: [id])
 
   @@index([orderId])
   @@index([productId])
 }
 
 model ProductReview {
-  id         String   @id @default(cuid())
+  id         String       @id @default(cuid())
   productKey String
   userId     String
   rating     Int
   text       String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  likes ReviewLike[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes      ReviewLike[]
 
   @@index([productKey])
   @@index([userId])
@@ -141,11 +121,23 @@ model ProductReview {
 model ReviewLike {
   reviewId  String
   userId    String
-  createdAt DateTime @default(now())
-
-  review ProductReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+  review    ProductReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([reviewId, userId])
   @@index([userId])
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }

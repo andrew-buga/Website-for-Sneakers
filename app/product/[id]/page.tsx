@@ -94,7 +94,18 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       </div>
 
       <section className="max-w-7xl mx-auto px-6 lg:px-12 py-8 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
-        <ProductGallery images={[product.imageUrl]} productName={product.name} />
+        <div className="relative">
+          <ProductGallery images={[product.imageUrl]} productName={product.name} />
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute bottom-4 right-4 z-10 h-11 w-11 rounded-full border-border bg-background/90 shadow-sm backdrop-blur"
+            onClick={handleWishlist}
+            aria-label={isWishlisted ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart className={`h-5 w-5 ${isWishlisted ? "fill-primary text-primary" : ""}`} />
+          </Button>
+        </div>
 
         <div className="flex flex-col justify-start space-y-6">
           <div>
@@ -150,9 +161,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <Button onClick={handleAddToCart} size="lg" className="flex-1 gap-2 text-base" disabled={isAdded || product.stock <= 0}>
               <ShoppingCart className="h-5 w-5" />
               {isAdded ? "Added to Cart!" : product.stock <= 0 ? "Out of Stock" : "Add to Cart"}
-            </Button>
-            <Button variant="outline" size="lg" className="px-6" onClick={handleWishlist}>
-              <Heart className={`h-5 w-5 ${isWishlisted ? "fill-primary text-primary" : ""}`} />
             </Button>
           </div>
           {addToCartError ? <p className="text-sm text-red-400">{addToCartError}</p> : null}

@@ -3,14 +3,16 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { ArrowLeft, ArrowRight, Heart } from "lucide-react"
 
 import { formatPriceCents, StoreProduct } from "@/lib/storefront-types"
+import { useWishlist } from "@/lib/wishlist-context"
 
 export default function ProductShowcase() {
   const [products, setProducts] = useState<StoreProduct[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [active, setActive] = useState(-1)
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
 
   useEffect(() => {
     const load = async () => {
@@ -70,23 +72,39 @@ export default function ProductShowcase() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {products.map((product, index) => (
-                <Link
+                <article
                   key={product.id}
-                  href={`/product/${product.id}`}
                   className={`group relative rounded-2xl overflow-hidden bg-card border border-border transition-all duration-500 hover:-translate-y-1 hover:ring-2 hover:ring-primary/80 hover:shadow-[0_0_40px_rgba(255,115,0,0.35)] ${
                     index === active ? "ring-2 ring-primary" : ""
                   }`}
                 >
                   <div className="relative aspect-square overflow-hidden bg-secondary">
-                    <Image
-                      src={product.imageUrl || "/placeholder.svg"}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
+                    <Link href={`/product/${product.id}`} className="absolute inset-0">
+                      <Image
+                        src={product.imageUrl || "/placeholder.svg"}
+                        alt={product.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </Link>
+
+                    <button
+                      type="button"
+                      aria-label={isInWishlist(product.id) ? "Remove from favorites" : "Add to favorites"}
+                      className="absolute bottom-3 right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur transition hover:border-primary hover:text-primary"
+                      onClick={() => {
+                        if (isInWishlist(product.id)) {
+                          removeFromWishlist(product.id)
+                        } else {
+                          addToWishlist(product.id, product.name)
+                        }
+                      }}
+                    >
+                      <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? "fill-primary text-primary" : ""}`} />
+                    </button>
                   </div>
 
-                  <div className="p-5">
+                  <Link href={`/product/${product.id}`} className="block p-5">
                     <h3 className="font-display text-lg font-semibold text-foreground">
                       {product.name}
                     </h3>
@@ -108,8 +126,8 @@ export default function ProductShowcase() {
                       {formatPriceCents(product.priceCents, product.currency)}
                       <ArrowRight className="h-3.5 w-3.5" />
                     </span>
-                  </div>
-                </Link>
+                  </Link>
+                </article>
               ))}
             </div>
 

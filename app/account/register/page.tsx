@@ -15,6 +15,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({ name: "", email: "", password: "", confirmPassword: "" })
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -87,79 +88,71 @@ export default function RegisterPage() {
             </Link>
           </>
         ) : (
-          // ...existing code...
+          <>
+            <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Account</h1>
+            <p className="text-muted-foreground mb-8">Sign up to start shopping and track your orders</p>
+            {error && (
+              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-600 text-sm">
+                {error}
+              </div>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-2">Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-2">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
+                  placeholder="john@example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-2">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
+                  placeholder="8+ chars, upper/lower, number, special"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-2">Confirm Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
+                  placeholder="Confirm your password"
+                />
+              </div>
+              <Button type="submit" size="lg" className="w-full text-base" disabled={isLoading}>
+                {isLoading ? "Creating account..." : "Create Account"}
+              </Button>
+            </form>
+            <p className="text-center text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link href="/account/login" className="text-primary hover:underline font-semibold">
+                Sign in
+              </Link>
+            </p>
+          </>
         )}
-        </Link>
-
-        <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Account</h1>
-        <p className="text-muted-foreground mb-8">Sign up to start shopping and track your orders</p>
-
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-600 text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-          <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
-              placeholder="John Doe"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
-              placeholder="john@example.com"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
-              placeholder="8+ chars, upper/lower, number, special"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
-              placeholder="Confirm your password"
-            />
-          </div>
-
-          <Button type="submit" size="lg" className="w-full text-base" disabled={isLoading}>
-            {isLoading ? "Creating account..." : "Create Account"}
-          </Button>
-        </form>
-
-        <p className="text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link href="/account/login" className="text-primary hover:underline font-semibold">
-            Sign in
-          </Link>
-        </p>
       </div>
       <Footer />
     </main>

@@ -12,6 +12,14 @@ const requestSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  if (!process.env.DATABASE_URL) {
+    return NextResponse.json({ error: "Server database configuration error" }, { status: 500 })
+  }
+
+  if (!process.env.RESEND_API_KEY) {
+    return NextResponse.json({ error: "Email service is not configured" }, { status: 500 })
+  }
+
   try {
     const payload = requestSchema.parse(await request.json())
     const email = payload.email.trim().toLowerCase()

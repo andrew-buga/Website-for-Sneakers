@@ -27,6 +27,10 @@ const createProductSchema = z.object({
 })
 
 export async function GET(request: NextRequest) {
+  if (!process.env.DATABASE_URL) {
+    return NextResponse.json({ error: "Server database configuration error" }, { status: 500 })
+  }
+
   try {
     const { searchParams } = new URL(request.url)
     const includeInactive = searchParams.get("includeInactive") === "true"

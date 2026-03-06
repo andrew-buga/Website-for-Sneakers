@@ -14,6 +14,18 @@ const registerSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  if (!process.env.DATABASE_URL) {
+    return NextResponse.json({ error: "Server database configuration error" }, { status: 500 })
+  }
+
+  if (!process.env.JWT_SECRET) {
+    return NextResponse.json({ error: "Server auth configuration error" }, { status: 500 })
+  }
+
+  if (!process.env.RESEND_API_KEY) {
+    return NextResponse.json({ error: "Email service is not configured" }, { status: 500 })
+  }
+
   try {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
     const limit = checkRateLimit(`register:${ip}`, 5, 60 * 60 * 1000)

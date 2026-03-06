@@ -58,7 +58,7 @@ export default function RegisterPage() {
       }
 
       await register(formData.email, formData.password, formData.name)
-      router.push("/account/profile")
+      setSuccess(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed")
     } finally {
@@ -73,6 +73,22 @@ export default function RegisterPage() {
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
           <ArrowLeft className="h-4 w-4" />
           Back
+        </Link>
+        {success ? (
+          <>
+            <h1 className="font-display text-4xl font-bold text-foreground mb-2">Check Your Email</h1>
+            <p className="text-muted-foreground mb-8">
+              We've sent a verification link to your email. Please check your inbox and follow the link to activate your account.
+            </p>
+            <Link href="/account/login">
+              <Button size="lg" className="w-full">
+                Back to Sign In
+              </Button>
+            </Link>
+          </>
+        ) : (
+          // ...existing code...
+        )}
         </Link>
 
         <h1 className="font-display text-4xl font-bold text-foreground mb-2">Create Account</h1>

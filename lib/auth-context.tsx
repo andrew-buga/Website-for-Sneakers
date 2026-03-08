@@ -96,8 +96,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       body: JSON.stringify({ email, password, name }),
     })
 
-    const body = await parseApiResponse(response)
-    setUser(normalizeUser({ ...body.user, addresses: [] }))
+    // Registration successful — user must verify email before logging in
+    await parseApiResponse(response)
   }
 
   const login = async (email: string, password: string) => {

@@ -41,6 +41,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
 
+    if (!user.emailVerified) {
+      return NextResponse.json({ error: "Please verify your email address before signing in. Check your inbox for the verification link." }, { status: 403 })
+    }
+
     const token = signAuthToken({ sub: user.id, email: user.email, role: user.role })
 
     const response = NextResponse.json({

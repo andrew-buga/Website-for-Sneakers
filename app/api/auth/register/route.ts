@@ -2,7 +2,7 @@ import { randomBytes } from "crypto"
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 
-import { hashPassword, isStrongPassword, signAuthToken, authCookieName } from "@/lib/server/auth"
+import { hashPassword, isStrongPassword } from "@/lib/server/auth"
 import { checkRateLimit } from "@/lib/server/rate-limit"
 import { prisma } from "@/lib/server/prisma"
 import { sendVerificationEmail } from "@/lib/server/email"
@@ -16,10 +16,6 @@ const registerSchema = z.object({
 export async function POST(request: NextRequest) {
   if (!process.env.DATABASE_URL) {
     return NextResponse.json({ error: "Server database configuration error" }, { status: 500 })
-  }
-
-  if (!process.env.JWT_SECRET) {
-    return NextResponse.json({ error: "Server auth configuration error" }, { status: 500 })
   }
 
   try {
@@ -42,6 +38,15 @@ export async function POST(request: NextRequest) {
 
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {
+      if (!existing.emailVerified) {
+        // Resend verification email for unverified accounts
+        try {
+          await sendVerificationEmail(email, existing.name, existing.emailVerifyToken!)
+        } catch (emailError) {
+          console.error("POST /api/auth/register: failed to resend verification email", emailError)
+        }
+        return NextResponse.json({ ok: true }, { status: 200 })
+      }
       return NextResponse.json({ error: "Email already registered" }, { status: 409 })
     }
 
@@ -74,28 +79,11 @@ export async function POST(request: NextRequest) {
       console.error("POST /api/auth/register: failed to send verification email", emailError)
     }
 
-    const token = signAuthToken({ sub: user.id, email: user.email, role: user.role })
-
-    const response = NextResponse.json({ user }, { status: 201 })
-    response.cookies.set({
-      name: authCookieName,
-      value: token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-    })
-
-    return response
+    // Do NOT log the user in — they must verify their email first
+    return NextResponse.json({ ok: true }, { status: 201 })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid request payload", details: error.flatten() }, { status: 400 })
-    }
-
-    if (error instanceof Error && error.message.includes("JWT_SECRET is not configured")) {
-      console.error("POST /api/auth/register failed: JWT_SECRET is not configured")
-      return NextResponse.json({ error: "Server auth configuration error" }, { status: 500 })
     }
 
     console.error("POST /api/auth/register failed", error)

@@ -55,7 +55,7 @@ export default function Hero() {
         <div className="relative flex items-center justify-center">
           <div className="absolute w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] rounded-full bg-primary/10 blur-3xl" />
           <Image
-            src="/images/hero-sneaker.jpg"
+            src="/images/hero-sneaker.png"
             alt="Featured Streater Sneaker"
             width={700}
             height={500}

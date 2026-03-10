@@ -3,13 +3,99 @@
 import { FormEvent, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, X, Briefcase, Mail, Phone, ExternalLink } from "lucide-react"
 
 import Footer from "@/components/footer"
 import Navbar from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
 import { useCart } from "@/lib/cart-context"
+
+function PortfolioModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div className="relative z-10 w-full max-w-lg rounded-2xl border border-primary/40 bg-card shadow-[0_0_60px_rgba(255,115,0,0.25)] p-8 text-center">
+        {/* Close */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="Close"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        {/* Icon */}
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mb-5">
+          <Briefcase className="h-7 w-7 text-primary" />
+        </div>
+
+        <h2 className="font-display text-2xl font-bold text-foreground mb-2">
+          Це портфоліо-сайт 🎨
+        </h2>
+        <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+          Цей магазин створено як демонстрація навичок веб-розробки. Оплата та замовлення — симуляція, не реальні транзакції.
+          <br /><br />
+          Хочеш такий сайт для свого бізнесу? Звертайся — зроблю!
+        </p>
+
+        {/* Links */}
+        <div className="flex flex-col gap-3 mb-6">
+          <a
+            href="https://www.behance.net/andrewbuga"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 w-full bg-primary text-white font-semibold px-5 py-3 rounded-xl hover:bg-primary/90 transition-colors"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Більше робіт на Behance
+          </a>
+          <a
+            href="https://github.com/andrew-buga"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 w-full border border-border text-foreground font-semibold px-5 py-3 rounded-xl hover:border-primary hover:text-primary transition-colors"
+          >
+            <ExternalLink className="h-4 w-4" />
+            GitHub — вихідний код
+          </a>
+        </div>
+
+        {/* Contacts */}
+        <div className="border-t border-border pt-5 space-y-2 text-sm text-muted-foreground">
+          <p className="text-xs font-semibold uppercase tracking-wider text-foreground/50 mb-3">Контакти для замовлення сайту</p>
+          <a
+            href="mailto:official.andrew.buga@gmail.com"
+            className="flex items-center justify-center gap-2 hover:text-primary transition-colors"
+          >
+            <Mail className="h-4 w-4" />
+            official.andrew.buga@gmail.com
+          </a>
+          <a
+            href="tel:+40740116669"
+            className="flex items-center justify-center gap-2 hover:text-primary transition-colors"
+          >
+            <Phone className="h-4 w-4" />
+            +40 740 116 669
+          </a>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="mt-6 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+        >
+          Продовжити до оплати
+        </button>
+      </div>
+    </div>
+  )
+}
 
 function parsePrice(value: string) {
   return Number(value.replace(/[^0-9.]/g, "")) || 0
@@ -19,6 +105,7 @@ export default function CheckoutPage() {
   const router = useRouter()
   const { items, total, clearCart } = useCart()
   const { user, isAuthenticated } = useAuth()
+  const [showModal, setShowModal] = useState(true)
   const [paymentMethod, setPaymentMethod] = useState("card")
   const [cardData, setCardData] = useState({ cardNumber: "", expiry: "", cvc: "" })
   const [isProcessing, setIsProcessing] = useState(false)
@@ -129,6 +216,7 @@ export default function CheckoutPage() {
 
   return (
     <main>
+      {showModal && <PortfolioModal onClose={() => setShowModal(false)} />}
       <Navbar />
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
         <Link href="/cart" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">

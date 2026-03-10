@@ -1,7 +1,7 @@
 export const demoProducts = [
   {
-    sku: "NK-AIR-001",
-    name: "Nike Air Max Plus III",
+    sku: "ST-RISE-001",
+    name: "Streater Rise Max III",
     description: "Responsive cushioning and all-day support.",
     category: "men" as const,
     collection: "summer" as const,
@@ -15,8 +15,8 @@ export const demoProducts = [
     isActive: true,
   },
   {
-    sku: "NK-ZOOM-002",
-    name: "Nike Zoom Street Pro",
+    sku: "ST-STRP-002",
+    name: "Streater Street Pro",
     description: "Classic design with modern comfort.",
     category: "women" as const,
     collection: "summer" as const,
@@ -30,8 +30,8 @@ export const demoProducts = [
     isActive: true,
   },
   {
-    sku: "NK-REACT-003",
-    name: "Nike React Winter Run",
+    sku: "ST-WNTR-003",
+    name: "Streater Winter Run",
     description: "Stable cushioned ride for cold-weather runs.",
     category: "men" as const,
     collection: "winter" as const,
@@ -45,8 +45,8 @@ export const demoProducts = [
     isActive: true,
   },
   {
-    sku: "NK-MOTION-004",
-    name: "Nike Motion Lite",
+    sku: "ST-MTNL-004",
+    name: "Streater Motion Lite",
     description: "Lightweight comfort and sleek styling.",
     category: "women" as const,
     collection: "autumn" as const,
@@ -60,8 +60,8 @@ export const demoProducts = [
     isActive: true,
   },
   {
-    sku: "NK-COURT-005",
-    name: "Nike Court Edge",
+    sku: "ST-CRTE-005",
+    name: "Streater Court Edge",
     description: "Street-ready silhouette and durable traction.",
     category: "men" as const,
     collection: "autumn" as const,
@@ -75,8 +75,8 @@ export const demoProducts = [
     isActive: true,
   },
   {
-    sku: "NK-FLEX-006",
-    name: "Nike Flex Aura",
+    sku: "ST-FLXA-006",
+    name: "Streater Flex Aura",
     description: "Soft flex platform for travel and daily wear.",
     category: "women" as const,
     collection: "winter" as const,

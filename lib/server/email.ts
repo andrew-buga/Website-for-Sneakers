@@ -64,7 +64,7 @@ export async function sendVerificationEmail(email: string, name: string, token: 
   await resend.emails.send({
     from: getFromAddress(),
     to: email,
-    subject: "Verify your email address – Nike Store",
+    subject: "Verify your email address – Streater Store",
     html: emailLayout("Verify your email", body),
   })
 }
@@ -81,7 +81,7 @@ export async function sendPasswordResetEmail(email: string, name: string, token:
   const body = `
     <h1 style="margin:0 0 8px;font-size:26px;font-weight:700;color:#111111;">Reset your password</h1>
     <p style="margin:0 0 4px;font-size:16px;color:#6b7280;line-height:1.6;">Hi ${name},</p>
-    <p style="margin:0 0 24px;font-size:16px;color:#6b7280;line-height:1.6;">We received a request to reset your Nike Store password. Click the button below to set a new password.</p>
+    <p style="margin:0 0 24px;font-size:16px;color:#6b7280;line-height:1.6;">We received a request to reset your Streater Store password. Click the button below to set a new password.</p>
     <a href="${resetUrl}" style="display:inline-block;background:#111111;color:#ffffff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;">Reset Password</a>
     <p style="margin:24px 0 0;font-size:13px;color:#9ca3af;">This link expires in <strong>1 hour</strong>. If you did not request a password reset, you can safely ignore this email — your password will remain unchanged.</p>
     <p style="margin:16px 0 0;font-size:12px;color:#d1d5db;word-break:break-all;">Or copy this link: ${resetUrl}</p>
@@ -90,7 +90,7 @@ export async function sendPasswordResetEmail(email: string, name: string, token:
   await resend.emails.send({
     from: getFromAddress(),
     to: email,
-    subject: "Reset your Nike Store password",
+    subject: "Reset your Streater Store password",
     html: emailLayout("Reset your password", body),
   })
 }

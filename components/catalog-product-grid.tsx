@@ -21,20 +21,24 @@ export default function CatalogProductGrid({ products }: { products: StoreProduc
           key={product.id}
           className="group relative rounded-2xl overflow-hidden bg-card border border-border transition-all duration-500 hover:-translate-y-1 hover:ring-2 hover:ring-primary/80 hover:shadow-[0_0_40px_rgba(255,115,0,0.35)]"
         >
-          <div className="relative aspect-square overflow-hidden rounded-2xl bg-secondary group-hover:scale-95 transition-transform duration-500">
-            <Link href={`/product/${product.id}`} className="absolute inset-0">
-              <Image
-                src={product.imageUrl}
-                alt={product.name}
-                fill
-                className="rounded-2xl object-cover"
-              />
-            </Link>
+          {/* Image wrapper — only the image scales on hover, not the button */}
+          <div className="relative aspect-square overflow-hidden rounded-2xl bg-secondary">
+            <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-95">
+              <Link href={`/product/${product.id}`} className="absolute inset-0">
+                <Image
+                  src={product.imageUrl}
+                  alt={`${product.name} — sneakers`}
+                  fill
+                  className="rounded-2xl object-cover"
+                />
+              </Link>
+            </div>
 
+            {/* Heart / Favorite button sits OUTSIDE the scaling div — no shake */}
             <button
               type="button"
-              aria-label={isInWishlist(product.id) ? "Remove from favorites" : "Add to favorites"}
-              className="absolute bottom-3 right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur transition hover:border-primary hover:text-primary"
+              aria-label={isInWishlist(product.id) ? `Remove ${product.name} from favorites` : `Add ${product.name} to favorites`}
+              className="absolute bottom-3 right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur transition-colors duration-200 hover:border-primary hover:text-primary"
               onClick={() => {
                 if (isInWishlist(product.id)) {
                   removeFromWishlist(product.id)
@@ -49,7 +53,7 @@ export default function CatalogProductGrid({ products }: { products: StoreProduc
                 }
               }}
             >
-              <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? "fill-primary text-primary" : ""}`} />
+              <Heart className={`h-5 w-5 transition-colors duration-200 ${isInWishlist(product.id) ? "fill-primary text-primary" : ""}`} />
             </button>
           </div>
 

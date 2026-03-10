@@ -82,7 +82,7 @@ export default function ProductShowcase() {
                     <Link href={`/product/${product.id}`} className="absolute inset-0">
                       <Image
                         src={product.imageUrl || "/placeholder.svg"}
-                        alt={product.name}
+                        alt={`${product.name} — Streater sneakers`}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -90,8 +90,8 @@ export default function ProductShowcase() {
 
                     <button
                       type="button"
-                      aria-label={isInWishlist(product.id) ? "Remove from favorites" : "Add to favorites"}
-                      className="absolute bottom-3 right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur transition hover:border-primary hover:text-primary"
+                      aria-label={isInWishlist(product.id) ? `Remove ${product.name} from favorites` : `Add ${product.name} to favorites`}
+                      className="absolute bottom-3 right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur transition-colors duration-200 hover:border-primary hover:text-primary"
                       onClick={() => {
                         if (isInWishlist(product.id)) {
                           removeFromWishlist(product.id)
@@ -100,7 +100,7 @@ export default function ProductShowcase() {
                         }
                       }}
                     >
-                      <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? "fill-primary text-primary" : ""}`} />
+                      <Heart className={`h-5 w-5 transition-colors duration-200 ${isInWishlist(product.id) ? "fill-primary text-primary" : ""}`} />
                     </button>
                   </div>
 

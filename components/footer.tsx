@@ -19,8 +19,8 @@ export default function Footer() {
             </h4>
             <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/help/pagination" className="hover:text-foreground transition-colors">
-                  Pagination
+                <Link href="/returns" className="hover:text-foreground transition-colors">
+                  Returns &amp; Refunds
                 </Link>
               </li>
               <li>

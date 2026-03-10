@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
@@ -7,6 +8,18 @@ import Footer from "@/components/footer"
 import CatalogProductGrid from "@/components/catalog-product-grid"
 import { getStoreProducts } from "@/lib/server/storefront"
 import { collectionsMeta } from "@/lib/storefront-types"
+
+export const metadata: Metadata = {
+  title: "Sneaker Collections — Seasonal Drops | Колекції Кросівок",
+  description:
+    "Explore Streater's seasonal sneaker collections. Running, streetwear, and lifestyle footwear for men & women. — Колекції кросівок Streater: сезонні новинки, крости для бігу та міського стилю.",
+  alternates: { canonical: "https://streater.vercel.app/collections" },
+  openGraph: {
+    title: "Sneaker Collections — Streater",
+    description: "Seasonal sneaker drops and curated collections for every style.",
+    url: "https://streater.vercel.app/collections",
+  },
+}
 
 export default async function CollectionsPage() {
   const products = await getStoreProducts()

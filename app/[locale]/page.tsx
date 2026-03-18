@@ -11,13 +11,15 @@ import { getDictionary, isLocale } from "@/lib/i18n"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sneakerportfolio.me"
 
-export function generateMetadata({ params }: { params: { locale: string } }): Metadata {
-  if (!isLocale(params.locale)) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+
+  if (!isLocale(locale)) {
     return {}
   }
 
-  const t = getDictionary(params.locale)
-  const canonical = params.locale === "en" ? siteUrl : `${siteUrl}/${params.locale}`
+  const t = getDictionary(locale)
+  const canonical = locale === "en" ? siteUrl : `${siteUrl}/${locale}`
 
   return {
     title: t.pages.home.metadataTitle,
@@ -31,12 +33,12 @@ export function generateMetadata({ params }: { params: { locale: string } }): Me
   }
 }
 
-export default function LocalizedHomePage({ params }: { params: { locale: string } }) {
-  if (!isLocale(params.locale)) {
+export default async function LocalizedHomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+
+  if (!isLocale(locale)) {
     notFound()
   }
-
-  const locale = params.locale
 
   return (
     <main>

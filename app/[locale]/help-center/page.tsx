@@ -4,12 +4,12 @@ import { notFound } from "next/navigation"
 import InfoPageLayout from "@/components/info-page-layout"
 import { getDictionary, isLocale, withLocaleHref } from "@/lib/i18n"
 
-export default function LocalizedHelpCenterPage({ params }: { params: { locale: string } }) {
-  if (!isLocale(params.locale)) {
+export default async function LocalizedHelpCenterPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+
+  if (!isLocale(locale)) {
     notFound()
   }
-
-  const locale = params.locale
   const t = getDictionary(locale)
 
   return (

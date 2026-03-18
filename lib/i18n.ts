@@ -35,12 +35,6 @@ export type Dictionary = {
     productsCount: (count: number) => string
     collectionNotFound: string
   }
-    common: {
-      back: "Back",
-      seasonal: "Seasonal",
-      productsCount: (count) => `Products (${count})`,
-      collectionNotFound: "Collection not found.",
-    },
   gallery: {
     noImages: string
     prev: string
@@ -48,13 +42,6 @@ export type Dictionary = {
     imageAlt: (name: string, index: number) => string
     thumbAlt: (name: string, index: number) => string
   }
-    gallery: {
-      noImages: "No images available",
-      prev: "Previous image",
-      next: "Next image",
-      imageAlt: (name, index) => `${name} - View ${index}`,
-      thumbAlt: (name, index) => `${name} thumbnail ${index}`,
-    },
   hero: {
     newArrival: string
     titleLine1: string
@@ -345,6 +332,19 @@ const dictionaries: Record<Locale, Dictionary> = {
       noResults: (query) => `No products found for "${query}"`,
       startTyping: "Start typing to search...",
       pricePrefix: "$",
+    },
+    common: {
+      back: "Back",
+      seasonal: "Seasonal",
+      productsCount: (count) => `Products (${count})`,
+      collectionNotFound: "Collection not found.",
+    },
+    gallery: {
+      noImages: "No images available",
+      prev: "Previous image",
+      next: "Next image",
+      imageAlt: (name, index) => `${name} - View ${index}`,
+      thumbAlt: (name, index) => `${name} thumbnail ${index}`,
     },
     hero: {
       newArrival: "New Arrival",

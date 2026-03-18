@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 
 import { locales } from "@/lib/i18n"
 
-export const dynamicParams = false
+export const dynamicParams = true
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))

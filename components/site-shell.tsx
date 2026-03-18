@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 
 import Footer from "@/components/footer"
 import Navbar from "@/components/navbar"
+import { defaultLocale, Locale } from "@/lib/i18n"
 
 type SiteShellProps = {
   eyebrow?: string
@@ -9,6 +10,7 @@ type SiteShellProps = {
   description?: string
   children: ReactNode
   contentClassName?: string
+  locale?: Locale
 }
 
 export default function SiteShell({
@@ -17,17 +19,18 @@ export default function SiteShell({
   description,
   children,
   contentClassName = "max-w-7xl mx-auto px-6 lg:px-12 pt-28 pb-16 lg:pb-24",
+  locale = defaultLocale,
 }: SiteShellProps) {
   return (
     <main>
-      <Navbar />
+      <Navbar locale={locale} />
       <section className={contentClassName}>
         {eyebrow ? <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">{eyebrow}</span> : null}
         <h1 className="font-display text-4xl lg:text-6xl font-bold text-foreground mt-2 mb-4">{title}</h1>
         {description ? <p className="text-muted-foreground max-w-2xl mb-10">{description}</p> : null}
         {children}
       </section>
-      <Footer />
+      <Footer locale={locale} />
     </main>
   )
 }

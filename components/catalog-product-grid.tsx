@@ -6,12 +6,14 @@ import { Heart } from "lucide-react"
 
 import { StoreProduct, formatPriceCents } from "@/lib/storefront-types"
 import { useWishlist } from "@/lib/wishlist-context"
+import { defaultLocale, getDictionary, Locale, withLocaleHref } from "@/lib/i18n"
 
-export default function CatalogProductGrid({ products }: { products: StoreProduct[] }) {
+export default function CatalogProductGrid({ products, locale = defaultLocale }: { products: StoreProduct[]; locale?: Locale }) {
   const { addSnapshotToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
+  const t = getDictionary(locale)
 
   if (products.length === 0) {
-    return <p className="text-muted-foreground text-center py-20">No products found.</p>
+    return <p className="text-muted-foreground text-center py-20">{t.catalogGrid.empty}</p>
   }
 
   return (
@@ -24,7 +26,7 @@ export default function CatalogProductGrid({ products }: { products: StoreProduc
           {/* Image wrapper — only the image scales on hover, not the button */}
           <div className="relative aspect-square overflow-hidden rounded-2xl bg-secondary">
             <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-95">
-              <Link href={`/product/${product.id}`} className="absolute inset-0">
+              <Link href={withLocaleHref(locale, `/product/${product.id}`)} className="absolute inset-0">
                 <Image
                   src={product.imageUrl}
                   alt={`${product.name} — sneakers`}
@@ -37,7 +39,7 @@ export default function CatalogProductGrid({ products }: { products: StoreProduc
             {/* Heart / Favorite button sits OUTSIDE the scaling div — no shake */}
             <button
               type="button"
-              aria-label={isInWishlist(product.id) ? `Remove ${product.name} from favorites` : `Add ${product.name} to favorites`}
+              aria-label={isInWishlist(product.id) ? t.catalogGrid.wishlistRemove(product.name) : t.catalogGrid.wishlistAdd(product.name)}
               className="absolute bottom-3 right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur transition-colors duration-200 hover:border-primary hover:text-primary"
               onClick={() => {
                 if (isInWishlist(product.id)) {
@@ -57,9 +59,9 @@ export default function CatalogProductGrid({ products }: { products: StoreProduc
             </button>
           </div>
 
-          <Link href={`/product/${product.id}`} className="block p-5">
+          <Link href={withLocaleHref(locale, `/product/${product.id}`)} className="block p-5">
             <h3 className="font-display text-lg font-semibold text-foreground">{product.name}</h3>
-            <p className="text-sm text-muted-foreground mt-1">{product.colors.join("/") || "Standard colorway"}</p>
+            <p className="text-sm text-muted-foreground mt-1">{product.colors.join("/") || t.catalogGrid.standardColorway}</p>
             <div className="flex items-center justify-between mt-3">
               <span className="text-primary font-bold">{formatPriceCents(product.priceCents, product.currency)}</span>
             </div>

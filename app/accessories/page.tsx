@@ -1,11 +1,15 @@
 import InfoPageLayout from "@/components/info-page-layout"
+import { defaultLocale, getDictionary } from "@/lib/i18n"
+
+const locale = defaultLocale
+const t = getDictionary(locale)
 
 export default function AccessoriesPage() {
   return (
-    <InfoPageLayout title="Accessories" subtitle="Complete your sneaker setup with extra gear.">
-      <p>Available accessories include socks, laces, cleaning kits, carry bags, and shoe care products. New arrivals are announced in the "Updates" section.</p>
-      <p>Accessory catalog is updated with each seasonal collection release. Limited edition items are available during special events.</p>
-      <p>Contact support for bulk or team orders. Custom branding is available for teams and organizations.</p>
+    <InfoPageLayout title={t.infoPages.accessoriesTitle} subtitle={t.infoPages.accessoriesSubtitle} locale={locale}>
+      <p>{t.infoPages.accessoriesP1}</p>
+      <p>{t.infoPages.accessoriesP2}</p>
+      <p>{t.infoPages.accessoriesP3}</p>
     </InfoPageLayout>
   )
 }

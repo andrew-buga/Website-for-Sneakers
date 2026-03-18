@@ -1,11 +1,15 @@
 import InfoPageLayout from "@/components/info-page-layout"
+import { defaultLocale, getDictionary } from "@/lib/i18n"
+
+const locale = defaultLocale
+const t = getDictionary(locale)
 
 export default function ReceiversAmplifiersPage() {
   return (
-    <InfoPageLayout title="Receivers & Amplifiers" subtitle="Audio partner products for training and lifestyle.">
-      <p>This section covers selected audio devices compatible with mobile training setups. We offer curated picks for sneakerheads who value sound quality.</p>
-      <p>Current catalog includes compact amplifiers, wireless receivers, and Bluetooth speakers for personal use. New models are added each season.</p>
-      <p>For technical specs and compatibility questions, use the contact page or follow our GitHub for open-source integrations.</p>
+    <InfoPageLayout title={t.infoPages.receiversTitle} subtitle={t.infoPages.receiversSubtitle} locale={locale}>
+      <p>{t.infoPages.receiversP1}</p>
+      <p>{t.infoPages.receiversP2}</p>
+      <p>{t.infoPages.receiversP3}</p>
     </InfoPageLayout>
   )
 }

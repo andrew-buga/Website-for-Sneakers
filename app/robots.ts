@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next"
 
-const siteUrl = "https://streater.vercel.app"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sneakerportfolio.me"
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -13,6 +13,8 @@ export default function robots(): MetadataRoute.Robots {
           "/admin/",
           "/account/",
           "/checkout/",
+          "/cart/",
+          "/favorites/",
           "/_next/",
         ],
       },
@@ -31,6 +33,8 @@ export default function robots(): MetadataRoute.Robots {
           "/admin/",
           "/account/",
           "/checkout/",
+          "/cart/",
+          "/favorites/",
         ],
       },
     ],

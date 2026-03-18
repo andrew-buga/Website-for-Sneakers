@@ -1,114 +1,77 @@
 import type { MetadataRoute } from "next"
 
-const siteUrl = "https://streater.vercel.app"
+import { collectionsMeta } from "@/lib/storefront-types"
+import { getStoreProducts } from "@/lib/server/storefront"
+import { locales } from "@/lib/i18n"
 
-export default function sitemap(): MetadataRoute.Sitemap {
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sneakerportfolio.me"
+
+type ChangeFrequency = MetadataRoute.Sitemap[number]["changeFrequency"]
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: siteUrl,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 1.0,
-    },
-    {
-      url: `${siteUrl}/trends`,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
-    {
-      url: `${siteUrl}/collections`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${siteUrl}/men`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.85,
-    },
-    {
-      url: `${siteUrl}/women`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.85,
-    },
-    {
-      url: `${siteUrl}/collection/running`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/collection/streetwear`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/accessories`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/cart`,
-      lastModified: now,
-      changeFrequency: "never",
-      priority: 0.3,
-    },
-    {
-      url: `${siteUrl}/favorites`,
-      lastModified: now,
-      changeFrequency: "never",
-      priority: 0.3,
-    },
-    {
-      url: `${siteUrl}/contact`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/returns`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.65,
-    },
-    {
-      url: `${siteUrl}/store-locator`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/help-center`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${siteUrl}/privacy-policy`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${siteUrl}/terms-conditions`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${siteUrl}/terms-of-use`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-  ]
+  const staticRoutes = [
+    "",
+    "/trends",
+    "/collections",
+    "/men",
+    "/women",
+    "/accessories",
+    "/contact",
+    "/returns",
+    "/store-locator",
+    "/help-center",
+    "/help/pagination",
+    "/privacy-policy",
+    "/terms-conditions",
+    "/terms-of-use",
+    "/receivers-amplifiers",
+  ].map((path) => {
+    const changeFrequency: ChangeFrequency = path === "" || path === "/trends" ? "daily" : "weekly"
 
-  return staticPages
+    return {
+      url: `${siteUrl}${path}`,
+      lastModified: now,
+      changeFrequency,
+      priority: path === "" ? 1.0 : 0.7,
+    }
+  })
+
+  const collectionRoutes = Object.keys(collectionsMeta).map((slug) => ({
+    url: `${siteUrl}/collection/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as ChangeFrequency,
+    priority: 0.8,
+  }))
+
+  const products = await getStoreProducts()
+  const productRoutes = products.map((product) => ({
+    url: `${siteUrl}/product/${product.id}`,
+    lastModified: now,
+    changeFrequency: "weekly" as ChangeFrequency,
+    priority: 0.6,
+  }))
+
+  const localizedLocales = locales.filter((locale) => locale !== "en")
+  const localizedStatic = localizedLocales.flatMap((locale) =>
+    staticRoutes.map((route) => ({
+      ...route,
+      url: route.url.replace(siteUrl, `${siteUrl}/${locale}`),
+    }))
+  )
+  const localizedCollections = localizedLocales.flatMap((locale) =>
+    collectionRoutes.map((route) => ({
+      ...route,
+      url: route.url.replace(siteUrl, `${siteUrl}/${locale}`),
+    }))
+  )
+  const localizedProducts = localizedLocales.flatMap((locale) =>
+    productRoutes.map((route) => ({
+      ...route,
+      url: route.url.replace(siteUrl, `${siteUrl}/${locale}`),
+    }))
+  )
+
+  return [...staticRoutes, ...collectionRoutes, ...productRoutes, ...localizedStatic, ...localizedCollections, ...localizedProducts]
 }

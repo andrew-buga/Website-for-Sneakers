@@ -5,11 +5,13 @@ import Link from "next/link"
 import Image from "next/image"
 import { Search, X } from "lucide-react"
 import { StoreProduct } from "@/lib/storefront-types"
+import { defaultLocale, getDictionary, Locale, withLocaleHref } from "@/lib/i18n"
 
-export default function SearchBar() {
+export default function SearchBar({ locale = defaultLocale }: { locale?: Locale }) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<StoreProduct[]>([])
+  const t = getDictionary(locale)
 
   const handleSearch = async (value: string) => {
     setQuery(value)
@@ -33,7 +35,7 @@ export default function SearchBar() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="text-muted-foreground hover:text-foreground transition-colors"
-        aria-label="Search"
+        aria-label={t.search.aria}
       >
         <Search className="h-5 w-5" />
       </button>
@@ -43,7 +45,7 @@ export default function SearchBar() {
           <div className="relative p-4 border-b border-border">
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder={t.search.placeholder}
               value={query}
               onChange={(e) => handleSearch(e.target.value)}
               className="w-full bg-secondary text-foreground placeholder:text-muted-foreground rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-primary"
@@ -60,7 +62,7 @@ export default function SearchBar() {
                 {results.map((product) => (
                   <Link
                     key={product.id}
-                    href={`/product/${product.id}`}
+                    href={withLocaleHref(locale, `/product/${product.id}`)}
                     onClick={close}
                     className="flex gap-3 items-center p-3 rounded-lg hover:bg-secondary transition-colors"
                   >
@@ -71,17 +73,17 @@ export default function SearchBar() {
                       <p className="text-sm font-medium text-foreground">{product.name}</p>
                       <p className="text-xs text-muted-foreground capitalize">{product.collection}</p>
                     </div>
-                    <p className="text-sm font-semibold text-primary">${(product.priceCents / 100).toFixed(0)}</p>
+                    <p className="text-sm font-semibold text-primary">{t.search.pricePrefix}{(product.priceCents / 100).toFixed(0)}</p>
                   </Link>
                 ))}
               </div>
             ) : query ? (
               <div className="p-8 text-center">
-                <p className="text-muted-foreground text-sm">No products found for "{query}"</p>
+                <p className="text-muted-foreground text-sm">{t.search.noResults(query)}</p>
               </div>
             ) : (
               <div className="p-8 text-center">
-                <p className="text-muted-foreground text-sm">Start typing to search...</p>
+                <p className="text-muted-foreground text-sm">{t.search.startTyping}</p>
               </div>
             )}
           </div>

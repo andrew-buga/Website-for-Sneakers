@@ -6,7 +6,7 @@ import { AuthProvider } from '@/lib/auth-context'
 
 import './globals.css'
 
-const siteUrl = "https://streater.vercel.app"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sneakerportfolio.me"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -90,6 +90,7 @@ export const metadata: Metadata = {
     languages: {
       "en-US": siteUrl,
       "uk-UA": `${siteUrl}/uk`,
+      "ru-RU": `${siteUrl}/ru`,
       "x-default": siteUrl,
     },
   },

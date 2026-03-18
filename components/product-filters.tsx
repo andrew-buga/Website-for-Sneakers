@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { ChevronDown } from "lucide-react"
+import { defaultLocale, getDictionary, Locale } from "@/lib/i18n"
 
 interface FilterProps {
   onFilterChange: (filters: {
@@ -9,6 +10,7 @@ interface FilterProps {
     colors: string[]
     priceRange: [number, number]
   }) => void
+  locale?: Locale
 }
 
 const sizes = ["6", "7", "8", "9", "10", "11", "12", "13"]
@@ -18,7 +20,8 @@ const colors = [
   { name: "Navy", hex: "#001f3f" },
 ]
 
-export default function ProductFilters({ onFilterChange }: FilterProps) {
+export default function ProductFilters({ onFilterChange, locale = defaultLocale }: FilterProps) {
+  const t = getDictionary(locale)
   const [expandedSections, setExpandedSections] = useState({
     size: true,
     color: true,
@@ -66,7 +69,7 @@ export default function ProductFilters({ onFilterChange }: FilterProps) {
           onClick={() => toggleSection("size")}
           className="flex items-center justify-between w-full text-foreground font-semibold"
         >
-          <span>Size</span>
+          <span>{t.filters.size}</span>
           <ChevronDown
             className={`h-5 w-5 transition-transform ${expandedSections.size ? "rotate-180" : ""}`}
           />
@@ -94,7 +97,7 @@ export default function ProductFilters({ onFilterChange }: FilterProps) {
           onClick={() => toggleSection("color")}
           className="flex items-center justify-between w-full text-foreground font-semibold"
         >
-          <span>Color</span>
+          <span>{t.filters.color}</span>
           <ChevronDown
             className={`h-5 w-5 transition-transform ${expandedSections.color ? "rotate-180" : ""}`}
           />
@@ -122,7 +125,7 @@ export default function ProductFilters({ onFilterChange }: FilterProps) {
           onClick={() => toggleSection("price")}
           className="flex items-center justify-between w-full text-foreground font-semibold"
         >
-          <span>Price</span>
+          <span>{t.filters.price}</span>
           <ChevronDown
             className={`h-5 w-5 transition-transform ${expandedSections.price ? "rotate-180" : ""}`}
           />
@@ -130,7 +133,7 @@ export default function ProductFilters({ onFilterChange }: FilterProps) {
         {expandedSections.price && (
           <div className="space-y-4 mt-4">
             <div>
-              <label className="text-xs text-muted-foreground">Min Price: ${priceRange[0]}</label>
+              <label className="text-xs text-muted-foreground">{t.filters.minPrice(priceRange[0])}</label>
               <input
                 type="range"
                 min="0"
@@ -141,7 +144,7 @@ export default function ProductFilters({ onFilterChange }: FilterProps) {
               />
             </div>
             <div>
-              <label className="text-xs text-muted-foreground">Max Price: ${priceRange[1]}</label>
+              <label className="text-xs text-muted-foreground">{t.filters.maxPrice(priceRange[1])}</label>
               <input
                 type="range"
                 min="0"
@@ -152,7 +155,7 @@ export default function ProductFilters({ onFilterChange }: FilterProps) {
               />
             </div>
             <p className="text-sm font-semibold text-foreground">
-              ${priceRange[0]} - ${priceRange[1]}
+              {t.filters.range(priceRange[0], priceRange[1])}
             </p>
           </div>
         )}

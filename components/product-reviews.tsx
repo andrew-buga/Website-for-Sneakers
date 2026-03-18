@@ -7,6 +7,7 @@ import { Star, ThumbsUp } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { defaultLocale, getDictionary, Locale } from "@/lib/i18n"
 
 interface Review {
   id: string
@@ -19,8 +20,9 @@ interface Review {
   userId: string
 }
 
-export default function ProductReviews({ productId }: { productId: string }) {
+export default function ProductReviews({ productId, locale = defaultLocale }: { productId: string; locale?: Locale }) {
   const { isAuthenticated } = useAuth()
+  const t = getDictionary(locale)
   const [reviews, setReviews] = useState<Review[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -64,7 +66,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
 
     const trimmed = newText.trim()
     if (trimmed.length < 10) {
-      alert("Review text should be at least 10 characters")
+      alert(t.reviews.minLength)
       return
     }
 
@@ -79,14 +81,14 @@ export default function ProductReviews({ productId }: { productId: string }) {
 
       const body = await response.json().catch(() => ({}))
       if (!response.ok) {
-        throw new Error(body.error ?? "Failed to create review")
+        throw new Error(body.error ?? t.reviews.createFailed)
       }
 
       setReviews((prev) => [body.review, ...prev])
       setNewRating(5)
       setNewText("")
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Failed to create review")
+      alert(error instanceof Error ? error.message : t.reviews.createFailed)
     } finally {
       setIsSubmitting(false)
     }
@@ -94,7 +96,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
 
   const handleLike = async (review: Review) => {
     if (!isAuthenticated) {
-      alert("Sign in to like reviews")
+      alert(t.reviews.signInToLike)
       return
     }
 
@@ -114,7 +116,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
 
   return (
     <section className="max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-24">
-      <h2 className="font-display text-4xl lg:text-5xl font-bold text-foreground mb-12">Customer Reviews</h2>
+      <h2 className="font-display text-4xl lg:text-5xl font-bold text-foreground mb-12">{t.reviews.title}</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
         <div className="lg:col-span-1 bg-card border border-border rounded-2xl p-8">
@@ -130,7 +132,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
                 />
               ))}
             </div>
-            <p className="text-sm text-muted-foreground">Based on {reviews.length} reviews</p>
+            <p className="text-sm text-muted-foreground">{t.reviews.basedOn(reviews.length)}</p>
           </div>
 
           <div className="mt-8 space-y-3">
@@ -152,16 +154,16 @@ export default function ProductReviews({ productId }: { productId: string }) {
         <div className="lg:col-span-3 space-y-6">
           {isAuthenticated ? (
             <form onSubmit={handleCreateReview} className="bg-card border border-border rounded-2xl p-6 space-y-4">
-              <h3 className="font-semibold text-foreground">Write a Review</h3>
+              <h3 className="font-semibold text-foreground">{t.reviews.writeReview}</h3>
               <div>
-                <p className="text-sm text-foreground mb-2">Rating</p>
+                <p className="text-sm text-foreground mb-2">{t.reviews.rating}</p>
                 <div className="flex items-center gap-2">
                   {[1, 2, 3, 4, 5].map((value) => (
                     <button
                       key={value}
                       type="button"
                       onClick={() => setNewRating(value)}
-                      aria-label={`Rate ${value}`}
+                      aria-label={`${t.reviews.rating} ${value}`}
                       className="text-primary"
                     >
                       <Star className={`h-5 w-5 ${value <= newRating ? "fill-primary" : ""}`} />
@@ -173,24 +175,24 @@ export default function ProductReviews({ productId }: { productId: string }) {
                 <Textarea
                   value={newText}
                   onChange={(event) => setNewText(event.target.value)}
-                  placeholder="Share your experience with this product"
+                  placeholder={t.reviews.shareExperience}
                   className="min-h-[120px]"
                 />
               </div>
-              <Button type="submit" disabled={isSubmitting}>{isSubmitting ? "Posting..." : "Post review"}</Button>
+              <Button type="submit" disabled={isSubmitting}>{isSubmitting ? t.reviews.posting : t.reviews.postReview}</Button>
             </form>
           ) : (
             <div className="bg-card border border-border rounded-2xl p-6 text-sm text-muted-foreground">
               <p>
-                Only registered users can write reviews. <Link href="/account/login" className="text-primary font-semibold hover:underline">Sign in</Link>
+                {t.reviews.onlyRegistered} <Link href="/account/login" className="text-primary font-semibold hover:underline">{t.reviews.signIn}</Link>
               </p>
             </div>
           )}
 
           {isLoading ? (
-            <div className="bg-card border border-border rounded-2xl p-6 text-sm text-muted-foreground">Loading reviews...</div>
+            <div className="bg-card border border-border rounded-2xl p-6 text-sm text-muted-foreground">{t.reviews.loading}</div>
           ) : reviews.length === 0 ? (
-            <div className="bg-card border border-border rounded-2xl p-6 text-sm text-muted-foreground">No reviews yet. Be the first to write one.</div>
+            <div className="bg-card border border-border rounded-2xl p-6 text-sm text-muted-foreground">{t.reviews.empty} {t.reviews.beFirst}</div>
           ) : (
             reviews.map((review) => (
               <div key={review.id} className="bg-card border border-border rounded-2xl p-6">
@@ -213,7 +215,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
                   onClick={() => handleLike(review)}
                   className={`text-xs font-medium transition-colors inline-flex items-center gap-2 ${review.likedByMe ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
                 >
-                  <ThumbsUp className={`h-3.5 w-3.5 ${review.likedByMe ? "fill-primary" : ""}`} /> Helpful ({review.helpful})
+                  <ThumbsUp className={`h-3.5 w-3.5 ${review.likedByMe ? "fill-primary" : ""}`} /> {t.reviews.helpful(review.helpful)}
                 </button>
               </div>
             ))

@@ -1,12 +1,30 @@
+import Link from "next/link"
 import InfoPageLayout from "@/components/info-page-layout"
+import { defaultLocale, getDictionary, withLocaleHref } from "@/lib/i18n"
+
+const locale = defaultLocale
+const t = getDictionary(locale)
 
 export default function HelpCenterPage() {
   return (
-    <InfoPageLayout title="Help Center" subtitle="Support for orders, account, and delivery.">
-      <p>For account issues, visit your profile page to review your details and set a default delivery address. You can update your email, phone, and shipping info at any time.</p>
-      <p>For checkout problems, double-check selected size, stock status, and delivery information. If payment fails, try another method or contact support.</p>
-      <p>Order tracking is available in your account. For lost packages or delays, contact support with your order ID.</p>
-      <p>For any unresolved issue, use the contact page and include your order id if available. Our team responds within 24 hours on business days.</p>
+    <InfoPageLayout title={t.infoPages.helpTitle} subtitle={t.infoPages.helpSubtitle} locale={locale}>
+      <p>{t.infoPages.helpP1}</p>
+      <p>{t.infoPages.helpP2}</p>
+      <p>{t.infoPages.helpP3}</p>
+      <p>
+        {t.infoPages.helpP4Prefix}
+        <Link href={withLocaleHref(locale, "/contact")} className="text-primary underline underline-offset-4">
+          {t.infoPages.helpP4Link}
+        </Link>
+        {t.infoPages.helpP4Suffix}
+      </p>
+      <p>
+        {t.infoPages.helpPaginationPrefix}
+        <Link href={withLocaleHref(locale, "/help/pagination")} className="text-primary underline underline-offset-4">
+          {t.infoPages.helpPaginationLink}
+        </Link>
+        {t.infoPages.helpPaginationSuffix}
+      </p>
     </InfoPageLayout>
   )
 }

@@ -1,6 +1,9 @@
 import Link from "next/link"
+import { defaultLocale, getDictionary, Locale, withLocaleHref } from "@/lib/i18n"
 
-export default function Footer() {
+export default function Footer({ locale = defaultLocale }: { locale?: Locale }) {
+  const t = getDictionary(locale)
+
   return (
     <footer className="bg-background border-t border-border py-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -10,74 +13,74 @@ export default function Footer() {
               STREATER
             </span>
             <p className="text-sm text-muted-foreground mt-4 leading-relaxed">
-              Streater Store — modern sneaker portfolio, design, and innovation.
+              {t.footer.description}
             </p>
           </div>
           <div>
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
-              Help & Information
+              {t.footer.helpInfo}
             </h4>
             <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/returns" className="hover:text-foreground transition-colors">
-                  Returns &amp; Refunds
+                <Link href={withLocaleHref(locale, "/returns")} className="hover:text-foreground transition-colors">
+                  {t.footer.returnsRefunds}
                 </Link>
               </li>
               <li>
-                <Link href="/help-center" className="hover:text-foreground transition-colors">
-                  Help center
+                <Link href={withLocaleHref(locale, "/help-center")} className="hover:text-foreground transition-colors">
+                  {t.footer.helpCenter}
                 </Link>
               </li>
               <li>
-                <Link href="/terms-conditions" className="hover:text-foreground transition-colors">
-                  Terms & Conditions
+                <Link href={withLocaleHref(locale, "/terms-conditions")} className="hover:text-foreground transition-colors">
+                  {t.footer.termsConditions}
                 </Link>
               </li>
               <li>
-                <Link href="/store-locator" className="hover:text-foreground transition-colors">
-                  Store Locator
+                <Link href={withLocaleHref(locale, "/store-locator")} className="hover:text-foreground transition-colors">
+                  {t.footer.storeLocator}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
-              About us
+              {t.footer.aboutUs}
             </h4>
             <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/accessories" className="hover:text-foreground transition-colors">
-                  Accessories
+                <Link href={withLocaleHref(locale, "/accessories")} className="hover:text-foreground transition-colors">
+                  {t.footer.accessories}
                 </Link>
               </li>
               <li>
-                <Link href="/privacy-policy" className="hover:text-foreground transition-colors">
-                  Privacy Policy
+                <Link href={withLocaleHref(locale, "/privacy-policy")} className="hover:text-foreground transition-colors">
+                  {t.footer.privacyPolicy}
                 </Link>
               </li>
               <li>
-                <Link href="/terms-of-use" className="hover:text-foreground transition-colors">
-                  Terms of use
+                <Link href={withLocaleHref(locale, "/terms-of-use")} className="hover:text-foreground transition-colors">
+                  {t.footer.termsOfUse}
                 </Link>
               </li>
               <li>
-                <Link href="/receivers-amplifiers" className="hover:text-foreground transition-colors">
-                  Receivers & Amplifiers
+                <Link href={withLocaleHref(locale, "/receivers-amplifiers")} className="hover:text-foreground transition-colors">
+                  {t.footer.receiversAmplifiers}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
-              Contact
+              {t.footer.contact}
             </h4>
             <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
               <li><a href="tel:+40740116669" className="hover:text-foreground transition-colors">+40 740 116 669</a></li>
               <li><a href="mailto:official.andrew.buga@gmail.com" className="hover:text-foreground transition-colors">official.andrew.buga@gmail.com</a></li>
-              <li><Link href="/contact" className="hover:text-foreground transition-colors">Contact page</Link></li>
+              <li><Link href={withLocaleHref(locale, "/contact")} className="hover:text-foreground transition-colors">{t.footer.contactPage}</Link></li>
             </ul>
             <div className="mt-6">
-              <span className="text-xs font-semibold text-muted-foreground">Portfolio:</span>
+              <span className="text-xs font-semibold text-muted-foreground">{t.footer.portfolioLabel}</span>
               <div className="flex gap-4 mt-2">
                 <a href="https://github.com/andrew-buga" target="_blank" rel="noreferrer" className="text-sm text-primary font-semibold underline underline-offset-4 hover:decoration-wavy transition">GitHub</a>
                 <a href="https://www.behance.net/andrewbuga" target="_blank" rel="noreferrer" className="text-sm text-primary font-semibold underline underline-offset-4 hover:decoration-wavy transition">Behance</a>
@@ -87,10 +90,10 @@ export default function Footer() {
         </div>
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            Built for performance, comfort, and everyday style.
+            {t.footer.builtFor}
           </p>
           <p className="text-xs text-muted-foreground">
-            © 2026 Streater. All rights reserved.
+            {t.footer.rights}
           </p>
         </div>
       </div>

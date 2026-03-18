@@ -7,6 +7,10 @@ import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { ArrowLeft, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { defaultLocale, getDictionary, withLocaleHref } from "@/lib/i18n"
+
+const locale = defaultLocale
+const t = getDictionary(locale)
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, total, clearCart } = useCart()
@@ -14,14 +18,14 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <main>
-        <Navbar />
+        <Navbar locale={locale} />
         <div className="min-h-screen flex flex-col items-center justify-center space-y-6">
-          <p className="text-2xl text-muted-foreground">Your cart is empty</p>
-          <Link href="/">
-            <Button size="lg">Continue Shopping</Button>
+          <p className="text-2xl text-muted-foreground">{t.cart.empty}</p>
+          <Link href={withLocaleHref(locale, "/")}>
+            <Button size="lg">{t.cart.continueShopping}</Button>
           </Link>
         </div>
-        <Footer />
+        <Footer locale={locale} />
       </main>
     )
   }
@@ -33,14 +37,14 @@ export default function CartPage() {
 
   return (
     <main>
-      <Navbar />
+      <Navbar locale={locale} />
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
+        <Link href={withLocaleHref(locale, "/")} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
           <ArrowLeft className="h-4 w-4" />
-          Back
+          {t.cart.back}
         </Link>
 
-        <h1 className="font-display text-4xl lg:text-5xl font-bold text-foreground mb-12">Shopping Cart</h1>
+        <h1 className="font-display text-4xl lg:text-5xl font-bold text-foreground mb-12">{t.cart.title}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
@@ -53,7 +57,7 @@ export default function CartPage() {
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-display text-lg font-semibold text-foreground">{item.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">Size: {item.size} | Color: {item.color}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{t.cart.size}: {item.size} | {t.cart.color}: {item.color}</p>
                   </div>
                   <p className="font-bold text-primary text-lg">{item.price}</p>
                 </div>
@@ -75,38 +79,38 @@ export default function CartPage() {
 
           <div className="lg:col-span-1">
             <div className="bg-card rounded-2xl border border-border p-8 space-y-6 sticky top-6 h-fit">
-              <h2 className="font-display text-2xl font-bold text-foreground">Order Summary</h2>
+              <h2 className="font-display text-2xl font-bold text-foreground">{t.cart.orderSummary}</h2>
 
               <div className="space-y-3 border-t border-border pt-6">
                 <div className="flex justify-between text-foreground">
-                  <span>Subtotal:</span>
+                  <span>{t.cart.subtotal}</span>
                   <span>{"$" + subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-foreground">
-                  <span>Shipping:</span>
+                  <span>{t.cart.shipping}</span>
                   <span>{"$" + shipping.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-foreground">
-                  <span>Tax:</span>
+                  <span>{t.cart.tax}</span>
                   <span>{"$" + tax.toFixed(2)}</span>
                 </div>
               </div>
 
               <div className="flex justify-between font-display text-xl font-bold text-foreground border-t border-border pt-6">
-                <span>Total:</span>
+                <span>{t.cart.total}</span>
                 <span className="text-primary">{"$" + finalTotal.toFixed(2)}</span>
               </div>
 
               <Link href="/checkout" className="block w-full">
-                <Button className="w-full" size="lg">Proceed to Checkout</Button>
+                <Button className="w-full" size="lg">{t.cart.proceed}</Button>
               </Link>
 
-              <button onClick={() => clearCart()} className="w-full text-muted-foreground hover:text-foreground text-sm py-2 transition-colors">Clear Cart</button>
+              <button onClick={() => clearCart()} className="w-full text-muted-foreground hover:text-foreground text-sm py-2 transition-colors">{t.cart.clear}</button>
             </div>
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer locale={locale} />
     </main>
   )
 }

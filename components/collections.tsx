@@ -1,39 +1,41 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
+import { defaultLocale, getDictionary, Locale, withLocaleHref } from "@/lib/i18n"
 
-const collections = [
-  {
-    name: "Winter collection",
-    image: "/images/winter-collection.jpg",
-    slug: "winter",
-  },
-  {
-    name: "Summer collection",
-    image: "/images/summer-collection.jpg",
-    slug: "summer",
-  },
-  {
-    name: "Autumn collection",
-    image: "/images/autumn-collection.jpg",
-    slug: "autumn",
-  },
-]
+export default function Collections({ locale = defaultLocale }: { locale?: Locale }) {
+  const t = getDictionary(locale)
+  const collections = [
+    {
+      name: t.collections.winter,
+      image: "/images/winter-collection.jpg",
+      slug: "winter",
+    },
+    {
+      name: t.collections.summer,
+      image: "/images/summer-collection.jpg",
+      slug: "summer",
+    },
+    {
+      name: t.collections.autumn,
+      image: "/images/autumn-collection.jpg",
+      slug: "autumn",
+    },
+  ]
 
-export default function Collections() {
   return (
     <section className="bg-background py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section header */}
         <div className="mb-12 lg:mb-16">
           <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
-            Seasonal
+            {t.collections.seasonal}
           </span>
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-foreground mt-2">
-            Collections
+            {t.collections.title}
           </h2>
           <p className="text-muted-foreground mt-3 max-w-2xl">
-            Explore curated edits built for changing conditions and everyday comfort.
+            {t.collections.description}
           </p>
         </div>
 
@@ -42,7 +44,7 @@ export default function Collections() {
           {collections.map((collection) => (
             <Link
               key={collection.name}
-              href={`/collection/${collection.slug}`}
+              href={withLocaleHref(locale, `/collection/${collection.slug}`)}
               className="group relative aspect-[4/5] rounded-2xl overflow-hidden"
             >
               <Image

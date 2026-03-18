@@ -7,12 +7,14 @@ import { ArrowLeft, ArrowRight, Heart } from "lucide-react"
 
 import { formatPriceCents, StoreProduct } from "@/lib/storefront-types"
 import { useWishlist } from "@/lib/wishlist-context"
+import { defaultLocale, getDictionary, Locale, withLocaleHref } from "@/lib/i18n"
 
-export default function ProductShowcase() {
+export default function ProductShowcase({ locale = defaultLocale }: { locale?: Locale }) {
   const [products, setProducts] = useState<StoreProduct[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [active, setActive] = useState(-1)
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
+  const t = getDictionary(locale)
 
   useEffect(() => {
     const load = async () => {
@@ -38,17 +40,17 @@ export default function ProductShowcase() {
         <div className="flex items-end justify-between mb-12 lg:mb-16">
           <div>
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
-              Featured
+              {t.showcase.featured}
             </span>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-foreground mt-2">
-              New Drops
+              {t.showcase.newDrops}
             </h2>
           </div>
           <div className="hidden sm:flex items-center gap-3">
             <button
               type="button"
               onClick={goPrev}
-              aria-label="Previous product"
+              aria-label={t.showcase.prev}
               className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -56,7 +58,7 @@ export default function ProductShowcase() {
             <button
               type="button"
               onClick={goNext}
-              aria-label="Next product"
+              aria-label={t.showcase.next}
               className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity"
             >
               <ArrowRight className="h-4 w-4" />
@@ -65,9 +67,9 @@ export default function ProductShowcase() {
         </div>
 
         {isLoading ? (
-          <p className="text-muted-foreground">Loading featured products...</p>
+          <p className="text-muted-foreground">{t.showcase.loading}</p>
         ) : products.length === 0 ? (
-          <p className="text-muted-foreground">No products available yet.</p>
+          <p className="text-muted-foreground">{t.showcase.empty}</p>
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -79,7 +81,7 @@ export default function ProductShowcase() {
                   }`}
                 >
                   <div className="relative aspect-square overflow-hidden bg-secondary">
-                    <Link href={`/product/${product.id}`} className="absolute inset-0">
+                    <Link href={withLocaleHref(locale, `/product/${product.id}`)} className="absolute inset-0">
                       <Image
                         src={product.imageUrl || "/placeholder.svg"}
                         alt={`${product.name} — Streater sneakers`}
@@ -90,7 +92,7 @@ export default function ProductShowcase() {
 
                     <button
                       type="button"
-                      aria-label={isInWishlist(product.id) ? `Remove ${product.name} from favorites` : `Add ${product.name} to favorites`}
+                      aria-label={isInWishlist(product.id) ? t.showcase.wishlistRemove(product.name) : t.showcase.wishlistAdd(product.name)}
                       className="absolute bottom-3 right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur transition-colors duration-200 hover:border-primary hover:text-primary"
                       onClick={() => {
                         if (isInWishlist(product.id)) {
@@ -104,21 +106,21 @@ export default function ProductShowcase() {
                     </button>
                   </div>
 
-                  <Link href={`/product/${product.id}`} className="block p-5">
+                  <Link href={withLocaleHref(locale, `/product/${product.id}`)} className="block p-5">
                     <h3 className="font-display text-lg font-semibold text-foreground">
                       {product.name}
                     </h3>
                     <div className="mt-3 flex flex-col gap-1 text-sm text-muted-foreground">
                       <p>
-                        <span className="text-foreground/70">Color:</span>{" "}
-                        {product.colors.join("/") || "Standard"}
+                        <span className="text-foreground/70">{t.showcase.colorLabel}:</span>{" "}
+                        {product.colors.join("/") || t.catalogGrid.standardColorway}
                       </p>
                       <p>
-                        <span className="text-foreground/70">SKU:</span>{" "}
+                        <span className="text-foreground/70">{t.showcase.skuLabel}:</span>{" "}
                         {product.sku}
                       </p>
                       <p>
-                        <span className="text-foreground/70">Collection:</span>{" "}
+                        <span className="text-foreground/70">{t.showcase.collectionLabel}:</span>{" "}
                         {product.collection}
                       </p>
                     </div>
@@ -135,7 +137,7 @@ export default function ProductShowcase() {
               <button
                 type="button"
                 onClick={goPrev}
-                aria-label="Previous product"
+                aria-label={t.showcase.prev}
                 className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -143,7 +145,7 @@ export default function ProductShowcase() {
               <button
                 type="button"
                 onClick={goNext}
-                aria-label="Next product"
+                aria-label={t.showcase.next}
                 className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity"
               >
                 <ArrowRight className="h-4 w-4" />

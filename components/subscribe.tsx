@@ -3,8 +3,11 @@
 import Link from "next/link"
 import { Phone, Mail, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { defaultLocale, getDictionary, Locale, withLocaleHref } from "@/lib/i18n"
 
-export default function Subscribe() {
+export default function Subscribe({ locale = defaultLocale }: { locale?: Locale }) {
+  const t = getDictionary(locale)
+
   return (
     <section className="bg-card py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -12,13 +15,13 @@ export default function Subscribe() {
           {/* Left side */}
           <div>
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
-              Stay Connected
+              {t.subscribe.stayConnected}
             </span>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-foreground mt-2">
-              Join Our Updates
+              {t.subscribe.joinUpdates}
             </h2>
             <p className="text-muted-foreground mt-4 max-w-md leading-relaxed">
-              Get the latest updates on new arrivals, exclusive deals, and more delivered straight to your inbox.
+              {t.subscribe.description}
             </p>
 
             {/* Contact details */}
@@ -39,14 +42,14 @@ export default function Subscribe() {
             <div className="relative">
               <input
                 type="email"
-                aria-label="Email address"
-                placeholder="Enter your email"
+                aria-label={t.subscribe.emailPlaceholder}
+                placeholder={t.subscribe.emailPlaceholder}
                 className="w-full bg-secondary text-foreground placeholder:text-muted-foreground rounded-full px-6 py-4 pr-14 text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
               />
               <Button
                 type="button"
                 size="icon"
-                aria-label="Subscribe"
+                aria-label={t.subscribe.subscribeAria}
                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full"
               >
                 <Send className="h-4 w-4" />
@@ -100,11 +103,11 @@ export default function Subscribe() {
                 </svg>
               </a>
               <Link
-                href="/contact"
+                href={withLocaleHref(locale, "/contact")}
                 aria-label="Contact page"
                 className="text-sm text-primary hover:underline ml-2"
               >
-                Contact us
+                {t.subscribe.contactUs}
               </Link>
             </div>
           </form>

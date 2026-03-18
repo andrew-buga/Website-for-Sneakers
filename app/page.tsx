@@ -5,31 +5,34 @@ import ProductShowcase from "@/components/product-showcase"
 import Collections from "@/components/collections"
 import Subscribe from "@/components/subscribe"
 import Footer from "@/components/footer"
+import { defaultLocale, getDictionary } from "@/lib/i18n"
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sneakerportfolio.me"
+const locale = defaultLocale
+const t = getDictionary(locale)
 
 export const metadata: Metadata = {
-  title: "Streater Sneakers — Shop New Drops | Кросівки Онлайн | Кроси Онлайн",
-  description:
-    "Streater — the online sneaker store for fresh kicks. Shop men's & women's athletic shoes, running sneakers, and streetwear. Free EU shipping, easy 30-day returns. — Інтернет-магазин кросівок Streater: нові кроси, доставка по Україні та Європі, повернення 30 днів.",
+  title: t.pages.home.metadataTitle,
+  description: t.pages.home.metadataDescription,
   alternates: {
-    canonical: "https://streater.vercel.app",
+    canonical: siteUrl,
   },
   openGraph: {
-    title: "Streater Sneakers — Shop New Drops | Кросівки Онлайн",
-    description:
-      "Shop the freshest sneakers at Streater. Men's & women's athletic shoes with free EU shipping. — Купуй кросівки онлайн.",
-    url: "https://streater.vercel.app",
+    title: t.pages.home.ogTitle,
+    description: t.pages.home.ogDescription,
+    url: siteUrl,
   },
 }
 
 export default function Page() {
   return (
     <main>
-      <Navbar />
-      <Hero />
-      <ProductShowcase />
-      <Collections />
-      <Subscribe />
-      <Footer />
+      <Navbar locale={locale} />
+      <Hero locale={locale} />
+      <ProductShowcase locale={locale} />
+      <Collections locale={locale} />
+      <Subscribe locale={locale} />
+      <Footer locale={locale} />
     </main>
   )
 }

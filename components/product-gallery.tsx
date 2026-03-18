@@ -3,14 +3,17 @@
 import { useState } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { defaultLocale, getDictionary, Locale } from "@/lib/i18n"
 
 interface GalleryProps {
   images: string[]
   productName: string
+  locale?: Locale
 }
 
-export default function ProductGallery({ images, productName }: GalleryProps) {
+export default function ProductGallery({ images, productName, locale = defaultLocale }: GalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const t = getDictionary(locale)
 
   const goNext = () => {
     setSelectedIndex((prev) => (prev + 1) % images.length)
@@ -23,7 +26,7 @@ export default function ProductGallery({ images, productName }: GalleryProps) {
   if (!images || images.length === 0) {
     return (
       <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-secondary flex items-center justify-center">
-        <p className="text-muted-foreground">No images available</p>
+        <p className="text-muted-foreground">{t.gallery.noImages}</p>
       </div>
     )
   }
@@ -34,7 +37,7 @@ export default function ProductGallery({ images, productName }: GalleryProps) {
       <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-secondary">
         <Image
           src={images[selectedIndex]}
-          alt={`${productName} - View ${selectedIndex + 1}`}
+          alt={t.gallery.imageAlt(productName, selectedIndex + 1)}
           fill
           className="object-cover"
           priority
@@ -46,14 +49,14 @@ export default function ProductGallery({ images, productName }: GalleryProps) {
             <button
               onClick={goPrev}
               className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur flex items-center justify-center text-foreground hover:bg-background transition-all z-10"
-              aria-label="Previous image"
+              aria-label={t.gallery.prev}
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               onClick={goNext}
               className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur flex items-center justify-center text-foreground hover:bg-background transition-all z-10"
-              aria-label="Next image"
+              aria-label={t.gallery.next}
             >
               <ChevronRight className="h-5 w-5" />
             </button>
@@ -81,7 +84,7 @@ export default function ProductGallery({ images, productName }: GalleryProps) {
             >
               <Image
                 src={image}
-                alt={`${productName} thumbnail ${index + 1}`}
+                alt={t.gallery.thumbAlt(productName, index + 1)}
                 fill
                 className="object-cover"
               />

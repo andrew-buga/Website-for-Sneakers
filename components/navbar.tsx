@@ -8,23 +8,26 @@ import SearchBar from "./search-bar"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { useWishlist } from "@/lib/wishlist-context"
+import { defaultLocale, getDictionary, Locale, stripLocale, switchLocaleHref, withLocaleHref } from "@/lib/i18n"
 
-export default function Navbar() {
+export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
+  const t = getDictionary(locale)
+  const normalizedPath = stripLocale(pathname)
   const { items } = useCart()
   const { isAuthenticated, user } = useAuth()
   const { items: wishlistItems } = useWishlist()
 
   const navItems = [
-    { label: "Men", href: "/men", match: (path: string) => path === "/men" },
-    { label: "Women", href: "/women", match: (path: string) => path === "/women" },
+    { label: t.nav.men, href: "/men", match: (path: string) => path === "/men" },
+    { label: t.nav.women, href: "/women", match: (path: string) => path === "/women" },
     {
-      label: "Collections",
+      label: t.nav.collections,
       href: "/collections",
       match: (path: string) => path === "/collections" || path.startsWith("/collection/"),
     },
-    { label: "Trends", href: "/trends", match: (path: string) => path === "/trends" },
+    { label: t.nav.trends, href: "/trends", match: (path: string) => path === "/trends" },
   ]
 
   const getNavClassName = (active: boolean) =>
@@ -40,10 +43,10 @@ export default function Navbar() {
       {/* Desktop Links */}
       <ul className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
         {navItems.map((item) => {
-          const active = item.match(pathname)
+          const active = item.match(normalizedPath)
           return (
             <li key={item.label}>
-              <Link href={item.href} className={getNavClassName(active)}>
+              <Link href={withLocaleHref(locale, item.href)} className={getNavClassName(active)}>
                 {item.label}
               </Link>
             </li>
@@ -53,25 +56,37 @@ export default function Navbar() {
 
       {/* Icons */}
       <div className="flex items-center gap-4" suppressHydrationWarning>
-        <SearchBar />
-        <Link href="/favorites" aria-label="Wishlist" className={`hidden sm:block relative transition-colors ${pathname === "/favorites" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+        <div className="hidden sm:flex items-center rounded-full border border-border bg-background/60 backdrop-blur px-2 py-1 text-xs font-semibold text-muted-foreground">
+          {["en", "uk", "ru"].map((lang) => (
+            <Link
+              key={lang}
+              href={switchLocaleHref(lang as Locale, pathname)}
+              className={`px-2 py-1 rounded-full transition-colors ${locale === lang ? "bg-primary text-primary-foreground" : "hover:text-foreground"}`}
+              aria-label={`${t.switcher.label}: ${lang.toUpperCase()}`}
+            >
+              {t.switcher[lang as "en" | "uk" | "ru"]}
+            </Link>
+          ))}
+        </div>
+        <SearchBar locale={locale} />
+        <Link href={withLocaleHref(locale, "/favorites")} aria-label="Wishlist" className={`hidden sm:block relative transition-colors ${normalizedPath === "/favorites" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
           <Heart className="h-5 w-5" />
           <span suppressHydrationWarning className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" style={{display: wishlistItems.length > 0 ? 'flex' : 'none'}}>
             {wishlistItems.length}
           </span>
         </Link>
-        <Link href="/cart" aria-label="Cart" className={`relative transition-colors ${pathname === "/cart" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+        <Link href={withLocaleHref(locale, "/cart")} aria-label="Cart" className={`relative transition-colors ${normalizedPath === "/cart" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
           <ShoppingBag className="h-5 w-5" />
           <span suppressHydrationWarning className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" style={{display: items.length > 0 ? 'flex' : 'none'}}>
             {items.length}
           </span>
         </Link>
-        <Link href={isAuthenticated && user ? "/account/profile" : "/account/login"} aria-label="Account" className="text-muted-foreground hover:text-foreground transition-colors">
+        <Link href={isAuthenticated && user ? "/account/profile" : "/account/login"} aria-label={t.nav.account} className="text-muted-foreground hover:text-foreground transition-colors">
           <User className="h-5 w-5" />
         </Link>
         {!isAuthenticated ? (
           <Link href="/account/login" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
-            Sign In
+            {t.nav.signIn}
           </Link>
         ) : null}
         <button
@@ -89,34 +104,51 @@ export default function Navbar() {
         <div className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border md:hidden">
           <ul className="flex flex-col px-6 py-4 gap-4 text-sm font-medium text-muted-foreground">
             {navItems.map((item) => {
-              const active = item.match(pathname)
+              const active = item.match(normalizedPath)
               return (
                 <li key={item.label}>
-                  <Link href={item.href} className={`block py-2 transition-colors ${active ? "text-foreground" : "hover:text-foreground"}`} onClick={() => setMobileOpen(false)}>
+                  <Link href={withLocaleHref(locale, item.href)} className={`block py-2 transition-colors ${active ? "text-foreground" : "hover:text-foreground"}`} onClick={() => setMobileOpen(false)}>
                     {item.label}
                   </Link>
                 </li>
               )
             })}
             <li>
-              <Link href="/favorites" className={`block py-2 transition-colors ${pathname === "/favorites" ? "text-foreground" : "hover:text-foreground"}`} onClick={() => setMobileOpen(false)}>Favorites</Link>
+              <Link href={withLocaleHref(locale, "/favorites")} className={`block py-2 transition-colors ${normalizedPath === "/favorites" ? "text-foreground" : "hover:text-foreground"}`} onClick={() => setMobileOpen(false)}>{t.nav.favorites}</Link>
             </li>
             <li>
               <Link
                 href={isAuthenticated && user ? "/account/profile" : "/account/login"}
-                className={`block py-2 transition-colors ${pathname.startsWith("/account") ? "text-foreground" : "hover:text-foreground"}`}
+                className={`block py-2 transition-colors ${normalizedPath.startsWith("/account") ? "text-foreground" : "hover:text-foreground"}`}
                 onClick={() => setMobileOpen(false)}
               >
-                {isAuthenticated && user ? "My account" : "Sign in"}
+                {isAuthenticated && user ? t.nav.myAccount : t.nav.signIn}
               </Link>
             </li>
             {!isAuthenticated ? (
               <li>
                 <Link href="/account/register" className="block py-2 transition-colors hover:text-foreground" onClick={() => setMobileOpen(false)}>
-                  Register
+                  {t.nav.register}
                 </Link>
               </li>
             ) : null}
+            <li className="pt-2 border-t border-border">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                {t.switcher.label}
+              </div>
+              <div className="flex items-center gap-2 mt-2">
+                {["en", "uk", "ru"].map((lang) => (
+                  <Link
+                    key={lang}
+                    href={switchLocaleHref(lang as Locale, pathname)}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold border border-border ${locale === lang ? "bg-primary text-primary-foreground border-primary" : "hover:text-foreground"}`}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {t.switcher[lang as "en" | "uk" | "ru"]}
+                  </Link>
+                ))}
+              </div>
+            </li>
           </ul>
         </div>
       )}

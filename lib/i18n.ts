@@ -1418,6 +1418,9 @@ export function getPathLocale(pathname: string): Locale | undefined {
 export function withLocaleHref(locale: Locale, href: string) {
   if (!href.startsWith("/")) return href
   const stripped = stripLocale(href)
+  if (locale === defaultLocale) {
+    return stripped
+  }
   return stripped === "/" ? `/${locale}` : `/${locale}${stripped}`
 }
 

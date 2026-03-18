@@ -21,6 +21,13 @@ export function middleware(request: NextRequest) {
   const first = segments[0]
 
   if (first && LOCALES.includes(first as (typeof LOCALES)[number])) {
+    if (first === DEFAULT_LOCALE) {
+      const redirectUrl = request.nextUrl.clone()
+      const stripped = `/${segments.slice(1).join("/")}`
+      redirectUrl.pathname = stripped === "/" ? "/" : stripped
+      return NextResponse.redirect(redirectUrl, 308)
+    }
+
     const maybeNonLocalizedSection = segments[1]
 
     if (maybeNonLocalizedSection && NON_LOCALIZED_PREFIXES.has(maybeNonLocalizedSection)) {
@@ -36,10 +43,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const redirectUrl = request.nextUrl.clone()
-  redirectUrl.pathname = pathname === "/" ? `/${DEFAULT_LOCALE}` : `/${DEFAULT_LOCALE}${pathname}`
-
-  return NextResponse.redirect(redirectUrl)
+  return NextResponse.next()
 }
 
 export const config = {

@@ -165,3 +165,71 @@ export function isValidAddress(addr: unknown): addr is Address {
     a.country.length <= 100
   )
 }
+
+/**
+ * Validate address with detailed error messages
+ */
+export interface AddressValidation {
+  isValid: boolean
+  errors: Record<string, string>
+}
+
+export function validateAddress(addr: unknown): AddressValidation {
+  const errors: Record<string, string> = {}
+
+  if (!addr || typeof addr !== "object") {
+    return { isValid: false, errors: { general: "Invalid address object" } }
+  }
+
+  const a = addr as Record<string, unknown>
+
+  // Validate name (recipient name)
+  if (typeof a.name !== "string" || a.name.trim().length === 0) {
+    errors.name = "Recipient name is required"
+  } else if (a.name.length > 100) {
+    errors.name = "Name must be 100 characters or less"
+  } else if (!/^[a-zA-Z\s'-]+$/.test(a.name)) {
+    errors.name = "Name can only contain letters, spaces, apostrophes, and hyphens"
+  }
+
+  // Validate street address
+  if (typeof a.address !== "string" || a.address.trim().length === 0) {
+    errors.address = "Street address is required"
+  } else if (a.address.length > 255) {
+    errors.address = "Street address must be 255 characters or less"
+  } else if (a.address.length < 5) {
+    errors.address = "Street address must be at least 5 characters"
+  }
+
+  // Validate city
+  if (typeof a.city !== "string" || a.city.trim().length === 0) {
+    errors.city = "City is required"
+  } else if (a.city.length > 100) {
+    errors.city = "City name must be 100 characters or less"
+  } else if (!/^[a-zA-Z\s'-]+$/.test(a.city)) {
+    errors.city = "City name can only contain letters, spaces, apostrophes, and hyphens"
+  }
+
+  // Validate postal code/zip
+  if (typeof a.zipCode !== "string" || a.zipCode.trim().length === 0) {
+    errors.zipCode = "Postal code is required"
+  } else if (a.zipCode.length > 20) {
+    errors.zipCode = "Postal code must be 20 characters or less"
+  } else if (!/^[a-zA-Z0-9\s-]+$/.test(a.zipCode)) {
+    errors.zipCode = "Postal code can only contain letters, numbers, spaces, and hyphens"
+  }
+
+  // Validate country
+  if (typeof a.country !== "string" || a.country.trim().length === 0) {
+    errors.country = "Country is required"
+  } else if (a.country.length > 100) {
+    errors.country = "Country name must be 100 characters or less"
+  } else if (!/^[a-zA-Z\s'-]+$/.test(a.country)) {
+    errors.country = "Country name can only contain letters, spaces, apostrophes, and hyphens"
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  }
+}

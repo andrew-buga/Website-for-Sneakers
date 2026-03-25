@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuth, Address } from "@/lib/auth-context"
+import { validateAddress } from "@/lib/validation"
+import { useCsrfToken } from "@/lib/use-csrf-token"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -12,6 +14,7 @@ import { ArrowLeft, LogOut, Plus, Edit2, Trash2, Check } from "lucide-react"
 export default function ProfilePage() {
   const router = useRouter()
   const pathname = usePathname()
+  const { token: csrfToken } = useCsrfToken()
   const { user, logout, updateProfile, addAddress, updateAddress, deleteAddress, setDefaultAddress, isAuthenticated } = useAuth()
   const [locale, setLocale] = useState<string>("")
   const [isEditing, setIsEditing] = useState(false)
@@ -19,6 +22,7 @@ export default function ProfilePage() {
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [addressErrors, setAddressErrors] = useState<Record<string, string>>({})
   const [formData, setFormData] = useState({
     name: user?.name || "",
     phone: user?.phone || "",
@@ -62,6 +66,14 @@ export default function ProfilePage() {
     const { name, value } = e.target
     setAddressForm(prev => ({ ...prev, [name]: value }))
     setError("")
+    // Clear field-specific error when user starts typing
+    if (addressErrors[name]) {
+      setAddressErrors(prev => {
+        const next = { ...prev }
+        delete next[name]
+        return next
+      })
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,15 +94,53 @@ export default function ProfilePage() {
   const handleAddAddress = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+    setAddressErrors({})
     setIsLoading(true)
 
     try {
-      if (!addressForm.name || !addressForm.address || !addressForm.city || !addressForm.zipCode || !addressForm.country) {
-        throw new Error("Please fill in all address fields")
+      // Validate address before submitting
+      const validation = validateAddress(addressForm)
+      if (!validation.isValid) {
+        setAddressErrors(validation.errors)
+        setIsLoading(false)
+        return
       }
-      await addAddress(addressForm)
+
+      // Make direct API call with CSRF token instead of using auth context
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      }
+      
+      // Add CSRF token if available
+      if (csrfToken) {
+        headers["x-csrf-token"] = csrfToken
+      }
+
+      const response = await fetch(`/api/users/${user?.id}/addresses`, {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({
+          fullName: addressForm.name,
+          line1: addressForm.address,
+          city: addressForm.city,
+          postalCode: addressForm.zipCode,
+          country: addressForm.country,
+          isDefault: addressForm.isDefault,
+        }),
+      })
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        throw new Error(data.error ?? "Add address failed")
+      }
+
       setAddressForm({ name: "", address: "", city: "", zipCode: "", country: "", isDefault: false })
       setIsAddingAddress(false)
+      setAddressErrors({})
+      
+      // Refresh user data to show new address
+      window.location.reload()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Add address failed")
     } finally {
@@ -240,19 +290,25 @@ export default function ProfilePage() {
                   value={addressForm.name}
                   onChange={handleAddressChange}
                   placeholder="e.g., Home, Office"
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary"
+                  className={`w-full px-4 py-3 border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary ${
+                    addressErrors.name ? "border-red-500" : "border-border"
+                  }`}
                 />
+                {addressErrors.name && <p className="mt-1 text-sm text-red-600">{addressErrors.name}</p>}
               </div>
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Address</label>
+                <label className="block text-sm font-semibold text-foreground mb-2">Street Address</label>
                 <input
                   type="text"
                   name="address"
                   value={addressForm.address}
                   onChange={handleAddressChange}
                   placeholder="Street address"
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary"
+                  className={`w-full px-4 py-3 border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary ${
+                    addressErrors.address ? "border-red-500" : "border-border"
+                  }`}
                 />
+                {addressErrors.address && <p className="mt-1 text-sm text-red-600">{addressErrors.address}</p>}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -263,19 +319,25 @@ export default function ProfilePage() {
                     value={addressForm.city}
                     onChange={handleAddressChange}
                     placeholder="City"
-                    className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary"
+                    className={`w-full px-4 py-3 border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary ${
+                      addressErrors.city ? "border-red-500" : "border-border"
+                    }`}
                   />
+                  {addressErrors.city && <p className="mt-1 text-sm text-red-600">{addressErrors.city}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">ZIP Code</label>
+                  <label className="block text-sm font-semibold text-foreground mb-2">ZIP / Postal Code</label>
                   <input
                     type="text"
                     name="zipCode"
                     value={addressForm.zipCode}
                     onChange={handleAddressChange}
                     placeholder="ZIP Code"
-                    className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary"
+                    className={`w-full px-4 py-3 border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary ${
+                      addressErrors.zipCode ? "border-red-500" : "border-border"
+                    }`}
                   />
+                  {addressErrors.zipCode && <p className="mt-1 text-sm text-red-600">{addressErrors.zipCode}</p>}
                 </div>
               </div>
               <div>
@@ -286,14 +348,17 @@ export default function ProfilePage() {
                   value={addressForm.country}
                   onChange={handleAddressChange}
                   placeholder="Country"
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary"
+                  className={`w-full px-4 py-3 border rounded-lg bg-background text-foreground focus:outline-none focus:border-primary ${
+                    addressErrors.country ? "border-red-500" : "border-border"
+                  }`}
                 />
+                {addressErrors.country && <p className="mt-1 text-sm text-red-600">{addressErrors.country}</p>}
               </div>
               <div className="flex gap-3">
-                <Button type="submit" disabled={isLoading}>
+                <Button type="submit" disabled={isLoading || Object.keys(addressErrors).length > 0}>
                   {isLoading ? "Adding..." : "Add"}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => { setIsAddingAddress(false); setAddressForm({ name: "", address: "", city: "", zipCode: "", country: "", isDefault: false }); }}>
+                <Button type="button" variant="outline" onClick={() => { setIsAddingAddress(false); setAddressForm({ name: "", address: "", city: "", zipCode: "", country: "", isDefault: false }); setAddressErrors({}) }}>
                   Cancel
                 </Button>
               </div>

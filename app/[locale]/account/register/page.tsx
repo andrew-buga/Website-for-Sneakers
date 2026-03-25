@@ -83,7 +83,32 @@ export default function RegisterPage() {
         throw new Error("Full name must not exceed 100 characters")
       }
 
-      await register(trimmedEmail, trimmedPassword, trimmedName)
+      // Make direct API call with CSRF token
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      }
+      
+      if (csrfToken) {
+        headers["x-csrf-token"] = csrfToken
+      }
+
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({
+          email: trimmedEmail,
+          password: trimmedPassword,
+          name: trimmedName,
+        }),
+      })
+
+      const data = await response.json().catch(() => ({}))
+      
+      if (!response.ok) {
+        throw new Error(data.error ?? "Registration failed")
+      }
+
       setSuccess(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed")

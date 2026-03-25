@@ -69,7 +69,32 @@ function LoginContent({ locale }: { locale: string }) {
         throw new Error("Password must be at least 6 characters")
       }
 
-      await login(trimmedEmail, trimmedPassword)
+      // Make direct API call with CSRF token
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      }
+      
+      if (csrfToken) {
+        headers["x-csrf-token"] = csrfToken
+      }
+
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({
+          email: trimmedEmail,
+          password: trimmedPassword,
+        }),
+      })
+
+      const data = await response.json().catch(() => ({}))
+      
+      if (!response.ok) {
+        throw new Error(data.error ?? "Login failed")
+      }
+
+      // Authentication successful, redirect to profile
       router.push(`/${locale}/account/profile`)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed")

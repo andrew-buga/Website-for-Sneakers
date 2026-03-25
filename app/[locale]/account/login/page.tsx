@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
+import { isValidEmail } from "@/lib/validation"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -50,11 +51,23 @@ function LoginContent({ locale }: { locale: string }) {
     setIsLoading(true)
 
     try {
-      if (!formData.email || !formData.password) {
+      // Validate inputs
+      const trimmedEmail = formData.email.trim()
+      const trimmedPassword = formData.password.trim()
+
+      if (!trimmedEmail || !trimmedPassword) {
         throw new Error("Please fill in all fields")
       }
 
-      await login(formData.email, formData.password)
+      if (!isValidEmail(trimmedEmail)) {
+        throw new Error("Please enter a valid email address")
+      }
+
+      if (trimmedPassword.length < 6) {
+        throw new Error("Password must be at least 6 characters")
+      }
+
+      await login(trimmedEmail, trimmedPassword)
       router.push(`/${locale}/account/profile`)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed")

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
+import { isValidEmail, validatePassword } from "@/lib/validation"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -44,28 +45,43 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      if (!formData.name || !formData.email || !formData.password) {
+      // Trim inputs
+      const trimmedName = formData.name.trim()
+      const trimmedEmail = formData.email.trim()
+      const trimmedPassword = formData.password.trim()
+      const trimmedConfirmPassword = formData.confirmPassword.trim()
+
+      // Validate required fields
+      if (!trimmedName || !trimmedEmail || !trimmedPassword || !trimmedConfirmPassword) {
         throw new Error("Please fill in all fields")
       }
 
-      if (formData.password !== formData.confirmPassword) {
+      // Validate email format
+      if (!isValidEmail(trimmedEmail)) {
+        throw new Error("Please enter a valid email address")
+      }
+
+      // Validate password match
+      if (trimmedPassword !== trimmedConfirmPassword) {
         throw new Error("Passwords do not match")
       }
 
-      if (formData.password.length < 8) {
-        throw new Error("Password must be at least 8 characters")
+      // Validate password strength using centralized validation
+      const passwordValidation = validatePassword(trimmedPassword)
+      if (!passwordValidation.isValid) {
+        throw new Error(passwordValidation.errors.join(", "))
       }
 
-      const hasUppercase = /[A-Z]/.test(formData.password)
-      const hasLowercase = /[a-z]/.test(formData.password)
-      const hasDigit = /\d/.test(formData.password)
-      const hasSpecial = /[^A-Za-z0-9]/.test(formData.password)
-
-      if (!hasUppercase || !hasLowercase || !hasDigit || !hasSpecial) {
-        throw new Error("Password must include uppercase, lowercase, number, and special character")
+      // Validate name length
+      if (trimmedName.length < 2) {
+        throw new Error("Full name must be at least 2 characters")
       }
 
-      await register(formData.email, formData.password, formData.name)
+      if (trimmedName.length > 100) {
+        throw new Error("Full name must not exceed 100 characters")
+      }
+
+      await register(trimmedEmail, trimmedPassword, trimmedName)
       setSuccess(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed")

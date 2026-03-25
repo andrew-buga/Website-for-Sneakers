@@ -50,11 +50,49 @@ async function parseApiResponse(response: Response) {
   return body
 }
 
-function normalizeUser(payload: any): User {
+interface RawUserPayload {
+  id: string
+  email: string
+  name: string
+  role: string
+  phone?: string
+  createdAt: string | number | Date
+  addresses?: Address[]
+}
+
+function normalizeUser(payload: unknown): User {
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Invalid user payload")
+  }
+
+  const p = payload as Record<string, unknown>
+  
+  if (typeof p.id !== "string" || typeof p.email !== "string" || typeof p.name !== "string") {
+    throw new Error("Missing required user fields")
+  }
+
+  // Validate and default role to CUSTOMER if missing or invalid
+  let role: "CUSTOMER" | "ADMIN" = "CUSTOMER"
+  if (typeof p.role === "string" && (p.role === "CUSTOMER" || p.role === "ADMIN")) {
+    role = p.role
+  }
+
+  // Validate emailVerified, default to false if missing
+  const emailVerified = typeof p.emailVerified === "boolean" ? p.emailVerified : false
+
+  // Optional defaultAddressId
+  const defaultAddressId = typeof p.defaultAddressId === "string" ? p.defaultAddressId : undefined
+
   return {
-    ...payload,
-    createdAt: typeof payload.createdAt === "string" ? payload.createdAt : new Date(payload.createdAt).toISOString(),
-    addresses: payload.addresses ?? [],
+    id: p.id,
+    email: p.email,
+    name: p.name,
+    role,
+    phone: (p.phone as string) || "",
+    emailVerified,
+    defaultAddressId,
+    createdAt: typeof p.createdAt === "string" ? p.createdAt : new Date(p.createdAt as Date).toISOString(),
+    addresses: Array.isArray(p.addresses) ? (p.addresses as Address[]) : [],
   }
 }
 

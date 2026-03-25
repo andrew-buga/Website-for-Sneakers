@@ -29,13 +29,39 @@ const redirectRoutes = [
   'admin',
 ]
 
+/**
+ * Security headers to prevent common attacks
+ */
+function addSecurityHeaders(response: NextResponse): NextResponse {
+  // Prevent clickjacking attacks
+  response.headers.set('X-Frame-Options', 'DENY')
+  
+  // Prevent MIME type sniffing
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  
+  // Enable XSS protection in older browsers
+  response.headers.set('X-XSS-Protection', '1; mode=block')
+  
+  // Referrer policy
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  
+  // Require HTTPS
+  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+  
+  // Control permissions
+  response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()')
+  
+  return response
+}
+
 export function middleware(request: NextRequest) {
   // Parse pathname
   const pathname = request.nextUrl.pathname
 
   // Skip API routes, public assets, etc.
   if (pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname.startsWith('/images')) {
-    return NextResponse.next()
+    const response = NextResponse.next()
+    return addSecurityHeaders(response)
   }
 
   // Check if path already has a locale prefix
@@ -43,7 +69,8 @@ export function middleware(request: NextRequest) {
 
   if (pathnameHasLocale) {
     // Already localized, pass through
-    return NextResponse.next()
+    const response = NextResponse.next()
+    return addSecurityHeaders(response)
   }
 
   // Check if pathname matches any route that should be redirected
@@ -54,10 +81,12 @@ export function middleware(request: NextRequest) {
   if (pathname === '/' || redirectRoutes.includes(firstSegment)) {
     // Redirect to default locale variant
     const redirectPath = `/${defaultLocale}${pathname}`
-    return NextResponse.redirect(new URL(redirectPath, request.url), 307) // 307: temporary redirect
+    const response = NextResponse.redirect(new URL(redirectPath, request.url), 307) // 307: temporary redirect
+    return addSecurityHeaders(response)
   }
 
-  return NextResponse.next()
+  const response = NextResponse.next()
+  return addSecurityHeaders(response)
 }
 
 export const config = {

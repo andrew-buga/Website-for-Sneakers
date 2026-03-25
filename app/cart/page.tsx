@@ -101,7 +101,7 @@ export default function CartPage() {
                 <span className="text-primary">{"$" + finalTotal.toFixed(2)}</span>
               </div>
 
-              <Link href="/checkout" className="block w-full">
+              <Link href={withLocaleHref(locale, "/checkout")} className="block w-full">
                 <Button className="w-full" size="lg">{t.cart.proceed}</Button>
               </Link>
 

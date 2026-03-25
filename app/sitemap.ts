@@ -45,7 +45,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  const products = await getStoreProducts()
+  let products: Awaited<ReturnType<typeof getStoreProducts>> = []
+  try {
+    products = await getStoreProducts()
+  } catch {
+    // Keep sitemap available for crawlers even if product API is temporarily down.
+    products = []
+  }
   const productRoutes = products.map((product) => ({
     url: `${siteUrl}/product/${product.id}`,
     lastModified: now,

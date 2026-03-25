@@ -10,14 +10,16 @@ import { getStoreProducts } from "@/lib/server/storefront"
 import { collectionsMeta } from "@/lib/storefront-types"
 import { getDictionary, isLocale, withLocaleHref } from "@/lib/i18n"
 
-export default async function LocalizedCollectionPage({ params }: { params: { locale: string; slug: string } }) {
-  if (!isLocale(params.locale)) {
+export default async function LocalizedCollectionPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const resolved = await params
+
+  if (!isLocale(resolved.locale)) {
     notFound()
   }
 
-  const locale = params.locale
+  const locale = resolved.locale
   const t = getDictionary(locale)
-  const key = params.slug as keyof typeof collectionsMeta
+  const key = resolved.slug as keyof typeof collectionsMeta
   const meta = collectionsMeta[key]
 
   if (!meta) {

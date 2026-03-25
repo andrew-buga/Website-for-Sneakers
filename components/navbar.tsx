@@ -8,12 +8,13 @@ import SearchBar from "./search-bar"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { useWishlist } from "@/lib/wishlist-context"
-import { defaultLocale, getDictionary, Locale, stripLocale, switchLocaleHref, withLocaleHref } from "@/lib/i18n"
+import { defaultLocale, getDictionary, getPathLocale, Locale, stripLocale, switchLocaleHref, withLocaleHref } from "@/lib/i18n"
 
 export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
-  const t = getDictionary(locale)
+  const activeLocale = getPathLocale(pathname) ?? locale
+  const t = getDictionary(activeLocale)
   const normalizedPath = stripLocale(pathname)
   const { items } = useCart()
   const { isAuthenticated, user } = useAuth()
@@ -36,7 +37,7 @@ export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) 
   return (
     <nav className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-5 lg:px-12">
       {/* Logo */}
-      <Link href="/" className="text-2xl font-display font-bold tracking-wider text-foreground">
+      <Link href={withLocaleHref(activeLocale, "/")} className="text-2xl font-display font-bold tracking-wider text-foreground">
         Streater
       </Link>
 
@@ -46,7 +47,7 @@ export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) 
           const active = item.match(normalizedPath)
           return (
             <li key={item.label}>
-              <Link href={withLocaleHref(locale, item.href)} className={getNavClassName(active)}>
+              <Link href={withLocaleHref(activeLocale, item.href)} className={getNavClassName(active)}>
                 {item.label}
               </Link>
             </li>
@@ -61,21 +62,21 @@ export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) 
             <Link
               key={lang}
               href={switchLocaleHref(lang as Locale, pathname)}
-              className={`px-2 py-1 rounded-full transition-colors ${locale === lang ? "bg-primary text-primary-foreground" : "hover:text-foreground"}`}
+              className={`px-2 py-1 rounded-full transition-colors ${activeLocale === lang ? "bg-primary text-primary-foreground" : "hover:text-foreground"}`}
               aria-label={`${t.switcher.label}: ${lang.toUpperCase()}`}
             >
               {t.switcher[lang as "en" | "uk" | "ru"]}
             </Link>
           ))}
         </div>
-        <SearchBar locale={locale} />
-        <Link href={withLocaleHref(locale, "/favorites")} aria-label="Wishlist" className={`hidden sm:block relative transition-colors ${normalizedPath === "/favorites" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+        <SearchBar locale={activeLocale} />
+        <Link href={withLocaleHref(activeLocale, "/favorites")} aria-label="Wishlist" className={`hidden sm:block relative transition-colors ${normalizedPath === "/favorites" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
           <Heart className="h-5 w-5" />
           <span suppressHydrationWarning className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" style={{display: wishlistItems.length > 0 ? 'flex' : 'none'}}>
             {wishlistItems.length}
           </span>
         </Link>
-        <Link href={withLocaleHref(locale, "/cart")} aria-label="Cart" className={`relative transition-colors ${normalizedPath === "/cart" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+        <Link href={withLocaleHref(activeLocale, "/cart")} aria-label="Cart" className={`relative transition-colors ${normalizedPath === "/cart" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
           <ShoppingBag className="h-5 w-5" />
           <span suppressHydrationWarning className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" style={{display: items.length > 0 ? 'flex' : 'none'}}>
             {items.length}
@@ -107,14 +108,14 @@ export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) 
               const active = item.match(normalizedPath)
               return (
                 <li key={item.label}>
-                  <Link href={withLocaleHref(locale, item.href)} className={`block py-2 transition-colors ${active ? "text-foreground" : "hover:text-foreground"}`} onClick={() => setMobileOpen(false)}>
+                  <Link href={withLocaleHref(activeLocale, item.href)} className={`block py-2 transition-colors ${active ? "text-foreground" : "hover:text-foreground"}`} onClick={() => setMobileOpen(false)}>
                     {item.label}
                   </Link>
                 </li>
               )
             })}
             <li>
-              <Link href={withLocaleHref(locale, "/favorites")} className={`block py-2 transition-colors ${normalizedPath === "/favorites" ? "text-foreground" : "hover:text-foreground"}`} onClick={() => setMobileOpen(false)}>{t.nav.favorites}</Link>
+              <Link href={withLocaleHref(activeLocale, "/favorites")} className={`block py-2 transition-colors ${normalizedPath === "/favorites" ? "text-foreground" : "hover:text-foreground"}`} onClick={() => setMobileOpen(false)}>{t.nav.favorites}</Link>
             </li>
             <li>
               <Link
@@ -141,7 +142,7 @@ export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) 
                   <Link
                     key={lang}
                     href={switchLocaleHref(lang as Locale, pathname)}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold border border-border ${locale === lang ? "bg-primary text-primary-foreground border-primary" : "hover:text-foreground"}`}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold border border-border ${activeLocale === lang ? "bg-primary text-primary-foreground border-primary" : "hover:text-foreground"}`}
                     onClick={() => setMobileOpen(false)}
                   >
                     {t.switcher[lang as "en" | "uk" | "ru"]}

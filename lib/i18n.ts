@@ -1407,16 +1407,24 @@ export function stripLocale(pathname: string) {
   return pathname
 }
 
+export function getPathLocale(pathname: string): Locale | undefined {
+  const maybeLocale = pathname.split("/")[1]
+  if (maybeLocale && isLocale(maybeLocale)) {
+    return maybeLocale
+  }
+  return undefined
+}
+
 export function withLocaleHref(locale: Locale, href: string) {
   if (!href.startsWith("/")) return href
-  if (locale === defaultLocale) return href
-  return href === "/" ? `/${locale}` : `/${locale}${href}`
+  const stripped = stripLocale(href)
+  if (locale === defaultLocale) {
+    return stripped
+  }
+  return stripped === "/" ? `/${locale}` : `/${locale}${stripped}`
 }
 
 export function switchLocaleHref(locale: Locale, pathname: string) {
   const stripped = stripLocale(pathname)
-  if (stripped.startsWith("/account") || stripped.startsWith("/checkout")) {
-    return stripped
-  }
   return withLocaleHref(locale, stripped)
 }

@@ -3,12 +3,12 @@ import { notFound } from "next/navigation"
 import InfoPageLayout from "@/components/info-page-layout"
 import { getDictionary, isLocale } from "@/lib/i18n"
 
-export default function LocalizedPrivacyPolicyPage({ params }: { params: { locale: string } }) {
-  if (!isLocale(params.locale)) {
+export default async function LocalizedPrivacyPolicyPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+
+  if (!isLocale(locale)) {
     notFound()
   }
-
-  const locale = params.locale
   const t = getDictionary(locale)
 
   return (

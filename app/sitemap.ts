@@ -45,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  let products: Awaited<ReturnType<typeof getStoreProducts>> = []
+  let products: Awaited<ReturnType<typeof getStoreProducts>>
   try {
     products = await getStoreProducts()
   } catch {

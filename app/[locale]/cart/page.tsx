@@ -1,16 +1,23 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, Trash2 } from "lucide-react"
 
-import { useCart } from "@/lib/cart-context"
+import { useCart, CartItem } from "@/lib/cart-context"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { getDictionary, isLocale, withLocaleHref } from "@/lib/i18n"
 
 export default function LocalizedCartPage({ params }: { params: { locale: string } }) {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   if (!isLocale(params.locale)) {
     return null
   }
@@ -18,6 +25,21 @@ export default function LocalizedCartPage({ params }: { params: { locale: string
   const locale = params.locale
   const t = getDictionary(locale)
   const { items, removeItem, updateQuantity, total, clearCart } = useCart()
+
+  // Render null until component is mounted to prevent hydration mismatches
+  if (!isMounted) {
+    return (
+      <main>
+        <Navbar locale={locale} />
+        <div className="min-h-screen flex flex-col items-center justify-center space-y-6">
+          <div className="animate-pulse">
+            <div className="h-8 w-48 bg-secondary rounded mb-4" />
+          </div>
+        </div>
+        <Footer locale={locale} />
+      </main>
+    )
+  }
 
   if (items.length === 0) {
     return (

@@ -66,13 +66,16 @@ export default function LocalizedCartPage({ params }: { params: { locale: string
                   <p className="font-bold text-primary text-base md:text-lg">{item.price}</p>
                 </div>
 
-                <div className="flex gap-3 justify-between md:flex-col md:items-end md:justify-between">
+                <div className="flex flex-col md:items-end md:justify-between gap-3">
+                  <button onClick={() => removeItem(item.id, item.size, item.color)} className="text-destructive hover:bg-destructive/10 p-1 md:p-2 rounded-lg transition-colors md:self-start hidden md:block">
+                    <Trash2 className="h-5 w-5" />
+                  </button>
                   <div className="flex items-center gap-2 border border-border rounded-lg">
                     <button onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)} className="px-2 md:px-3 py-1 md:py-2 hover:bg-secondary transition-colors text-sm md:text-base">-</button>
                     <span className="px-2 md:px-4 py-1 md:py-2 font-semibold min-w-[2rem] text-center text-sm md:text-base">{item.quantity}</span>
                     <button onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)} className="px-2 md:px-3 py-1 md:py-2 hover:bg-secondary transition-colors text-sm md:text-base">+</button>
                   </div>
-                  <button onClick={() => removeItem(item.id, item.size, item.color)} className="text-destructive hover:bg-destructive/10 p-1 md:p-2 rounded-lg transition-colors">
+                  <button onClick={() => removeItem(item.id, item.size, item.color)} className="text-destructive hover:bg-destructive/10 p-1 md:p-2 rounded-lg transition-colors md:hidden">
                     <Trash2 className="h-5 w-5" />
                   </button>
                 </div>

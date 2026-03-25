@@ -8,7 +8,7 @@ import SearchBar from "./search-bar"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { useWishlist } from "@/lib/wishlist-context"
-import { defaultLocale, getDictionary, getPathLocale, Locale, stripLocale, switchLocaleHref, withLocaleHref } from "@/lib/i18n"
+import { defaultLocale, getDictionary, getPathLocale, Locale, stripLocale, switchLocaleHref, withLocaleHref, saveLocalePreference } from "@/lib/i18n"
 
 export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -62,6 +62,7 @@ export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) 
             <Link
               key={lang}
               href={switchLocaleHref(lang as Locale, pathname)}
+              onClick={() => saveLocalePreference(lang as Locale)}
               className={`px-2 py-1 rounded-full transition-colors ${activeLocale === lang ? "bg-primary text-primary-foreground" : "hover:text-foreground"}`}
               aria-label={`${t.switcher.label}: ${lang.toUpperCase()}`}
             >
@@ -143,7 +144,10 @@ export default function Navbar({ locale = defaultLocale }: { locale?: Locale }) 
                     key={lang}
                     href={switchLocaleHref(lang as Locale, pathname)}
                     className={`px-3 py-1 rounded-full text-xs font-semibold border border-border ${activeLocale === lang ? "bg-primary text-primary-foreground border-primary" : "hover:text-foreground"}`}
-                    onClick={() => setMobileOpen(false)}
+                    onClick={() => {
+                      saveLocalePreference(lang as Locale)
+                      setMobileOpen(false)
+                    }}
                   >
                     {t.switcher[lang as "en" | "uk" | "ru"]}
                   </Link>

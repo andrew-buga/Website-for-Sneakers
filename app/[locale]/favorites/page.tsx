@@ -14,6 +14,12 @@ import { Button } from "@/components/ui/button"
 import { getDictionary, isLocale, withLocaleHref } from "@/lib/i18n"
 
 export default function LocalizedFavoritesPage({ params }: { params: { locale: string } }) {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   if (!isLocale(params.locale)) {
     return null
   }
@@ -44,6 +50,22 @@ export default function LocalizedFavoritesPage({ params }: { params: { locale: s
     const apiMap = new Map(products.map((p) => [p.id, p]))
     return items.map((item) => apiMap.get(item.id) || item)
   }, [items, products])
+
+  // Prevent hydration mismatch - render null until mounted
+  if (!isMounted) {
+    return (
+      <main>
+        <Navbar locale={locale} />
+        <section className="max-w-7xl mx-auto px-6 lg:px-12 pt-28 pb-16 lg:pb-24">
+          <div className="animate-pulse">
+            <div className="h-8 w-48 bg-secondary rounded mb-4" />
+            <div className="h-6 w-64 bg-secondary rounded" />
+          </div>
+        </section>
+        <Footer locale={locale} />
+      </main>
+    )
+  }
 
   return (
     <main>

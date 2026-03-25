@@ -1428,3 +1428,33 @@ export function switchLocaleHref(locale: Locale, pathname: string) {
   const stripped = stripLocale(pathname)
   return withLocaleHref(locale, stripped)
 }
+
+// Locale preference persistence
+const LOCALE_PREFERENCE_KEY = 'streater-locale-preference'
+
+export function saveLocalePreference(locale: Locale): void {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.setItem(LOCALE_PREFERENCE_KEY, locale)
+  } catch {
+    // Silently fail if localStorage is unavailable
+  }
+}
+
+export function getLocalePreference(): Locale | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const preference = window.localStorage.getItem(LOCALE_PREFERENCE_KEY)
+    if (preference && isLocale(preference)) {
+      return preference as Locale
+    }
+  } catch {
+    // Silently fail if localStorage is unavailable
+  }
+  return null
+}
+
+export function getPreferredLocale(fallback: Locale = defaultLocale): Locale {
+  const preference = getLocalePreference()
+  return preference ?? fallback
+}

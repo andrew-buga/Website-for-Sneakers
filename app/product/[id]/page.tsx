@@ -48,7 +48,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     }
 
     void load()
-  }, [id, isInWishlist])
+  }, [id])
 
   if (isLoading) {
      return <main><div className="hidden md:block"><Navbar locale={locale} /></div><div className="min-h-screen flex items-center justify-center"><p className="text-muted-foreground">{t.product.loading}</p></div><Footer locale={locale} /></main>

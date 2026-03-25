@@ -23,13 +23,33 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
+// Storage adapter that safely checks if window is available (prevents hydration mismatch)
+const StorageAdapter = {
+  getItem: (key: string): string | null => {
+    if (typeof window === 'undefined') return null
+    try {
+      return window.localStorage.getItem(key)
+    } catch {
+      return null
+    }
+  },
+  setItem: (key: string, value: string): void => {
+    if (typeof window === 'undefined') return
+    try {
+      window.localStorage.setItem(key, value)
+    } catch {
+      // Silently fail if localStorage is unavailable
+    }
+  },
+}
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    const savedCart = localStorage.getItem("cart")
+    const savedCart = StorageAdapter.getItem("cart")
     if (savedCart) {
       try {
         const parsed = JSON.parse(savedCart)
@@ -44,7 +64,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem("cart", JSON.stringify(items))
+      StorageAdapter.setItem("cart", JSON.stringify(items))
     }
   }, [items, mounted])
 

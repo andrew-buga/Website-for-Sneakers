@@ -21,13 +21,33 @@ interface WishlistContextType {
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
+// Storage adapter that safely checks if window is available (prevents hydration mismatch)
+const StorageAdapter = {
+  getItem: (key: string): string | null => {
+    if (typeof window === 'undefined') return null
+    try {
+      return window.localStorage.getItem(key)
+    } catch {
+      return null
+    }
+  },
+  setItem: (key: string, value: string): void => {
+    if (typeof window === 'undefined') return
+    try {
+      window.localStorage.setItem(key, value)
+    } catch {
+      // Silently fail if localStorage is unavailable
+    }
+  },
+}
+
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const savedWishlist = localStorage.getItem("wishlist");
+    const savedWishlist = StorageAdapter.getItem("wishlist");
     if (savedWishlist) {
       try {
         const parsed = JSON.parse(savedWishlist);
@@ -49,7 +69,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem("wishlist", JSON.stringify(items));
+      StorageAdapter.setItem("wishlist", JSON.stringify(items));
     }
   }, [items, mounted]);
 

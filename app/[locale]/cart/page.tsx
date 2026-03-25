@@ -50,39 +50,38 @@ export default function LocalizedCartPage({ params }: { params: { locale: string
 
         <h1 className="font-display text-4xl lg:text-5xl font-bold text-foreground mb-12">{t.cart.title}</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="lg:col-span-2 space-y-3 md:space-y-4">
             {items.map((item) => (
-              <div key={item.id + item.size + item.color} className="flex gap-6 p-6 rounded-2xl border border-border bg-card hover:border-foreground transition-colors">
-                <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
+              <div key={item.id + item.size + item.color} className="flex flex-col gap-3 p-4 md:flex-row md:gap-6 md:p-6 rounded-2xl border border-border bg-card hover:border-foreground transition-colors">
+                <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-secondary flex-shrink-0 md:w-32 md:h-32">
                   <Image src={item.image} alt={item.name} fill className="object-cover" />
                 </div>
 
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="font-display text-lg font-semibold text-foreground">{item.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{t.cart.size}: {item.size} | {t.cart.color}: {item.color}</p>
+                    <h3 className="font-display text-base md:text-lg font-semibold text-foreground">{item.name}</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground mt-1">{t.cart.size}: {item.size} | {t.cart.color}: {item.color}</p>
                   </div>
-                  <p className="font-bold text-primary text-lg">{item.price}</p>
+                  <p className="font-bold text-primary text-base md:text-lg">{item.price}</p>
                 </div>
 
-                <div className="flex flex-col items-end justify-between">
-                  <button onClick={() => removeItem(item.id, item.size, item.color)} className="text-destructive hover:bg-destructive/10 p-2 rounded-lg transition-colors">
+                <div className="flex gap-3 justify-between md:flex-col md:items-end md:justify-between">
+                  <div className="flex items-center gap-2 border border-border rounded-lg">
+                    <button onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)} className="px-2 md:px-3 py-1 md:py-2 hover:bg-secondary transition-colors text-sm md:text-base">-</button>
+                    <span className="px-2 md:px-4 py-1 md:py-2 font-semibold min-w-[2rem] text-center text-sm md:text-base">{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)} className="px-2 md:px-3 py-1 md:py-2 hover:bg-secondary transition-colors text-sm md:text-base">+</button>
+                  </div>
+                  <button onClick={() => removeItem(item.id, item.size, item.color)} className="text-destructive hover:bg-destructive/10 p-1 md:p-2 rounded-lg transition-colors">
                     <Trash2 className="h-5 w-5" />
                   </button>
-
-                  <div className="flex items-center gap-2 border border-border rounded-lg">
-                    <button onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)} className="px-3 py-2 hover:bg-secondary transition-colors">-</button>
-                    <span className="px-4 py-2 font-semibold min-w-[2rem] text-center">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)} className="px-3 py-2 hover:bg-secondary transition-colors">+</button>
-                  </div>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-card rounded-2xl border border-border p-8 space-y-6 sticky top-6 h-fit">
+            <div className="bg-card rounded-2xl border border-border p-6 md:p-8 space-y-6 sticky top-6 h-fit">
               <h2 className="font-display text-2xl font-bold text-foreground">{t.cart.orderSummary}</h2>
 
               <div className="space-y-3 border-t border-border pt-6">

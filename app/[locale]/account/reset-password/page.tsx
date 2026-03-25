@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
+import { safeJsonParse, logError } from "@/lib/error-handler"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -30,7 +31,7 @@ function ResetPasswordContent({ locale }: { locale: string }) {
 
     const validateToken = async () => {
       const response = await fetch(`/api/auth/password-reset/validate?token=${encodeURIComponent(token)}`)
-      const body = await response.json().catch(() => ({}))
+      const body = await safeJsonParse(response, { context: "validateToken", token })
       setIsTokenValid(Boolean(body.valid))
     }
 

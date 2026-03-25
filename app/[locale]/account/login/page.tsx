@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { isValidEmail } from "@/lib/validation"
+import { useCsrfToken } from "@/lib/use-csrf-token"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -15,6 +16,7 @@ function LoginContent({ locale }: { locale: string }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { login, isAuthenticated } = useAuth()
+  const { token: csrfToken } = useCsrfToken()
   const [formData, setFormData] = useState({ email: "", password: "" })
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -107,6 +109,15 @@ function LoginContent({ locale }: { locale: string }) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+        {/* CSRF token field */}
+        {csrfToken && (
+          <input
+            type="hidden"
+            name="csrf_token"
+            value={csrfToken}
+          />
+        )}
+
         <div>
           <label className="block text-sm font-semibold text-foreground mb-2">Email</label>
           <input

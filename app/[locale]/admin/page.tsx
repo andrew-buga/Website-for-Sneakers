@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { Upload } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/lib/auth-context"
+import { safeJsonParse, logError } from "@/lib/error-handler"
+import { hasAdminRole } from "@/lib/permissions"
 
 type Product = {
   id: string
@@ -78,7 +81,8 @@ const INITIAL_FORM: ProductDraft = {
 }
 
 export default function AdminPage() {
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
+  const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
   const [form, setForm] = useState<ProductDraft>(INITIAL_FORM)
   const [productDrafts, setProductDrafts] = useState<Record<string, ProductDraft>>({})
@@ -87,10 +91,27 @@ export default function AdminPage() {
   const [isUploadingNewImage, setIsUploadingNewImage] = useState(false)
   const [message, setMessage] = useState("")
 
+  // Check admin access on mount
+  useEffect(() => {
+    if (!isLoading && !hasAdminRole(user)) {
+      logError(new Error("Unauthorized admin access attempt"), { userId: user?.id })
+      router.replace("/")
+    }
+  }, [user, isLoading, router])
+
+  // Don't render if not admin
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  }
+
+  if (!hasAdminRole(user)) {
+    return null
+  }
+
   const loadProducts = async () => {
     try {
       const res = await fetch("/api/products?includeInactive=true", { credentials: "include" })
-      const data = await res.json().catch(() => ({}))
+      const data = await safeJsonParse(res, { context: "loadProducts" })
       if (!res.ok) {
         setMessage(data.error ?? "Failed to load products")
         return
@@ -129,7 +150,7 @@ export default function AdminPage() {
       body: formData,
     })
 
-    const data = await res.json().catch(() => ({}))
+    const data = await safeJsonParse(res, { context: "uploadImage" })
     if (!res.ok || !data.imageUrl) {
       throw new Error(data.error ?? "Failed to upload image")
     }
@@ -163,7 +184,7 @@ export default function AdminPage() {
         body: JSON.stringify({ imageUrl }),
       })
 
-      const data = await res.json().catch(() => ({}))
+      const data = await safeJsonParse(res, { context: "uploadExistingProductImage" })
       if (!res.ok) {
         setMessage(data.error ?? "Failed to update product image")
         return
@@ -209,7 +230,7 @@ export default function AdminPage() {
     })
 
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
+      const data = await safeJsonParse(res, { context: "createProduct" })
       setMessage(data.error ?? "Failed to create product")
       return
     }
@@ -253,7 +274,7 @@ export default function AdminPage() {
         }),
       })
 
-      const data = await res.json().catch(() => ({}))
+      const data = await safeJsonParse(res, { context: "saveProduct" })
       if (!res.ok) {
         setMessage(data.error ?? "Failed to update product")
         return
@@ -275,7 +296,7 @@ export default function AdminPage() {
     })
 
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
+      const data = await safeJsonParse(res, { context: "toggleActive" })
       setMessage(data.error ?? "Failed to update status")
       return
     }
@@ -287,7 +308,7 @@ export default function AdminPage() {
   const exportCustomers = async () => {
     const res = await fetch("/api/admin/export/customers", { credentials: "include" })
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
+      const data = await safeJsonParse(res, { context: "exportCustomers" })
       setMessage(data.error ?? "Export failed")
       return
     }

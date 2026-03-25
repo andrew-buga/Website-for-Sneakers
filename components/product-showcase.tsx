@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, Heart } from "lucide-react"
 
 import { formatPriceCents, StoreProduct } from "@/lib/storefront-types"
 import { useWishlist } from "@/lib/wishlist-context"
+import { safeJsonParse, logError } from "@/lib/error-handler"
 import { defaultLocale, getDictionary, Locale, withLocaleHref } from "@/lib/i18n"
 
 export default function ProductShowcase({ locale = defaultLocale }: { locale?: Locale }) {
@@ -21,8 +22,10 @@ export default function ProductShowcase({ locale = defaultLocale }: { locale?: L
       setIsLoading(true)
       try {
         const response = await fetch("/api/products?limit=3", { credentials: "include" })
-        const body = await response.json().catch(() => ({}))
+        const body = await safeJsonParse(response, { context: "product showcase load" })
         setProducts(body.products ?? [])
+      } catch (error) {
+        logError(error, { context: "product showcase load" })
       } finally {
         setIsLoading(false)
       }

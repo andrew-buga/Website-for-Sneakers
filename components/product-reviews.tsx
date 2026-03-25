@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Star, ThumbsUp } from "lucide-react"
 
 import { useAuth } from "@/lib/auth-context"
+import { safeJsonParse, logError } from "@/lib/error-handler"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { defaultLocale, getDictionary, Locale } from "@/lib/i18n"
@@ -79,7 +80,7 @@ export default function ProductReviews({ productId, locale = defaultLocale }: { 
         body: JSON.stringify({ rating: newRating, text: trimmed }),
       })
 
-      const body = await response.json().catch(() => ({}))
+      const body = await safeJsonParse(response, { context: "submitReview", productId })
       if (!response.ok) {
         throw new Error(body.error ?? t.reviews.createFailed)
       }

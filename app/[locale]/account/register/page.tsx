@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { isValidEmail, validatePassword } from "@/lib/validation"
+import { useCsrfToken } from "@/lib/use-csrf-token"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -14,6 +15,7 @@ export default function RegisterPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { register, isAuthenticated } = useAuth()
+  const { token: csrfToken } = useCsrfToken()
   const [formData, setFormData] = useState({ name: "", email: "", password: "", confirmPassword: "" })
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -122,6 +124,15 @@ export default function RegisterPage() {
               </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+              {/* CSRF token field */}
+              {csrfToken && (
+                <input
+                  type="hidden"
+                  name="csrf_token"
+                  value={csrfToken}
+                />
+              )}
+
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-2">Full Name</label>
                 <input

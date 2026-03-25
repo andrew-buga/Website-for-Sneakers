@@ -6,6 +6,7 @@ import Image from "next/image"
 import { Search, X } from "lucide-react"
 import { StoreProduct } from "@/lib/storefront-types"
 import { defaultLocale, getDictionary, Locale, withLocaleHref } from "@/lib/i18n"
+import { safeJsonParse, logError } from "@/lib/error-handler"
 
 export default function SearchBar({ locale = defaultLocale }: { locale?: Locale }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -16,9 +17,14 @@ export default function SearchBar({ locale = defaultLocale }: { locale?: Locale 
   const handleSearch = async (value: string) => {
     setQuery(value)
     if (value.trim()) {
-      const res = await fetch(`/api/products?search=${encodeURIComponent(value)}`)
-      const body = await res.json().catch(() => ({}))
-      setResults(body.products ?? [])
+      try {
+        const res = await fetch(`/api/products?search=${encodeURIComponent(value)}`)
+        const body = await safeJsonParse(res, { context: "search", query: value })
+        setResults(body.products ?? [])
+      } catch (error) {
+        logError(error, { context: "handleSearch", query: value })
+        setResults([])
+      }
     } else {
       setResults([])
     }

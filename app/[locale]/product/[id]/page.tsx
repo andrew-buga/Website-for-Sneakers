@@ -1,11 +1,12 @@
 "use client"
 
-import { useEffect, useState, use } from "react"
+import { useEffect, useState, use, useCallback, useMemo } from "react"
 import Link from "next/link"
 import { ArrowLeft, Heart, ShoppingCart } from "lucide-react"
 
 import { useCart } from "@/lib/cart-context"
 import { useWishlist } from "@/lib/wishlist-context"
+import { safeJsonParse, logError } from "@/lib/error-handler"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import ProductGallery from "@/components/product-gallery"
@@ -34,26 +35,37 @@ export default function LocalizedProductPage({ params }: { params: Promise<{ loc
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [addToCartError, setAddToCartError] = useState("")
 
+  // Memoize wishlist check to prevent race condition
+  const checkWishlistStatus = useCallback((productId: string) => {
+    return isInWishlist(productId)
+  }, [isInWishlist])
+
   useEffect(() => {
     const load = async () => {
       setIsLoading(true)
-      const response = await fetch(`/api/products/${resolved.id}`, { credentials: "include" })
-      const body = await response.json().catch(() => ({}))
+      try {
+        const response = await fetch(`/api/products/${resolved.id}`, { credentials: "include" })
+        const body = await safeJsonParse(response, { productId: resolved.id })
 
-      if (response.ok && body.product) {
-        const nextProduct: StoreProduct = body.product
-        setProduct(nextProduct)
-        setSelectedColor(nextProduct.colors[0] ?? t.product.defaultColor)
-        setIsWishlisted(isInWishlist(nextProduct.id))
-      } else {
+        if (response.ok && body.product) {
+          const nextProduct: StoreProduct = body.product
+          setProduct(nextProduct)
+          setSelectedColor(nextProduct.colors[0] ?? t.product.defaultColor)
+          // Check wishlist status without including the function in dependency array
+          setIsWishlisted(checkWishlistStatus(nextProduct.id))
+        } else {
+          setProduct(null)
+        }
+      } catch (error) {
+        logError(error, { context: "product page fetch", productId: resolved.id })
         setProduct(null)
+      } finally {
+        setIsLoading(false)
       }
-
-      setIsLoading(false)
     }
 
     void load()
-  }, [resolved.id, isInWishlist, t.product.defaultColor])
+  }, [resolved.id, checkWishlistStatus, t.product.defaultColor])
 
   if (isLoading) {
     return <main><div className="hidden md:block"><Navbar locale={locale} /></div><div className="min-h-screen flex items-center justify-center"><p className="text-muted-foreground">{t.product.loading}</p></div><Footer locale={locale} /></main>

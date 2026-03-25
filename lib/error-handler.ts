@@ -97,3 +97,19 @@ export async function handleAsyncWithMessage<T>(
     return null
   }
 }
+
+/**
+ * Safe JSON parsing with error logging
+ * Returns parsed JSON or empty object if parsing fails
+ */
+export async function safeJsonParse<T extends Record<string, any> = Record<string, any>>(
+  response: Response,
+  context?: Record<string, unknown>
+): Promise<T> {
+  try {
+    return (await response.json()) as T
+  } catch (error) {
+    logError(error, { ...context, responseStatus: response.status, responseUrl: response.url })
+    return {} as T
+  }
+}

@@ -1,6 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { logError, safeJsonParse } from "@/lib/error-handler"
 
 export interface Address {
   id: string
@@ -43,7 +44,7 @@ export interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 async function parseApiResponse(response: Response) {
-  const body = await response.json().catch(() => ({}))
+  const body = await safeJsonParse(response, { context: "parseApiResponse" })
   if (!response.ok) {
     throw new Error(body.error ?? "Request failed")
   }

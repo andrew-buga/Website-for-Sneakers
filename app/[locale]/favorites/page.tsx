@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { useWishlist } from "@/lib/wishlist-context"
+import { safeJsonParse, logError } from "@/lib/error-handler"
 import { formatPriceCents, StoreProduct } from "@/lib/storefront-types"
 import { Button } from "@/components/ui/button"
 import { getDictionary, isLocale, withLocaleHref } from "@/lib/i18n"
@@ -27,10 +28,11 @@ export default function LocalizedFavoritesPage({ params }: { params: { locale: s
     const load = async () => {
       try {
         const response = await fetch("/api/products", { credentials: "include" })
-        const body = await response.json().catch(() => ({}))
+        const body = await safeJsonParse(response, { context: "favorites page load products" })
         setProducts(body.products ?? [])
         setApiAvailable(true)
-      } catch {
+      } catch (error) {
+        logError(error, { context: "favorites page load" })
         setApiAvailable(false)
       }
     }

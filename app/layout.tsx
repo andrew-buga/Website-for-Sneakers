@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { CartProvider } from '@/lib/cart-context'
 import { WishlistProvider } from '@/lib/wishlist-context'
 import { AuthProvider } from '@/lib/auth-context'
+import ErrorBoundary from '@/app/components/error-boundary'
 
 import './globals.css'
 
@@ -196,11 +197,13 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>{children}</WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>{children}</WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )

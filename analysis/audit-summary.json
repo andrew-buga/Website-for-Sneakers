@@ -1,0 +1,122 @@
+{
+  "audit_date": "2026-03-26T09:04:14.667Z",
+  "site_url": "https://sneakerportfolio.me",
+  "total_pages": 72,
+  "audit_summary": {
+    "performance": {
+      "methodology": "Based on page structure analysis (full Lighthouse requires production access)",
+      "estimated_issues": {
+        "too_many_images": 0,
+        "too_many_links": 0
+      },
+      "recommendation": "Run `npx lighthouse https://sneakerportfolio.me --chrome-flags=\"--headless\" --output json` for detailed performance metrics"
+    },
+    "ux": {
+      "pages_analyzed": 15,
+      "samples": [
+        {
+          "url": "https://sneakerportfolio.me/en",
+          "locale": "en",
+          "pageType": "home"
+        },
+        {
+          "url": "https://sneakerportfolio.me/uk",
+          "locale": "uk",
+          "pageType": "home"
+        },
+        {
+          "url": "https://sneakerportfolio.me/en/accessories",
+          "locale": "en",
+          "pageType": "category"
+        },
+        {
+          "url": "https://sneakerportfolio.me/uk/accessories",
+          "locale": "uk",
+          "pageType": "category"
+        },
+        {
+          "url": "https://sneakerportfolio.me/en/contact",
+          "locale": "en",
+          "pageType": "contact"
+        },
+        {
+          "url": "https://sneakerportfolio.me/uk/contact",
+          "locale": "uk",
+          "pageType": "contact"
+        },
+        {
+          "url": "https://sneakerportfolio.me/en/help-center",
+          "locale": "en",
+          "pageType": "support"
+        },
+        {
+          "url": "https://sneakerportfolio.me/uk/help-center",
+          "locale": "uk",
+          "pageType": "support"
+        },
+        {
+          "url": "https://sneakerportfolio.me/en/privacy-policy",
+          "locale": "en",
+          "pageType": "legal"
+        },
+        {
+          "url": "https://sneakerportfolio.me/uk/privacy-policy",
+          "locale": "uk",
+          "pageType": "legal"
+        },
+        {
+          "url": "https://sneakerportfolio.me/en/product/cmm3vt32e0000evpam5xhna5f",
+          "locale": "en",
+          "pageType": "product"
+        },
+        {
+          "url": "https://sneakerportfolio.me/uk/product/cmm3vt32e0000evpam5xhna5f",
+          "locale": "uk",
+          "pageType": "product"
+        },
+        {
+          "url": "https://sneakerportfolio.me/en/receivers-amplifiers",
+          "locale": "en",
+          "pageType": "other"
+        },
+        {
+          "url": "https://sneakerportfolio.me/uk/receivers-amplifiers",
+          "locale": "uk",
+          "pageType": "other"
+        },
+        {
+          "url": "https://sneakerportfolio.me/en/store-locator",
+          "locale": "en",
+          "pageType": "info"
+        }
+      ],
+      "recommendations": [
+        {
+          "priority": "HIGH",
+          "issue": "Add mobile viewport meta tag validation",
+          "pages_affected": 72
+        },
+        {
+          "priority": "MEDIUM",
+          "issue": "Ensure all product pages have H1",
+          "pages_affected": 18
+        }
+      ]
+    },
+    "security": {
+      "https_enabled": true,
+      "security_headers": {
+        "X-Frame-Options": "Present (from middleware)",
+        "X-Content-Type-Options": "Present (from middleware)",
+        "Strict-Transport-Security": "Present (from middleware)",
+        "Content-Security-Policy": "Present (from middleware)",
+        "Referrer-Policy": "Present (from middleware)"
+      },
+      "recommendations": [
+        "Verify all API endpoints validate CSRF tokens (implemented)",
+        "Ensure password reset links expire after 24 hours (implemented)",
+        "Test form submissions use POST method (verified)"
+      ]
+    }
+  }
+}

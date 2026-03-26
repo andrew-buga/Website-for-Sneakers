@@ -1,0 +1,950 @@
+{
+  "metadata": {
+    "total_pages": 72,
+    "pages_with_issues": 72,
+    "pages_with_warnings": 0,
+    "pages_ok": 0,
+    "common_issues": {
+      "Error during audit: https.head is not a function": 72
+    },
+    "audited_at": "2026-03-26T09:02:58.859Z"
+  },
+  "results": [
+    {
+      "url": "https://sneakerportfolio.me/en/accessories",
+      "locale": "en",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:33.477Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en",
+      "locale": "en",
+      "pageType": "home",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:33.614Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/collection/summer",
+      "locale": "en",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:35.816Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/collection/autumn",
+      "locale": "en",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:35.829Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/collection/winter",
+      "locale": "en",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:35.831Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/collections",
+      "locale": "en",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:36.544Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/help-center",
+      "locale": "en",
+      "pageType": "support",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:36.687Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/help/pagination",
+      "locale": "en",
+      "pageType": "support",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:36.705Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/contact",
+      "locale": "en",
+      "pageType": "contact",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:36.990Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/men",
+      "locale": "en",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:37.139Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/product/cmm3vt3600003evpaxvni98vj",
+      "locale": "en",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:37.931Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/privacy-policy",
+      "locale": "en",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:37.995Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/product/cmm3vt34e0001evpabwnhx88j",
+      "locale": "en",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:38.030Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/product/cmm3vt3570002evpac4ub3h8k",
+      "locale": "en",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:38.042Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/product/cmm3vt32e0000evpam5xhna5f",
+      "locale": "en",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:38.229Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/product/cmm3vt37p0005evpavkuwy1uf",
+      "locale": "en",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:38.845Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/receivers-amplifiers",
+      "locale": "en",
+      "pageType": "other",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:38.964Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/returns",
+      "locale": "en",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:39.047Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/product/cmm3vt36v0004evpamr0z12gg",
+      "locale": "en",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:39.145Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/store-locator",
+      "locale": "en",
+      "pageType": "info",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:39.202Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/trends",
+      "locale": "en",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:39.555Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru",
+      "locale": "ru",
+      "pageType": "home",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:40.080Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/terms-conditions",
+      "locale": "en",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:40.100Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/women",
+      "locale": "en",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:40.194Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/en/terms-of-use",
+      "locale": "en",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:40.708Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/collection/summer",
+      "locale": "ru",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:41.369Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/collection/autumn",
+      "locale": "ru",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:41.421Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/accessories",
+      "locale": "ru",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:41.597Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/collections",
+      "locale": "ru",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:41.678Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/collection/winter",
+      "locale": "ru",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:42.281Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/contact",
+      "locale": "ru",
+      "pageType": "contact",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:42.976Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/privacy-policy",
+      "locale": "ru",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:43.109Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/help-center",
+      "locale": "ru",
+      "pageType": "support",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:43.116Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/help/pagination",
+      "locale": "ru",
+      "pageType": "support",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:43.419Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/men",
+      "locale": "ru",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:44.799Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/product/cmm3vt36v0004evpamr0z12gg",
+      "locale": "ru",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:45.581Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/product/cmm3vt32e0000evpam5xhna5f",
+      "locale": "ru",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:45.704Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/product/cmm3vt3570002evpac4ub3h8k",
+      "locale": "ru",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:46.532Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/product/cmm3vt3600003evpaxvni98vj",
+      "locale": "ru",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:46.787Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/product/cmm3vt34e0001evpabwnhx88j",
+      "locale": "ru",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:46.807Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/product/cmm3vt37p0005evpavkuwy1uf",
+      "locale": "ru",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:48.414Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/store-locator",
+      "locale": "ru",
+      "pageType": "info",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:48.821Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/receivers-amplifiers",
+      "locale": "ru",
+      "pageType": "other",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:49.038Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/terms-conditions",
+      "locale": "ru",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:49.041Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/returns",
+      "locale": "ru",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:49.161Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/accessories",
+      "locale": "uk",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:50.315Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/women",
+      "locale": "ru",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:50.613Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/terms-of-use",
+      "locale": "ru",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:50.865Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/ru/trends",
+      "locale": "ru",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:51.025Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk",
+      "locale": "uk",
+      "pageType": "home",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:51.396Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/collection/winter",
+      "locale": "uk",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:52.251Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/contact",
+      "locale": "uk",
+      "pageType": "contact",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:52.257Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/collections",
+      "locale": "uk",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:52.439Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/collection/summer",
+      "locale": "uk",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:52.734Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/collection/autumn",
+      "locale": "uk",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:53.133Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/help/pagination",
+      "locale": "uk",
+      "pageType": "support",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:54.007Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/privacy-policy",
+      "locale": "uk",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:54.046Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/men",
+      "locale": "uk",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:54.332Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/product/cmm3vt32e0000evpam5xhna5f",
+      "locale": "uk",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:54.378Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/help-center",
+      "locale": "uk",
+      "pageType": "support",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:55.018Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/product/cmm3vt36v0004evpamr0z12gg",
+      "locale": "uk",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:56.394Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/product/cmm3vt3570002evpac4ub3h8k",
+      "locale": "uk",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:56.412Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/product/cmm3vt37p0005evpavkuwy1uf",
+      "locale": "uk",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:56.502Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/product/cmm3vt34e0001evpabwnhx88j",
+      "locale": "uk",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:56.518Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/product/cmm3vt3600003evpaxvni98vj",
+      "locale": "uk",
+      "pageType": "product",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:56.710Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/terms-conditions",
+      "locale": "uk",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:57.398Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/store-locator",
+      "locale": "uk",
+      "pageType": "info",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:57.451Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/receivers-amplifiers",
+      "locale": "uk",
+      "pageType": "other",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:57.620Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/terms-of-use",
+      "locale": "uk",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:57.668Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/returns",
+      "locale": "uk",
+      "pageType": "legal",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:58.013Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/trends",
+      "locale": "uk",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:58.808Z"
+    },
+    {
+      "url": "https://sneakerportfolio.me/uk/women",
+      "locale": "uk",
+      "pageType": "category",
+      "statusCode": 0,
+      "seo": null,
+      "issues": [
+        "Error during audit: https.head is not a function"
+      ],
+      "warnings": [],
+      "brokenLinks": [],
+      "audited_at": "2026-03-26T09:02:58.854Z"
+    }
+  ]
+}

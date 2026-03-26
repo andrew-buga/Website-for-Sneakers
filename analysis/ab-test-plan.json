@@ -1,0 +1,91 @@
+{
+  "methodology": "Statistical A/B testing with minimum sample size calculation",
+  "visitor_metrics": {
+    "monthly_visitors": 800,
+    "estimated_monthly_conversions": 40,
+    "base_conversion_rate": "5.0%",
+    "desired_lift": "10%"
+  },
+  "tests": [
+    {
+      "id": 1,
+      "name": "Improve Meta Descriptions for Search Visibility",
+      "priority": "HIGH",
+      "hypothesis": "If we write optimized meta descriptions (70-160 chars, action-oriented), click-through rate from search results will increase by 10%, because better descriptions entice more clicks.",
+      "affected_pages": 72,
+      "scenario": {
+        "control": "Current: Generic or missing meta descriptions",
+        "variant": "Optimized: 120-char descriptions with action words (e.g., \"Shop premium sneakers...\")"
+      },
+      "metrics": {
+        "primary": "CTR from search results (impressions -> clicki)",
+        "secondary": [
+          "Bounce rate",
+          "Average time on page",
+          "Pages per session"
+        ],
+        "sample_size_per_variant": 15288,
+        "total_sample_size": 30576,
+        "duration_estimate_weeks": 268,
+        "confidence_level": "95%"
+      },
+      "success_criteria": ">10% relative lift in CTR, p-value <0.05",
+      "implementation": "\n// Test 1: Meta Description A/B Test\n(function() {\n  const testId = 'ab-test-meta-descriptions';\n  const variant = localStorage.getItem(testId) || (Math.random() > 0.5 ? 'control' : 'variant');\n  localStorage.setItem(testId, variant);\n  \n  // Track if user came from search\n  const referrer = document.referrer;\n  if (referrer.includes('google.') || referrer.includes('bing.') || referrer.includes('yandex.')) {\n    console.log('[A/B Test] Meta Description Variant:', variant);\n    console.log('[A/B Test] User Source:', 'Organic Search');\n  }\n})();\n      "
+    },
+    {
+      "id": 2,
+      "name": "Fix Missing/Multiple H1 Tags for SEO",
+      "priority": "MEDIUM",
+      "hypothesis": "If we ensure exactly one H1 per page with target keyword, search ranking visibility will improve by 8%, because H1s are critical SEO signals & help screen readers.",
+      "affected_pages": 0,
+      "scenario": {
+        "control": "Current: Missing or multiple H1 tags",
+        "variant": "Fixed: Single H1 with primary keyword, positioned near top of content"
+      },
+      "metrics": {
+        "primary": "Organic search impressions (from GSC)",
+        "secondary": [
+          "Average position in search results",
+          "Organic clicks"
+        ],
+        "sample_size_per_variant": 22932,
+        "total_sample_size": 45864,
+        "duration_estimate_weeks": 402,
+        "confidence_level": "95%"
+      },
+      "success_criteria": ">8% increase in search impressions or +0.5 avg position improvement",
+      "implementation": "\n// Test 2: H1 SEO Optimization\n(function() {\n  // Verify single H1 exists on page\n  const h1s = document.querySelectorAll('h1');\n  if (h1s.length !== 1) {\n    console.warn('[A/B Test] Page has', h1s.length, 'H1 tags (expected 1)');\n  } else {\n    console.log('[A/B Test] H1 Tag is correct:', h1s[0].textContent.substring(0, 50));\n  }\n})();\n      "
+    },
+    {
+      "id": 3,
+      "name": "Add Alt Text to Missing Product Images",
+      "priority": "MEDIUM",
+      "hypothesis": "If we add descriptive alt text to all images, accessibility score improves & image search traffic increases by 5%, because alt text helps both users & search engines.",
+      "affected_pages": 0,
+      "scenario": {
+        "control": "Current: Missing alt attributes on images",
+        "variant": "Fixed: Descriptive alt text (context + keyword): \"Blue Air Jordan 1 High-Top Sneakers\""
+      },
+      "metrics": {
+        "primary": "Image search impressions + clicks",
+        "secondary": [
+          "Accessibility audit score",
+          "Page load time"
+        ],
+        "sample_size_per_variant": 11466,
+        "total_sample_size": 22932,
+        "duration_estimate_weeks": 536,
+        "confidence_level": "90%"
+      },
+      "success_criteria": ">5% increase in image search traffic or +10 accessibility score points",
+      "implementation": "\n// Test 3: Image Alt Text Validation\n(function() {\n  const images = document.querySelectorAll('img');\n  const missingAlt = Array.from(images).filter(img => !img.alt || img.alt.trim() === '');\n  console.log('[A/B Test] Images without alt text:', missingAlt.length, '/', images.length);\n  \n  missingAlt.forEach((img, i) => {\n    if (i < 3) console.log('  -', img.src.substring(0, 50));\n  });\n})();\n      "
+    }
+  ],
+  "implementation_notes": [
+    "Use localStorage to assign variants consistently per user",
+    "Track all conversions with analytics events",
+    "Run tests simultaneously to reduce total test duration",
+    "Use Google Analytics 4 custom events for tracking",
+    "Minimum 4 weeks per test at current traffic levels"
+  ]
+}

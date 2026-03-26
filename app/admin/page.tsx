@@ -42,7 +42,7 @@ type ProductDraft = {
 
 const toDraft = (product: Product): ProductDraft => ({
   sku: product.sku,
-  name: product.name,
+  name: product?.name,
   description: product.description ?? "",
   category: product.category,
   collection: product.collection,

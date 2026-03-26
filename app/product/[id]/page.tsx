@@ -66,7 +66,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     setAddToCartError("")
     addItem({
       id: product.id,
-      name: product.name,
+      name: product?.name,
       price: formatPriceCents(product.priceCents, product.currency),
       image: product.imageUrl,
       quantity,
@@ -81,7 +81,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     if (isWishlisted) {
       removeFromWishlist(product.id)
     } else {
-      addToWishlist(product.id, product.name)
+      addToWishlist(product.id, product?.name)
     }
     setIsWishlisted(!isWishlisted)
   }
@@ -98,7 +98,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
       <section className="max-w-7xl mx-auto px-6 lg:px-12 py-8 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
         <div className="relative">
-          <ProductGallery images={[product.imageUrl]} productName={product.name} locale={locale} />
+          <ProductGallery images={[product.imageUrl]} productName={product?.name} locale={locale} />
           <Button
             variant="outline"
             size="icon"
@@ -113,7 +113,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className="flex flex-col justify-start space-y-6">
           <div>
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">{product.collection}</span>
-            <h1 className="font-display text-4xl lg:text-5xl font-bold text-foreground mt-2">{product.name}</h1>
+            <h1 className="font-display text-4xl lg:text-5xl font-bold text-foreground mt-2">{product?.name}</h1>
           </div>
 
           <p className="text-lg text-foreground">{product.description}</p>

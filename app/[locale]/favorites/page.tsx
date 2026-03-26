@@ -87,12 +87,12 @@ export default function LocalizedFavoritesPage({ params }: { params: { locale: s
                 <Link href={withLocaleHref(locale, `/product/${product.id}`)} className="block">
                   <div className="aspect-square rounded-xl bg-secondary overflow-hidden mb-4">
                     {product.imageUrl ? (
-                      <Image src={product.imageUrl} alt={product.name} width={600} height={600} className="h-full w-full object-cover" />
+                      <Image src={product.imageUrl} alt={product?.name} width={600} height={600} className="h-full w-full object-cover" />
                     ) : (
                       <div className="h-full w-full flex items-center justify-center text-muted-foreground text-2xl">No image</div>
                     )}
                   </div>
-                  <h3 className="font-display text-lg font-semibold text-foreground">{product.name}</h3>
+                  <h3 className="font-display text-lg font-semibold text-foreground">{product?.name}</h3>
                 </Link>
                 <p className="text-sm text-muted-foreground mt-1">{product.colors ? product.colors.join("/") : t.catalogGrid.standardColorway}</p>
                 <div className="mt-3 flex items-center justify-between">

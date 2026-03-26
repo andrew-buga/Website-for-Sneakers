@@ -79,9 +79,12 @@ export function middleware(request: NextRequest) {
 
   // Root path or should redirect
   if (pathname === '/' || redirectRoutes.includes(firstSegment)) {
-    // Redirect to default locale variant
+    // Redirect to default locale variant, preserving query parameters
     const redirectPath = `/${defaultLocale}${pathname}`
-    const response = NextResponse.redirect(new URL(redirectPath, request.url), 307) // 307: temporary redirect
+    const redirectUrl = new URL(redirectPath, request.url)
+    // Preserve all query parameters from original request
+    redirectUrl.search = request.nextUrl.search
+    const response = NextResponse.redirect(redirectUrl, 307) // 307: temporary redirect
     return addSecurityHeaders(response)
   }
 

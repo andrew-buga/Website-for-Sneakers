@@ -635,7 +635,7 @@ function generateHTML(data) {
 
     <!-- ACTION PLAN -->
     <div class="section">
-      <h2>📅 30/60/90 Day Action Plan</h2>
+      <h2>[PLAN] 30/60/90 Day Action Plan</h2>
       
       <div class="timeline">
         <div class="timeline-item">
@@ -663,7 +663,7 @@ function generateHTML(data) {
 
     <!-- PAGE SCORECARD -->
     <div class="section">
-      <h2>🔍 Page-by-Page Scorecard (Top 20)</h2>
+      <h2>[AUDIT] Page-by-Page Scorecard (Top 20)</h2>
       <table>
         <thead>
           <tr>
@@ -695,7 +695,7 @@ function generateHTML(data) {
         </tbody>
       </table>
 
-      <h3 style="margin-top: 30px; color: #dc2626;">[WARN] 3 Worst-Performing Pages</h3>
+      <h3 style="margin-top: 30px; color: #dc2626;">[CRITICAL] 3 Worst-Performing Pages</h3>
       ${data.worstPages.map(page => \`
         <div class="worst-page">
           <p><strong>\${page.url}</strong></p>

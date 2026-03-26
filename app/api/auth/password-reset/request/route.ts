@@ -38,6 +38,10 @@ export async function POST(request: NextRequest) {
       const tokenHash = hashToken(rawToken)
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000)
 
+      console.info(
+        `[PASSWORD_RESET] Token created. Expires at: ${expiresAt.toISOString()}, Token length: ${rawToken.length}`
+      )
+
       await prisma.user.update({
         where: { id: user.id },
         data: {

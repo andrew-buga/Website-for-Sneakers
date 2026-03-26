@@ -14,15 +14,24 @@ export async function GET(request: NextRequest) {
   }
 
   const tokenHash = hashToken(token)
+  const now = new Date()
+  
   const user = await prisma.user.findFirst({
     where: {
       passwordResetTokenHash: tokenHash,
       passwordResetTokenExpiresAt: {
-        gt: new Date(),
+        gt: now,
       },
     },
-    select: { id: true },
+    select: { id: true, passwordResetTokenExpiresAt: true },
   })
+
+  // Diagnostic logging
+  if (!user) {
+    console.warn(
+      `[PASSWORD_RESET] Token validation failed. Time now: ${now.toISOString()}, Token hash: ${tokenHash.substring(0, 10)}...`
+    )
+  }
 
   return NextResponse.json({ valid: Boolean(user) })
 }

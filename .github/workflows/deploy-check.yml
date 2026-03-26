@@ -19,6 +19,14 @@ jobs:
       checks: write
       statuses: write
 
+    env:
+      NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -42,23 +50,9 @@ jobs:
 
       - name: ⚙️ Environment variables check
         run: npm run check:env
-        env:
-          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL || 'https://api.example.com' }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost/test' }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-jwt-secret' }}
-          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL || 'https://example.com' }}
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://example.com' }}
 
       - name: 🏗️ Build verification (120 pages)
         run: npm run build
-        env:
-          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL || 'https://api.example.com' }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost/test' }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-jwt-secret' }}
-          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL || 'https://example.com' }}
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://example.com' }}
 
       - name: ✅ Verify all 120 pages generated
         run: |

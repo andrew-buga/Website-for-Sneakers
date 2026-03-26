@@ -196,6 +196,20 @@ npm run build
 
 ---
 
+## Code Review Protocol (Mandatory Before & After Changes)
+
+**📖 Full Documentation**: [CODE-REVIEW-PROTOCOL.md](CODE-REVIEW-PROTOCOL.md)
+
+**CRITICAL**: This mandatory protocol MUST be followed for every code change:
+1. **Before changes** — Map codebase + read all affected files + document current behavior
+2. **While changing** — 7 line-by-line checks for every modification
+3. **After changes** — 8 comprehensive cross-checks + consistency verification
+4. **Report** — Document all findings in `/analysis/code-review-[timestamp].md`
+
+**Violations result in rejection**. Prevention is faster than debugging.
+
+---
+
 ## Deployment Guard System (3-Level Protection)
 
 **📖 Full Documentation**: [DEPLOYMENT-GUARD.md](DEPLOYMENT-GUARD.md)
@@ -292,6 +306,222 @@ npm run check:env
 - ✅ Routes: All 120 pages generated
 - ✅ Pre-commit guard: Passes automatically (or skip with `--no-verify` only if critical)
 - ✅ Environment variables: All required vars present in `.env`
+
+---
+
+## MANDATORY WORKFLOW — 4-Stage Deployment Pipeline
+
+**⚠️ CRITICAL: Follow this EVERY time you make changes. Never skip steps. Never deploy without completing all stages first.**
+
+### STAGE 1 — CODE VALIDATION
+Run immediately after making any changes. Stop if any check fails.
+
+**STEP 1.1 — TypeScript**
+```bash
+npx tsc --noEmit
+# Expected: 0 errors
+# If errors: fix them, re-run this step
+```
+
+**STEP 1.2 — Lint**
+```bash
+npm run lint
+# If errors: npm run lint -- --fix (auto-fix if possible)
+# Expected: 0 errors, 0 warnings
+```
+
+**STEP 1.3 — Build**
+```bash
+npm run build
+# If fails: read error, fix root cause, re-run
+# Expected: "Compiled successfully" message
+```
+
+**STEP 1.4 — Merge conflicts**
+```bash
+git diff --check
+# If conflicts found (<<<<<<): resolve all, re-run
+# Expected: no output
+```
+
+**STEP 1.5 — Environment variables**
+```bash
+node scripts/check-env.js
+# If missing: add to .env
+# Expected: "All env vars present"
+```
+
+**Result before proceeding**: Print `STAGE 1 PASSED` or `STAGE 1 FAILED — [reason]`
+
+Only proceed to Stage 2 if PASSED.
+
+---
+
+### STAGE 2 — TERMINAL & COMMIT VALIDATION
+Run after Stage 1 passes.
+
+**STEP 2.1 — Check terminal for errors**
+- Scroll through recent terminal output
+- Look for: Error, Warning, Failed, Cannot find, undefined, rejected
+- Fix before continuing
+
+**STEP 2.2 — Check git status**
+```bash
+git status
+# Are there unexpected staged/modified files?
+# Are there files that should be in .gitignore?
+# Fix anything suspicious
+```
+
+**STEP 2.3 — Review staged changes**
+```bash
+git diff --staged
+# Read every change
+# Check: does any change break existing functionality?
+# Check: any console.log, debugger, TODO left accidentally?
+# Remove them if found
+```
+
+**STEP 2.4 — Verify no secrets in commit**
+```bash
+git diff --staged | Select-String "password|secret|token|api_key"
+# Expected: no output
+# If found: remove from code, add to .env instead
+```
+
+**STEP 2.5 — Run project locally**
+```bash
+npm run dev
+# Open http://localhost:3000
+# Check: app starts without errors?
+# Check terminal: any runtime errors?
+# Stop after verification: Ctrl+C
+```
+
+**Result before proceeding**: Print `STAGE 2 PASSED` or `STAGE 2 FAILED — [reason]`
+
+Only proceed to Stage 3 if PASSED.
+
+---
+
+### STAGE 3 — DEPLOY VALIDATION
+Run after Stage 2 passes.
+
+**STEP 3.1 — Final build confirmation**
+```bash
+npm run build
+# Same command Vercel runs
+# Expected: clean build with 0 errors
+```
+
+**STEP 3.2 — Check Vercel config**
+- Does vercel.json exist? Validate JSON syntax
+- Is framework set correctly for Next.js?
+
+**STEP 3.3 — Required env vars in Vercel**
+```bash
+node scripts/check-env.js
+```
+Every variable MUST exist in Vercel dashboard. If missing: STOP and add them manually.
+
+**STEP 3.4 — Simulate Vercel build environment**
+```bash
+NODE_ENV=production npm run build
+# Expected: same clean result as Step 3.1
+```
+
+**STEP 3.5 — Check GitHub connection**
+```bash
+git fetch origin
+git status
+# If behind origin: git pull, re-run Stage 1
+# If conflicts: resolve, re-run Stage 1
+```
+
+**Result before proceeding**: Print `STAGE 3 PASSED` or `STAGE 3 FAILED — [reason]` or `STAGE 3 BLOCKED — add env vars: [list]`
+
+Only proceed to Stage 4 if PASSED.
+
+---
+
+### STAGE 4 — DEPLOY
+Run only after all 3 stages pass.
+
+**STEP 4.1 — Commit with descriptive message**
+```bash
+git add -A
+git commit -m "[type]: [what changed and why]"
+```
+
+Commit types: `fix`, `feat`, `chore`, `style`, `refactor`, `docs`
+
+**STEP 4.2 — Push to GitHub**
+```bash
+git push origin main
+# Expected: "main -> main" success message
+# If rejected: diagnose, fix, re-run from Stage 1
+```
+
+**STEP 4.3 — Wait for GitHub Actions**
+- Visit: https://github.com/andrew-buga/Website-for-Sneakers/actions
+- Wait for workflow to complete (2-3 minutes)
+- If fails: read logs, fix, re-run from Stage 1
+- Expected: ✅ all jobs passing
+
+**STEP 4.4 — Wait for Vercel deploy**
+- Visit: https://vercel.com/dashboard
+- Watch deployment status
+- If fails: read Vercel logs, fix, re-run from Stage 1
+- Expected: "Ready" status
+
+**STEP 4.5 — Verify production**
+- Open: https://sneakerportfolio.me
+- Does site load correctly?
+- Does your feature work?
+- Check browser console: any errors?
+- If issues: fix immediately, re-run from Stage 1
+
+**Final result**: Print
+```
+DEPLOYED SUCCESSFULLY
+Commit: [hash]
+GitHub Actions: PASS
+Vercel: PASS
+Changes verified: yes
+```
+
+---
+
+### WORKFLOW RULES — Never Break These
+
+1. Never skip a stage (even if "it looks fine")
+2. Never commit if Stage 1 or 2 failed
+3. Never push if Stage 3 failed
+4. If same error appears twice: stop and explain instead of trying third time
+5. Always print stage result before moving to next
+6. If Stage 1 fails at any step: re-run entire Stage 1 after fix
+7. Only one person commits at a time (pull before starting)
+
+---
+
+### Quick Reference Commands
+
+```bash
+# Full pipeline (Stages 1+3 automated)
+npm run check:deploy
+
+# Stage 1 only
+npx tsc --noEmit && npm run lint && npm run build
+
+# Stage 2 verification
+git status && git diff --staged
+
+# Stage 3 simulation
+NODE_ENV=production npm run build && git fetch
+
+# Stage 4 ship
+git add -A && git commit -m "type: message" && git push origin main
+```
 
 ---
 

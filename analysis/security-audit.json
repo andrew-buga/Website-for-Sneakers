@@ -1,0 +1,18 @@
+{
+  "audit_date": "2026-03-26T11:13:29.668212",
+  "overall_status": "SECURE",
+  "findings": [
+    {
+      "severity": "OK",
+      "issue": "HTTPS enabled"
+    },
+    {
+      "severity": "OK",
+      "issue": "Security headers configured"
+    },
+    {
+      "severity": "WARNING",
+      "issue": "No rate limiting on API"
+    }
+  ]
+}

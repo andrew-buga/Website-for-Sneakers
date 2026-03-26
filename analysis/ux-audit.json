@@ -1,0 +1,20 @@
+{
+  "audit_date": "2026-03-26T11:13:29.665322",
+  "issues": [
+    {
+      "priority": "HIGH",
+      "issue": "Mobile viewport meta tag missing",
+      "pages_affected": 72
+    },
+    {
+      "priority": "MEDIUM",
+      "issue": "Product pages missing H1 tags",
+      "pages_affected": 18
+    },
+    {
+      "priority": "LOW",
+      "issue": "Missing breadcrumbs",
+      "pages_affected": 24
+    }
+  ]
+}

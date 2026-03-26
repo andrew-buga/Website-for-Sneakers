@@ -7,7 +7,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 const { chromium } = require('playwright');
 
 const PAGES_FILE = path.join(__dirname, '../analysis/crawled-pages.json');
@@ -17,13 +16,12 @@ const BATCH_SIZE = 5; // Process 5 pages at a time to avoid memory issues
 let browser;
 
 async function checkUrlStatus(url) {
-  return new Promise((resolve) => {
-    https.head(url, (res) => {
-      resolve(res.statusCode);
-    }).on('error', () => {
-      resolve(0); // Network error
-    });
-  });
+  try {
+    const response = await fetch(url, { method: 'HEAD', timeout: 5000 });
+    return response.status;
+  } catch (error) {
+    return 0; // Network error
+  }
 }
 
 async function auditPage(page, pageData) {

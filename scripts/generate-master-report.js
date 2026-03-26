@@ -13,7 +13,7 @@ const ANALYSIS_DIR = path.join(__dirname, '..', 'analysis');
 // 1. LOAD AUDIT DATA
 // ============================================================================
 
-console.log('📊 Loading audit data...');
+console.log('[CHART] Loading audit data...');
 
 let crawledPages = JSON.parse(fs.readFileSync(path.join(ANALYSIS_DIR, 'crawled-pages.json'), 'utf8'));
 let seoAudit = JSON.parse(fs.readFileSync(path.join(ANALYSIS_DIR, 'seo-audit.json'), 'utf8'));
@@ -31,23 +31,23 @@ console.log('📝 Generating missing audit files...');
 // Generate CWV Report (Core Web Vitals CSV)
 const cwvData = generateCWVReport(crawledPages.pages);
 fs.writeFileSync(path.join(ANALYSIS_DIR, 'cwv-report.csv'), cwvData);
-console.log('   ✅ cwv-report.csv created');
+console.log('   [OK] cwv-report.csv created');
 
 // Generate UX Audit JSON
 const uxAuditJson = generateUXAudit(auditSummary);
 fs.writeFileSync(path.join(ANALYSIS_DIR, 'ux-audit.json'), JSON.stringify(uxAuditJson, null, 2));
-console.log('   ✅ ux-audit.json created');
+console.log('   [OK] ux-audit.json created');
 
 // Generate Security Audit JSON
 const securityAuditJson = generateSecurityAudit(auditSummary);
 fs.writeFileSync(path.join(ANALYSIS_DIR, 'security-audit.json'), JSON.stringify(securityAuditJson, null, 2));
-console.log('   ✅ security-audit.json created');
+console.log('   [OK] security-audit.json created');
 
 // ============================================================================
 // 3. CALCULATE HEALTH SCORES
 // ============================================================================
 
-console.log('🎯 Calculating health scores...');
+console.log('[TARGET] Calculating health scores...');
 
 const SEOScore = calculateSEOScore(seoAudit);
 const PerformanceScore = calculatePerformanceScore(auditSummary);
@@ -94,7 +94,7 @@ const topWins = calculateTopWins(allIssues);
 // 6. GENERATE PAGE SCORECARD
 // ============================================================================
 
-console.log('📋 Generating page scorecard...');
+console.log('[LIST] Generating page scorecard...');
 
 const pageScorecard = generatePageScorecard(crawledPages, seoAudit, uxAuditJson);
 const worstPages = pageScorecard
@@ -139,7 +139,7 @@ const htmlReport = generateHTML({
 });
 
 fs.writeFileSync(path.join(ANALYSIS_DIR, 'MASTER-REPORT.html'), htmlReport);
-console.log('   ✅ MASTER-REPORT.html created');
+console.log('   [OK] MASTER-REPORT.html created');
 
 // ============================================================================
 // 10. CREATE MASTER REPORT MARKDOWN
@@ -165,7 +165,7 @@ const mdReport = generateMarkdown({
 });
 
 fs.writeFileSync(path.join(ANALYSIS_DIR, 'MASTER-REPORT.md'), mdReport);
-console.log('   ✅ MASTER-REPORT.md created');
+console.log('   [OK] MASTER-REPORT.md created');
 
 // ============================================================================
 // 11. CREATE QUICK FIXES SCRIPT
@@ -176,20 +176,20 @@ console.log('🔧 Creating quick-fixes.js...');
 const quickFixesScript = generateQuickFixesScript(allIssues);
 
 fs.writeFileSync(path.join(ANALYSIS_DIR, 'quick-fixes.js'), quickFixesScript);
-console.log('   ✅ quick-fixes.js created');
+console.log('   [OK] quick-fixes.js created');
 
 // ============================================================================
 // 12. PRINT COMPLETION MESSAGE
 // ============================================================================
 
 console.log('\n' + '='.repeat(60));
-console.log('✅ AUDIT COMPLETE');
+console.log('[OK] AUDIT COMPLETE');
 console.log('='.repeat(60));
-console.log(`📊 Health Score: ${overallHealthScore}/100`);
-console.log(`🔴 Critical Issues: ${criticalIssues.length}`);
-console.log(`🟠 High Issues: ${highIssues.length}`);
-console.log(`🟡 Medium Issues: ${mediumIssues.length}`);
-console.log(`🟢 Low Issues: ${lowIssues.length}`);
+console.log(`[CHART] Health Score: ${overallHealthScore}/100`);
+console.log(`[CRIT] Critical Issues: ${criticalIssues.length}`);
+console.log(`[HIGH] High Issues: ${highIssues.length}`);
+console.log(`[MED] Medium Issues: ${mediumIssues.length}`);
+console.log(`[LOW] Low Issues: ${lowIssues.length}`);
 console.log(`\n💾 Open /analysis/MASTER-REPORT.html to view detailed report`);
 console.log('='.repeat(60));
 
@@ -542,7 +542,7 @@ function generateHTML(data) {
 <body>
   <div class="container">
     <div class="header">
-      <h1>🎯 Streater Sneakers - Master Report</h1>
+      <h1>[TARGET] Streater Sneakers - Master Report</h1>
       <p>Comprehensive Audit & Improvement Plan</p>
     </div>
 
@@ -597,7 +597,7 @@ function generateHTML(data) {
 
     <!-- TOP WINS -->
     <div class="section">
-      <h2>🏆 Top 3 Quick Wins (Highest Impact, Lowest Effort)</h2>
+      <h2>[WIN] Top 3 Quick Wins (Highest Impact, Lowest Effort)</h2>
       ${data.topWins.length > 0 ? data.topWins.map(win => \`
         <div class="win-card">
           <h4>\${win.title}</h4>
@@ -608,7 +608,7 @@ function generateHTML(data) {
 
     <!-- ISSUES TABLE -->
     <div class="section">
-      <h2>📋 All Issues (Sorted by Priority & Effort)</h2>
+      <h2>[LIST] All Issues (Sorted by Priority & Effort)</h2>
       <table>
         <thead>
           <tr>
@@ -639,21 +639,21 @@ function generateHTML(data) {
       
       <div class="timeline">
         <div class="timeline-item">
-          <h4>⚡ WEEK 1 — Quick Wins (Easy, Critical/High Impact)</h4>
+          <h4>[FAST] WEEK 1 — Quick Wins (Easy, Critical/High Impact)</h4>
           ${data.actionPlan.week1.map(task => \`
             <div class="task">\${task.task} | \${task.time}</div>
           \`).join('')}
         </div>
 
         <div class="timeline-item">
-          <h4>📈 MONTH 1 — Core Improvements (Medium Effort)</h4>
+          <h4>[UP] MONTH 1 — Core Improvements (Medium Effort)</h4>
           ${data.actionPlan.month1.map(task => \`
             <div class="task">\${task.task} | \${task.time}</div>
           \`).join('')}
         </div>
 
         <div class="timeline-item">
-          <h4>🎯 MONTH 2-3 — Strategic Improvements (Hard, Long-term)</h4>
+          <h4>[TARGET] MONTH 2-3 — Strategic Improvements (Hard, Long-term)</h4>
           ${data.actionPlan.month2_3.map(task => \`
             <div class="task">\${task.task} | \${task.time}</div>
           \`).join('')}
@@ -695,7 +695,7 @@ function generateHTML(data) {
         </tbody>
       </table>
 
-      <h3 style="margin-top: 30px; color: #dc2626;">⚠️ 3 Worst-Performing Pages</h3>
+      <h3 style="margin-top: 30px; color: #dc2626;">[WARN] 3 Worst-Performing Pages</h3>
       ${data.worstPages.map(page => \`
         <div class="worst-page">
           <p><strong>\${page.url}</strong></p>
@@ -707,7 +707,7 @@ function generateHTML(data) {
 
     <!-- A/B TEST RECOMMENDATIONS -->
     <div class="section">
-      <h2>🧪 A/B Test Recommendations</h2>
+      <h2>[TEST] A/B Test Recommendations</h2>
       ${data.abTests.map(test => \`
         <div style="background: #f0f9ff; border-left: 4px solid #0284c7; padding: 15px; margin-bottom: 15px; border-radius: 4px;">
           <h4 style="color: #0284c7; margin-bottom: 10px;">Test #\${test.testNum}: \${test.name}</h4>
@@ -719,7 +719,7 @@ function generateHTML(data) {
     </div>
 
     <div class="section">
-      <h3>📊 Estimated Traffic Impact if All Critical Issues Fixed</h3>
+      <h3>[CHART] Estimated Traffic Impact if All Critical Issues Fixed</h3>
       <p style="font-size: 18px; color: #16a34a;"><strong>+35-50% organic traffic</strong> within 90 days</p>
       <ul style="margin-left: 20px; margin-top: 10px;">
         <li>SEO fixes: +20-25% from improved indexing and rankings</li>
@@ -750,12 +750,12 @@ This comprehensive audit analyzed all ${data.totalPages} pages of your e-commerc
 - **SEO**: ${data.SEOScore}/100
 - **Performance**: ${data.PerformanceScore}/100  
 - **UX**: ${data.UXScore}/100
-- **Security**: ${data.SecurityScore}/100 ✅
+- **Security**: ${data.SecurityScore}/100 [OK]
 
 ### Issues Summary
-- 🔴 **Critical**: ${data.criticalIssues.length}
-- 🟠 **High**: ${data.highIssues.length}
-- 🟡 **Medium**: ${data.mediumIssues.length}
+- [CRIT] **Critical**: ${data.criticalIssues.length}
+- [HIGH] **High**: ${data.highIssues.length}
+- [MED] **Medium**: ${data.mediumIssues.length}
 
 ---
 
@@ -786,13 +786,13 @@ ${data.allIssues.map(issue => `
 
 ## 30/60/90 Day Action Plan
 
-### ⚡ Week 1 — Quick Wins (Easy, High Impact)
+### [FAST] Week 1 — Quick Wins (Easy, High Impact)
 ${data.actionPlan.week1.map(task => `- [ ] ${task.task} (${task.time})`).join('\n')}
 
-### 📈 Month 1 — Core Improvements (Medium Effort)
+### [UP] Month 1 — Core Improvements (Medium Effort)
 ${data.actionPlan.month1.map(task => `- [ ] ${task.task} (${task.time})`).join('\n')}
 
-### 🎯 Month 2-3 — Strategic Improvements (Long-term)
+### [TARGET] Month 2-3 — Strategic Improvements (Long-term)
 ${data.actionPlan.month2_3.map(task => `- [ ] ${task.task} (${task.time})`).join('\n')}
 
 ---
@@ -854,7 +854,7 @@ console.log('');
 let fixedCount = 0;
 
 // FIX 1: Add missing meta viewport tags
-console.log('✅ [FIX 1] Meta Viewport Tags');
+console.log('[OK] [FIX 1] Meta Viewport Tags');
 console.log('   Action: Add to all HTML pages');
 console.log('   Adds: <meta name="viewport" content="width=device-width, initial-scale=1">');
 console.log('   Status: MANUAL - Add to <head> in app/[locale]/layout.tsx');
@@ -862,7 +862,7 @@ fixedCount++;
 
 // FIX 2: SEO audit script error
 console.log('');
-console.log('✅ [FIX 2] SEO Audit Script Error');
+console.log('[OK] [FIX 2] SEO Audit Script Error');
 console.log('   Issue: https.head is not a function');
 console.log('   Fix: Replace with fetch-based link checking');
 console.log('   File: scripts/audit-seo.js line ~200');
@@ -871,15 +871,15 @@ fixedCount++;
 
 // FIX 3: Add H1 to product pages
 console.log('');
-console.log('✅ [FIX 3] Missing H1 Tags on Product Pages');
+console.log('[OK] [FIX 3] Missing H1 Tags on Product Pages');
 console.log('   Action: Ensure each product page has exactly one H1');
 console.log('   Pattern: <h1>{productName}</h1> near top of page');
 fixedCount++;
 
 console.log('');
-console.log('═══════════════════════════════════════');
-console.log(\`✅ Found \${fixedCount} auto-fixable issues\`);
-console.log('═══════════════════════════════════════');
+console.log('=======================================');
+console.log(\`[OK] Found \${fixedCount} auto-fixable issues\`);
+console.log('=======================================');
 console.log('');
 console.log('Next steps:');
 console.log('1. Review MASTER-REPORT.html for full issue list');

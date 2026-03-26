@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { withLocaleHref } from '@/lib/i18n';
+import { withLocaleHref, type Locale } from '@/lib/i18n';
 
 interface BreadcrumbItem {
   label: string;
@@ -26,7 +26,7 @@ export function Breadcrumbs({ items, locale }: BreadcrumbsProps) {
             {item.href && !item.current ? (
               <>
                 <Link
-                  href={withLocaleHref(locale, item.href)}
+                  href={withLocaleHref(locale as Locale, item.href)}
                   className="text-primary hover:text-primary/80 transition-colors"
                 >
                   {item.label}

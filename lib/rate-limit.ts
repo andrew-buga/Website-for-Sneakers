@@ -5,22 +5,45 @@
  * Environment variables needed:
  * - UPSTASH_REDIS_REST_URL
  * - UPSTASH_REDIS_REST_TOKEN
+ * 
+ * NOTE: @upstash/ratelimit is optional. Install with:
+ * npm install @upstash/ratelimit @upstash/redis --legacy-peer-deps
  */
 
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
+let Ratelimit: any;
+let Redis: any;
 
-// Initialize Redis client
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || '',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
-});
+try {
+  const upstash = require('@upstash/ratelimit');
+  const redis = require('@upstash/redis');
+  Ratelimit = upstash.Ratelimit;
+  Redis = redis.Redis;
+} catch {
+  console.warn('⚠️  @upstash/ratelimit not installed. Rate limiting disabled.');
+  Ratelimit = null;
+  Redis = null;
+}
+
+// Initialize Redis client (if available)
+const redis = Ratelimit && Redis
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL || '',
+      token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
+    })
+  : null;
 
 /**
  * Create rate limiter for authentication endpoints
  * 5 attempts per 15 minutes
  */
 export const createAuthLimiter = (identifier: string) => {
+  if (!Ratelimit || !redis) {
+    console.warn('⚠️  Ratelimit not available, returning mock limiter');
+    return {
+      limit: async () => ({ success: true, reset: Date.now() + 900000 }),
+    } as any;
+  }
+  
   return new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(
@@ -37,6 +60,13 @@ export const createAuthLimiter = (identifier: string) => {
  * 3 attempts per 1 hour (stricter than login)
  */
 export const createPasswordResetLimiter = (email: string) => {
+  if (!Ratelimit || !redis) {
+    console.warn('⚠️  Ratelimit not available, returning mock limiter');
+    return {
+      limit: async () => ({ success: true, reset: Date.now() + 3600000 }),
+    } as any;
+  }
+  
   return new Ratelimit({
     redis,
     limiter: Ratelimit.tokenBucket(
@@ -53,6 +83,13 @@ export const createPasswordResetLimiter = (email: string) => {
  * 100 requests per 1 hour
  */
 export const createAPILimiter = (identifier: string) => {
+  if (!Ratelimit || !redis) {
+    console.warn('⚠️  Ratelimit not available, returning mock limiter');
+    return {
+      limit: async () => ({ success: true, reset: Date.now() + 3600000 }),
+    } as any;
+  }
+  
   return new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(

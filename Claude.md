@@ -196,6 +196,67 @@ npm run build
 
 ---
 
+## Deployment Guard System (3-Level Protection)
+
+**📖 Full Documentation**: [DEPLOYMENT-GUARD.md](DEPLOYMENT-GUARD.md)
+
+The Streater Sneakers deployment guard is a **three-level protection system** that prevents broken code from reaching production:
+
+### Level 1: Local Pre-Commit Hooks (2-3 seconds)
+**Location**: `.husky/pre-commit`  
+**Trigger**: Before every `git commit`  
+**Checks**:
+- ✅ TypeScript compilation (`npx tsc --noEmit`)
+- ✅ ESLint validation (lint-staged)
+- ✅ Merge conflict detection (`git diff --check`)
+
+**Example**:
+```bash
+git commit -m "my changes"
+# → Pre-commit hook runs automatically
+# → If errors: commit blocked (fix required)
+# → If OK: commit created
+```
+
+### Level 2: Post-Merge Hooks (5-10 seconds)
+**Location**: `.husky/post-merge`  
+**Trigger**: After `git pull`, `git merge`, `git rebase`  
+**Checks**:
+- ✅ Dependencies sync (if `package.json` changed)
+- ✅ Dependencies sync (if `pnpm-lock.yaml` changed)
+- ✅ TypeScript verification (warning only)
+
+**Prevents**: Out-of-sync dependencies after pulling changes
+
+### Level 3: GitHub Actions CI/CD (15-20 minutes)
+**Location**: `.github/workflows/deploy-check.yml`  
+**Trigger**: Every push to `main` or `develop`  
+**Checks**:
+- ✅ Full TypeScript compilation
+- ✅ ESLint entire codebase
+- ✅ Environment variable validation
+- ✅ Complete build (120 pages verification)
+- ✅ Page generation count check
+
+**Benefit**: Independent verification before Vercel deploy
+
+### Manual Checks
+
+**Pre-deploy readiness check**:
+```bash
+npm run check:deploy
+# Runs: git status + TypeScript + ESLint + env vars + build + conflicts
+# Output: "Ready to deploy!" or detailed errors
+```
+
+**Environment variable check**:
+```bash
+npm run check:env
+# Verifies: NEXT_PUBLIC_API_BASE_URL, DATABASE_URL, NEXTAUTH_SECRET
+```
+
+---
+
 ## Development Workflow
 
 ### Before Making Changes
@@ -229,6 +290,8 @@ npm run build
 - ✅ Console warnings: None visible in production build
 - ✅ Build: Completes in <30s with 0 errors
 - ✅ Routes: All 120 pages generated
+- ✅ Pre-commit guard: Passes automatically (or skip with `--no-verify` only if critical)
+- ✅ Environment variables: All required vars present in `.env`
 
 ---
 
@@ -242,14 +305,17 @@ npm run build
 5. **CSRF protection** — Integrated HMAC tokens into login, register, address forms
 6. **Mobile responsiveness** — Fixed cart layout with adaptive flex/grid classes
 7. **Black screen on cart** — Added isMounted hydration guard to prevent blank page
+8. **Deployment Guard (Phase 1)** — Fixed TypeScript import path error, verified build (commit c86129a)
+9. **Deployment Guard (Phase 2)** — Installed husky, lint-staged, created pre-commit/post-merge hooks (commit b2ac6f3)
+10. **Deployment Guard (Phase 3)** — Created GitHub Actions CI/CD workflow, comprehensive documentation (commit 30a050d)
 
 ### Commit History (Recent)
-- `b0a2589`: Hydration protection for cart page (fixes black screen)
-- `bc2ee3d`: Hydration mismatch fix for cart controls
-- `4fdc9fa`: Mobile responsiveness improvements for cart
-- `b1fa09a`: Form validation & CSRF tokens (Phase 4)
-- `d8d96ad`: Critical fixes for hydration & race conditions (Phase 1-3)
-- `ddf52f8`: Environment configuration (.env.example)
+- `30a050d`: feat: add GitHub Actions deployment guard workflow (Phase 3)
+- `b2ac6f3`: feat: add universal deployment guard system (Phase 2)
+- `c86129a`: fix: correct import path for product-page-client component (Phase 1)
+- `bc8db99`: fix: update pnpm lockfile to match package.json
+- `767d900`: fix: remove emoji characters from generate-master-report.js
+- `238f2c3`: docs: add deployment verification and monitoring plan
 
 ---
 
@@ -322,5 +388,5 @@ npm run build
 
 ---
 
-**Last Updated**: March 25, 2026  
+**Last Updated**: March 26, 2026  
 **Next Review**: After each major feature or critical fix

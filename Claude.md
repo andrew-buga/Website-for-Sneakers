@@ -1,5 +1,13 @@
 # Claude.md — Workspace Instructions for Streater Sneakers
 
+## Communication Preferences
+**Language**: Ukrainian for discussions with Andrew Buga, but all code/files in English  
+**Code comments**: English (team standard)  
+**Commit messages**: English  
+**Documentation**: English
+
+---
+
 ## Project Overview
 
 **Project**: Streater Sneakers — E-commerce sneaker store  
@@ -47,6 +55,41 @@
 - Next.js Image component with `fill` prop requires parent `position: relative`
 - Responsive sizing: use `w-[size]` + `md:w-[larger-size]` pattern
 - Mobile first: start with mobile size, increase on md+ breakpoints
+
+---
+
+## Mandatory Audits & Testing
+
+**This project requires regular audits** to maintain quality and growth:
+
+### Types of Audits (Conduct Quarterly Minimum)
+1. **SEO Audit** - Title, meta description, H1 tags, canonical URLs, og:* tags, alt text, schema.org
+2. **Performance Audit** - Lighthouse scores, Core Web Vitals (LCP, CLS, TBT), page weight, HTTP requests
+3. **UX/CRO Audit** - Call-to-action placement, form usability, mobile viewport, breadcrumbs, trust signals
+4. **Security Audit** - HTTPS verification, security headers, mixed content, console errors, third-party scripts
+5. **A/B Testing Plan** - Identify conversion killers, recommend 3+ test hypotheses with sample size calculations
+
+### Audit Schedule
+- **After major feature launches** - Full 5-module audit
+- **After critical bug fixes** - SEO + Security audit minimum
+- **Quarterly reviews** - Full comprehensive audit
+- **Before marketing campaigns** - Full audit + A/B test validation
+- **When traffic plateaus** - Performance + UX audit
+
+### Audit Deliverables (Always Generate)
+- ✅ Interactive HTML dashboard (color-coded severity levels)
+- ✅ JSON files with complete audit data
+- ✅ Markdown summary with actionable recommendations
+- ✅ A/B testing plan with statistical sample size calculations
+- ✅ Automation scripts for future audits (crawler, analyzer, reporter)
+- ✅ Commit to `/analysis/` directory + push to GitHub
+
+### Last Audit
+- **Date**: March 26, 2026
+- **Pages audited**: 72 (3 locales × 24 routes)
+- **Status**: ✅ Complete, results in `/analysis/` directory
+- **Key findings**: HTTPS ✓, Security headers ✓, CSRF tokens ✓, Mobile viewport OK, Alt text improvable
+- **Next audit**: June 26, 2026 (quarterly)
 
 ---
 

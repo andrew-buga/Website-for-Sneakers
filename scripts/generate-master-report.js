@@ -598,12 +598,12 @@ function generateHTML(data) {
     <!-- TOP WINS -->
     <div class="section">
       <h2>[WIN] Top 3 Quick Wins (Highest Impact, Lowest Effort)</h2>
-      ${data.topWins.length > 0 ? data.topWins.map(win => \`
+      ${data.topWins.length > 0 ? data.topWins.map(win => `
         <div class="win-card">
-          <h4>\${win.title}</h4>
-          <p><strong>Effort:</strong> \${win.effort} | <strong>Impact:</strong> \${win.impact} | <strong>Time:</strong> \${win.time}</p>
+          <h4>${win.title}</h4>
+          <p><strong>Effort:</strong> ${win.effort} | <strong>Impact:</strong> ${win.impact} | <strong>Time:</strong> ${win.time}</p>
         </div>
-      \`).join('') : '<p>No quick wins available</p>'}
+      `).join('') : '<p>No quick wins available</p>'}
     </div>
 
     <!-- ISSUES TABLE -->
@@ -620,15 +620,15 @@ function generateHTML(data) {
           </tr>
         </thead>
         <tbody>
-          ${data.allIssues.map(issue => \`
+          ${data.allIssues.map(issue => `
             <tr>
-              <td><strong>\${issue.issue}</strong></td>
-              <td><span class="severity-\${issue.impact.toLowerCase()}">\${issue.impact}</span></td>
-              <td><span class="effort-\${issue.effort.toLowerCase()}">\${issue.effort}</span></td>
-              <td>\${issue.trafficImpact}</td>
-              <td>\${issue.estimatedTime}</td>
+              <td><strong>${issue.issue}</strong></td>
+              <td><span class="severity-${issue.impact.toLowerCase()}">${issue.impact}</span></td>
+              <td><span class="effort-${issue.effort.toLowerCase()}">${issue.effort}</span></td>
+              <td>${issue.trafficImpact}</td>
+              <td>${issue.estimatedTime}</td>
             </tr>
-          \`).join('')}
+          `).join('')}
         </tbody>
       </table>
     </div>
@@ -640,23 +640,23 @@ function generateHTML(data) {
       <div class="timeline">
         <div class="timeline-item">
           <h4>[FAST] WEEK 1 — Quick Wins (Easy, Critical/High Impact)</h4>
-          ${data.actionPlan.week1.map(task => \`
-            <div class="task">\${task.task} | \${task.time}</div>
-          \`).join('')}
+          ${data.actionPlan.week1.map(task => `
+            <div class="task">${task.task} | ${task.time}</div>
+          `).join('')}
         </div>
 
         <div class="timeline-item">
           <h4>[UP] MONTH 1 — Core Improvements (Medium Effort)</h4>
-          ${data.actionPlan.month1.map(task => \`
-            <div class="task">\${task.task} | \${task.time}</div>
-          \`).join('')}
+          ${data.actionPlan.month1.map(task => `
+            <div class="task">${task.task} | ${task.time}</div>
+          `).join('')}
         </div>
 
         <div class="timeline-item">
           <h4>[TARGET] MONTH 2-3 — Strategic Improvements (Hard, Long-term)</h4>
-          ${data.actionPlan.month2_3.map(task => \`
-            <div class="task">\${task.task} | \${task.time}</div>
-          \`).join('')}
+          ${data.actionPlan.month2_3.map(task => `
+            <div class="task">${task.task} | ${task.time}</div>
+          `).join('')}
         </div>
       </div>
     </div>
@@ -679,43 +679,43 @@ function generateHTML(data) {
           </tr>
         </thead>
         <tbody>
-          ${data.pageScorecard.slice(0, 20).map(page => \`
+          ${data.pageScorecard.slice(0, 20).map(page => `
             <tr>
-              <td><small>\${page.url}</small></td>
-              <td>\${page.locale}</td>
-              <td>\${page.pageType}</td>
-              <td>\${page.seoScore}</td>
-              <td>\${page.speedScore}</td>
-              <td>\${page.uxScore}</td>
-              <td>\${page.securityScore}</td>
-              <td><strong>\${page.overallScore}</strong></td>
-              <td><span class="severity-\${page.priorityFixes.toLowerCase()}">\${page.priorityFixes}</span></td>
+              <td><small>${page.url}</small></td>
+              <td>${page.locale}</td>
+              <td>${page.pageType}</td>
+              <td>${page.seoScore}</td>
+              <td>${page.speedScore}</td>
+              <td>${page.uxScore}</td>
+              <td>${page.securityScore}</td>
+              <td><strong>${page.overallScore}</strong></td>
+              <td><span class="severity-${page.priorityFixes.toLowerCase()}">${page.priorityFixes}</span></td>
             </tr>
-          \`).join('')}
+          `).join('')}
         </tbody>
       </table>
 
       <h3 style="margin-top: 30px; color: #dc2626;">[CRITICAL] 3 Worst-Performing Pages</h3>
-      ${data.worstPages.map(page => \`
+      ${data.worstPages.map(page => `
         <div class="worst-page">
-          <p><strong>\${page.url}</strong></p>
-          <p class="worst-page-score">Score: \${page.overallScore}/100</p>
-          <p>SEO: \${page.seoScore} | Speed: \${page.speedScore} | UX: \${page.uxScore}</p>
+          <p><strong>${page.url}</strong></p>
+          <p class="worst-page-score">Score: ${page.overallScore}/100</p>
+          <p>SEO: ${page.seoScore} | Speed: ${page.speedScore} | UX: ${page.uxScore}</p>
         </div>
-      \`).join('')}
+      `).join('')}
     </div>
 
     <!-- A/B TEST RECOMMENDATIONS -->
     <div class="section">
       <h2>[TEST] A/B Test Recommendations</h2>
-      ${data.abTests.map(test => \`
+      ${data.abTests.map(test => `
         <div style="background: #f0f9ff; border-left: 4px solid #0284c7; padding: 15px; margin-bottom: 15px; border-radius: 4px;">
-          <h4 style="color: #0284c7; margin-bottom: 10px;">Test #\${test.testNum}: \${test.name}</h4>
-          <p><strong>Priority:</strong> <span class="severity-\${test.priority === 'HIGH' ? 'critical' : 'medium'}">\${test.priority}</span></p>
-          <p><strong>Hypothesis:</strong> \${test.hypothesis}</p>
-          <p><strong>Expected Lift:</strong> +\${test.expectedLift}% conversion rate</p>
+          <h4 style="color: #0284c7; margin-bottom: 10px;">Test #${test.testNum}: ${test.name}</h4>
+          <p><strong>Priority:</strong> <span class="severity-${test.priority === 'HIGH' ? 'critical' : 'medium'}">${test.priority}</span></p>
+          <p><strong>Hypothesis:</strong> ${test.hypothesis}</p>
+          <p><strong>Expected Lift:</strong> +${test.expectedLift}% conversion rate</p>
         </div>
-      \`).join('')}
+      `).join('')}
     </div>
 
     <div class="section">

@@ -17,9 +17,9 @@ export default function Footer({ locale = defaultLocale }: { locale?: Locale }) 
             </p>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
+            <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               {t.footer.helpInfo}
-            </h4>
+            </h2>
             <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
               <li>
                 <Link href={withLocaleHref(locale, "/returns")} className="hover:text-foreground transition-colors">
@@ -44,9 +44,9 @@ export default function Footer({ locale = defaultLocale }: { locale?: Locale }) 
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
+            <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               {t.footer.aboutUs}
-            </h4>
+            </h2>
             <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
               <li>
                 <Link href={withLocaleHref(locale, "/accessories")} className="hover:text-foreground transition-colors">
@@ -71,9 +71,9 @@ export default function Footer({ locale = defaultLocale }: { locale?: Locale }) 
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
+            <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               {t.footer.contact}
-            </h4>
+            </h2>
             <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
               <li><a href="tel:+40740116669" className="hover:text-foreground transition-colors">+40 740 116 669</a></li>
               <li><a href="mailto:official.andrew.buga@gmail.com" className="hover:text-foreground transition-colors">official.andrew.buga@gmail.com</a></li>

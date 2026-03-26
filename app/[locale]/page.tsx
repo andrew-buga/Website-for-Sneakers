@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 
   const t = getDictionary(locale)
-  const canonical = locale === "en" ? siteUrl : `${siteUrl}/${locale}`
+  const canonical = `${siteUrl}/${locale}`
 
   return {
     title: t.pages.home.metadataTitle,

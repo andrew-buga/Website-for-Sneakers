@@ -6,6 +6,7 @@ import { useCart } from "@/lib/cart-context"
 import { useWishlist } from "@/lib/wishlist-context"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import ProductGallery from "@/components/product-gallery"
 import ProductReviews from "@/components/product-reviews"
 import { ArrowLeft, Heart, ShoppingCart } from "lucide-react"
@@ -86,9 +87,17 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     setIsWishlisted(!isWishlisted)
   }
 
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Products', href: '/products' },
+    { label: product.collection, href: `/collection/${product.collection.toLowerCase()}` },
+    { label: product.name, current: true }
+  ]
+
   return (
     <main>
       <div className="hidden md:block"><Navbar locale={locale} /></div>
+      <Breadcrumbs items={breadcrumbs} locale={locale} />
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-6">
         <Link href={withLocaleHref(locale, "/")} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" />

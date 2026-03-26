@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react"
 
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import CatalogProductGrid from "@/components/catalog-product-grid"
 import { getStoreProducts } from "@/lib/server/storefront"
 import { collectionsMeta } from "@/lib/storefront-types"
@@ -36,9 +37,16 @@ export default async function LocalizedCollectionPage({ params }: { params: Prom
   const localizedDescription = key === "winter" ? t.collections.winterDescription : key === "summer" ? t.collections.summerDescription : t.collections.autumnDescription
   const products = await getStoreProducts({ collection: key })
 
+  const breadcrumbs = [
+    { label: locale === 'uk' ? 'Головна' : locale === 'ru' ? 'Главная' : 'Home', href: '/' },
+    { label: locale === 'uk' ? 'Колекції' : locale === 'ru' ? 'Коллекции' : 'Collections', href: '/collections' },
+    { label: localizedTitle, current: true }
+  ]
+
   return (
     <main>
       <Navbar locale={locale} />
+      <Breadcrumbs items={breadcrumbs} locale={locale} />
 
       <section className="relative h-[50vh] min-h-[300px] flex items-end overflow-hidden">
         <Image src={meta.banner} alt={localizedTitle} fill className="object-cover" priority />

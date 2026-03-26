@@ -1,0 +1,48 @@
+#!/bin/sh
+# .husky/post-merge
+# Runs after merge operations (pull, rebase, merge)
+# Ensures dependencies and build are up to date
+
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔄 Running post-merge checks..."
+echo ""
+
+# Check if package.json changed
+if git diff --name-only HEAD~1 HEAD | grep -q "^package\.json$"; then
+  echo "📦 package.json changed, reinstalling dependencies..."
+  npm install
+  
+  if [ $? -ne 0 ]; then
+    echo "⚠️  npm install had issues"
+  else
+    echo "✅ Dependencies updated"
+  fi
+  echo ""
+fi
+
+# Check if pnpm-lock.yaml changed
+if git diff --name-only HEAD~1 HEAD | grep -q "^pnpm-lock\.yaml$"; then
+  echo "📦 pnpm-lock.yaml changed, running pnpm install..."
+  pnpm install
+  
+  if [ $? -ne 0 ]; then
+    echo "⚠️  pnpm install had issues"
+  else
+    echo "✅ Dependencies synchronized"
+  fi
+  echo ""
+fi
+
+# Verify TypeScript after merge
+echo "⏳ Verifying TypeScript after merge..."
+npx tsc --noEmit
+
+if [ $? -ne 0 ]; then
+  echo "⚠️  TypeScript errors detected after merge"
+  echo "Run: npx tsc --noEmit (to see errors)"
+fi
+
+echo ""
+echo "✅ Post-merge checks complete"
+echo ""

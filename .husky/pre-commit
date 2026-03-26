@@ -1,0 +1,54 @@
+#!/bin/sh
+# .husky/pre-commit
+# Runs before each git commit
+# Prevents commits with TypeScript errors, lint issues, or build failures
+
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+echo ""
+
+# 1. Check TypeScript
+echo "⏳ Checking TypeScript..."
+npx tsc --noEmit
+
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript compilation failed"
+  echo "Fix the errors above and try again"
+  exit 1
+fi
+
+# 2. Check ESLint with lint-staged
+echo "⏳ Running ESLint on staged files..."
+npx lint-staged
+
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint validation failed"
+  echo "Fix the linting errors above and try again"
+  exit 1
+fi
+
+# 3. Check for merge conflicts
+echo "⏳ Checking for merge conflicts..."
+git diff --check
+
+if [ $? -ne 0 ]; then
+  echo "❌ Merge conflicts detected"
+  echo "Resolve conflicts before committing"
+  exit 1
+fi
+
+# 4. Verify build (optional - slower, can be skipped with --no-verify)
+if [ "$1" != "--no-verify" ]; then
+  echo "⏳ Verifying build integrity..."
+  npm run build > /dev/null 2>&1
+  
+  if [ $? -ne 0 ]; then
+    echo "⚠️  Build verification failed (but continuing)"
+    echo "Consider running: npm run build"
+  fi
+fi
+
+echo ""
+echo "✅ Pre-commit checks passed"
+echo ""

@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "check:merge-markers": "node scripts/check-merge-markers.mjs",
+    "check:env": "node scripts/check-env.js",
+    "check:deploy": "node scripts/check-deploy.js",
     "build": "pnpm run check:merge-markers && next build",
     "start": "next start",
     "lint": "eslint .",
+    "prepare": "husky install",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
@@ -81,13 +84,19 @@
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.56.1",
+    "dotenv": "^17.3.1",
     "eslint": "^10.0.2",
+    "husky": "^9.1.7",
     "lighthouse": "^13.0.3",
+    "lint-staged": "^16.4.0",
     "playwright": "^1.58.2",
     "postcss": "^8.5",
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.17",
     "typescript": "5.7.3",
     "xml2js": "^0.6.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": "eslint --fix"
   }
 }

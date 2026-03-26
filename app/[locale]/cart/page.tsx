@@ -33,7 +33,7 @@ export default function LocalizedCartPage({ params }: { params: { locale: string
         <Navbar locale={locale} />
         <div className="min-h-screen flex flex-col items-center justify-center space-y-6">
           <div className="animate-pulse">
-            <div className="h-8 w-48 bg-secondary rounded mb-4" />
+            <div className="h-8 w-48 bg-gray-300 dark:bg-gray-700 rounded mb-4" />
           </div>
         </div>
         <Footer locale={locale} />

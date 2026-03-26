@@ -58,8 +58,8 @@ export default function LocalizedFavoritesPage({ params }: { params: { locale: s
         <Navbar locale={locale} />
         <section className="max-w-7xl mx-auto px-6 lg:px-12 pt-28 pb-16 lg:pb-24">
           <div className="animate-pulse">
-            <div className="h-8 w-48 bg-secondary rounded mb-4" />
-            <div className="h-6 w-64 bg-secondary rounded" />
+            <div className="h-8 w-48 bg-gray-300 dark:bg-gray-700 rounded mb-4" />
+            <div className="h-6 w-64 bg-gray-300 dark:bg-gray-700 rounded" />
           </div>
         </section>
         <Footer locale={locale} />

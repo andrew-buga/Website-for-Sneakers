@@ -18,10 +18,12 @@ export default function ForgotPasswordPage() {
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [locale, setLocale] = useState<string>("")
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
     const extractedLocale = pathname.split("/")[1] || "en"
     setLocale(extractedLocale)
+    setIsMounted(true)
   }, [pathname])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,7 +45,7 @@ export default function ForgotPasswordPage() {
     }
   }
 
-  if (!locale) return null
+  if (!isMounted) return null
 
   return (
     <main>

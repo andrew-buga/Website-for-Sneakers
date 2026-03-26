@@ -167,13 +167,15 @@ function ResetPasswordContent({ locale }: { locale: string }) {
 export default function ResetPasswordPage() {
   const pathname = usePathname()
   const [locale, setLocale] = useState<string>("")
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
     const extractedLocale = pathname.split("/")[1] || "en"
     setLocale(extractedLocale)
+    setIsMounted(true)
   }, [pathname])
 
-  if (!locale) return null
+  if (!isMounted) return null
 
   return (
     <main>

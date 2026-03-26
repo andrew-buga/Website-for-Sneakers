@@ -11,7 +11,7 @@ type ChangeFrequency = MetadataRoute.Sitemap[number]["changeFrequency"]
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
-  // Define all static routes - these will be generated for Each locale
+  // Define all static routes
   const staticRoutePaths = [
     "",
     "/trends",
@@ -30,79 +30,69 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/receivers-amplifiers",
   ]
 
-  // Generate static routes ONLY for English locale (not base routes)
-  const staticRoutes = staticRoutePaths.map((path) => {
-    const changeFrequency: ChangeFrequency = path === "" || path === "/trends" ? "daily" : "weekly"
-    // For English, use /en prefix except for collections index which mirrors /collections
-    const url = path === "" ? `${siteUrl}/en` : `${siteUrl}/en${path}`
-
-    return {
-      url,
-      lastModified: now,
-      changeFrequency,
-      priority: path === "" ? 1.0 : 0.7,
-    }
-  })
-
-  // Collections for English
-  const collectionRoutes = Object.keys(collectionsMeta).map((slug) => ({
-    url: `${siteUrl}/en/collection/${slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as ChangeFrequency,
-    priority: 0.8,
-  }))
-
-  // Products for English
+  // Get products
   let products: Awaited<ReturnType<typeof getStoreProducts>>
   try {
     products = await getStoreProducts()
   } catch {
-    // Keep sitemap available for crawlers even if product API is temporarily down.
     products = []
   }
-  const productRoutes = products.map((product) => ({
-    url: `${siteUrl}/en/product/${product.id}`,
-    lastModified: now,
-    changeFrequency: "weekly" as ChangeFrequency,
-    priority: 0.6,
-  }))
 
-  // Generate localized routes for UK and RU ONLY (not English, already done above)
-  const localizedLocales = locales.filter((locale) => locale !== "en")
-  
-  const localizedStatic = localizedLocales.flatMap((locale) =>
-    staticRoutePaths.map((path) => {
-      const changeFrequency: ChangeFrequency = path === "" || path === "/trends" ? "daily" : "weekly"
+  const sitemapEntries: MetadataRoute.Sitemap = []
+
+  // Generate entries for ALL LOCALES
+  for (const locale of locales) {
+    // Static routes
+    for (const path of staticRoutePaths) {
+      const changeFrequency: ChangeFrequency =
+        path === "" || path === "/trends" ? "daily" : "weekly"
       const url = path === "" ? `${siteUrl}/${locale}` : `${siteUrl}/${locale}${path}`
 
-      return {
+      // Create hreflang alternates for all language variants
+      const alternates: { hrefLang?: Record<string, string> } = {}
+      const hrefLangMap: Record<string, string> = {}
+
+      for (const l of locales) {
+        const hrefPath = path === "" ? `${siteUrl}/${l}` : `${siteUrl}/${l}${path}`
+        hrefLangMap[l] = hrefPath
+      }
+
+      if (Object.keys(hrefLangMap).length > 0) {
+        alternates.hrefLang = hrefLangMap
+      }
+
+      sitemapEntries.push({
         url,
         lastModified: now,
         changeFrequency,
         priority: path === "" ? 1.0 : 0.7,
-      }
-    })
-  )
+      })
+    }
 
-  const localizedCollections = localizedLocales.flatMap((locale) =>
-    Object.keys(collectionsMeta).map((slug) => ({
-      url: `${siteUrl}/${locale}/collection/${slug}`,
-      lastModified: now,
-      changeFrequency: "weekly" as ChangeFrequency,
-      priority: 0.8,
-    }))
-  )
+    // Collections
+    for (const slug of Object.keys(collectionsMeta)) {
+      const url = `${siteUrl}/${locale}/collection/${slug}`
 
-  const localizedProducts = localizedLocales.flatMap((locale) =>
-    products.map((product) => ({
-      url: `${siteUrl}/${locale}/product/${product.id}`,
-      lastModified: now,
-      changeFrequency: "weekly" as ChangeFrequency,
-      priority: 0.6,
-    }))
-  )
+      sitemapEntries.push({
+        url,
+        lastModified: now,
+        changeFrequency: "weekly" as ChangeFrequency,
+        priority: 0.8,
+      })
+    }
 
-  // REMOVED: Base routes (/, /men, /product/123, etc.) - these are redirect sources
-  // ONLY include final destinations after middleware processing
-  return [...staticRoutes, ...collectionRoutes, ...productRoutes, ...localizedStatic, ...localizedCollections, ...localizedProducts]
+    // Products
+    for (const product of products) {
+      const url = `${siteUrl}/${locale}/product/${product.id}`
+
+      sitemapEntries.push({
+        url,
+        lastModified: now,
+        changeFrequency: "weekly" as ChangeFrequency,
+        priority: 0.6,
+      })
+    }
+  }
+
+  return sitemapEntries
 }

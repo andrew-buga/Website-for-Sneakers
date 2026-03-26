@@ -88,12 +88,13 @@ export const metadata: Metadata = {
     images: ["/images/og-image.png"],
   },
   alternates: {
-    canonical: siteUrl,
+    // Do NOT set canonical in root layout - it will be set in [locale]/layout.tsx
+    // Each localized page must have its own canonical URL pointing to itself
     languages: {
-      "en-US": siteUrl,
+      "en-US": `${siteUrl}/en`,
       "uk-UA": `${siteUrl}/uk`,
       "ru-RU": `${siteUrl}/ru`,
-      "x-default": siteUrl,
+      "x-default": `${siteUrl}/en`,
     },
   },
   icons: {

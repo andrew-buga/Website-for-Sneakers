@@ -38,17 +38,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# 4. Verify build (optional - slower, can be skipped with --no-verify)
-if [ "$1" != "--no-verify" ]; then
-  echo "⏳ Verifying build integrity..."
-  npm run build > /dev/null 2>&1
-  
-  if [ $? -ne 0 ]; then
-    echo "⚠️  Build verification failed (but continuing)"
-    echo "Consider running: npm run build"
-  fi
-fi
-
 echo ""
 echo "✅ Pre-commit checks passed"
 echo ""

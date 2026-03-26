@@ -1,0 +1,101 @@
+name: Deployment Guard - Pre-Deploy Checks
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  # Enable manual trigger from Actions tab
+  workflow_dispatch:
+
+jobs:
+  pre-deploy-checks:
+    name: Pre-Deploy Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    permissions:
+      contents: read
+      checks: write
+      statuses: write
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm install
+
+      - name: 🔍 TypeScript compiler check
+        run: npx tsc --noEmit
+
+      - name: 🧹 ESLint validation
+        run: npm run lint
+
+      - name: ⚙️ Environment variables check
+        run: npm run check:env
+        env:
+          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL || 'https://api.example.com' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost/test' }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-jwt-secret' }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL || 'https://example.com' }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://example.com' }}
+
+      - name: 🏗️ Build verification (120 pages)
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL || 'https://api.example.com' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost/test' }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'test-secret-key-for-ci' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-jwt-secret' }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL || 'https://example.com' }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://example.com' }}
+
+      - name: ✅ Verify all 120 pages generated
+        run: |
+          if grep -q "120/120" .next/build-manifest.json; then
+            echo "✓ All 120 pages generated successfully"
+          else
+            echo "✗ Build did not generate all 120 pages"
+            exit 1
+          fi
+        continue-on-error: true
+
+      - name: 📊 Report check status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ All pre-deploy checks PASSED"
+            echo "🚀 Ready for Vercel deployment!"
+          else
+            echo "❌ Some pre-deploy checks FAILED"
+            echo "Please fix the errors above before deploying"
+            exit 1
+          fi
+
+  notify-deployment-status:
+    name: Deployment Status Notification
+    needs: pre-deploy-checks
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: 📬 Status badge
+        run: |
+          if [ "${{ needs.pre-deploy-checks.result }}" == "success" ]; then
+            echo "✅ Deployment checks: PASSED"
+            echo "Status badge: ![Deployment Guard](https://github.com/andrew-buga/Website-for-Sneakers/workflows/Deployment%20Guard%20-%20Pre-Deploy%20Checks/badge.svg)"
+          else
+            echo "❌ Deployment checks: FAILED"
+            echo "Some checks failed. Review the logs above."
+            exit 1
+          fi

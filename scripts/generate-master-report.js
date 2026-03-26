@@ -117,7 +117,7 @@ const actionPlan = generateActionPlan(allIssues);
 // 9. CREATE MASTER REPORT HTML
 // ============================================================================
 
-console.log('🎨 Creating MASTER-REPORT.html...');
+console.log('[HTML] Creating MASTER-REPORT.html...');
 
 const htmlReport = generateHTML({
   overallHealthScore,
@@ -145,7 +145,7 @@ console.log('   [OK] MASTER-REPORT.html created');
 // 10. CREATE MASTER REPORT MARKDOWN
 // ============================================================================
 
-console.log('📄 Creating MASTER-REPORT.md...');
+console.log('[MD] Creating MASTER-REPORT.md...');
 
 const mdReport = generateMarkdown({
   overallHealthScore,
@@ -171,7 +171,7 @@ console.log('   [OK] MASTER-REPORT.md created');
 // 11. CREATE QUICK FIXES SCRIPT
 // ============================================================================
 
-console.log('🔧 Creating quick-fixes.js...');
+console.log('[SCRIPT] Creating quick-fixes.js...');
 
 const quickFixesScript = generateQuickFixesScript(allIssues);
 
@@ -185,12 +185,12 @@ console.log('   [OK] quick-fixes.js created');
 console.log('\n' + '='.repeat(60));
 console.log('[OK] AUDIT COMPLETE');
 console.log('='.repeat(60));
-console.log(`[CHART] Health Score: ${overallHealthScore}/100`);
+console.log(`[SCORE] Health Score: ${overallHealthScore}/100`);
 console.log(`[CRIT] Critical Issues: ${criticalIssues.length}`);
 console.log(`[HIGH] High Issues: ${highIssues.length}`);
 console.log(`[MED] Medium Issues: ${mediumIssues.length}`);
 console.log(`[LOW] Low Issues: ${lowIssues.length}`);
-console.log(`\n💾 Open /analysis/MASTER-REPORT.html to view detailed report`);
+console.log(`[REPORT] Open /analysis/MASTER-REPORT.html to view detailed report`);
 console.log('='.repeat(60));
 
 // ============================================================================

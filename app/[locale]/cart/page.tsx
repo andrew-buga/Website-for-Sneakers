@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, Trash2 } from "lucide-react"
@@ -11,18 +11,18 @@ import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { getDictionary, isLocale, withLocaleHref } from "@/lib/i18n"
 
-export default function LocalizedCartPage({ params }: { params: { locale: string } }) {
+export default function LocalizedCartPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = use(params)
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
   }, [])
 
-  if (!isLocale(params.locale)) {
+  if (!isLocale(locale)) {
     return null
   }
 
-  const locale = params.locale
   const t = getDictionary(locale)
   const { items, removeItem, updateQuantity, total, clearCart } = useCart()
 

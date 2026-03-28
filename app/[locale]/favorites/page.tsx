@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Heart } from "lucide-react"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, use } from "react"
 
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
@@ -13,18 +13,19 @@ import { formatPriceCents, StoreProduct } from "@/lib/storefront-types"
 import { Button } from "@/components/ui/button"
 import { getDictionary, isLocale, withLocaleHref } from "@/lib/i18n"
 
-export default function LocalizedFavoritesPage({ params }: { params: { locale: string } }) {
+export default function LocalizedFavoritesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale: resolvedLocale } = use(params)
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
   }, [])
 
-  if (!isLocale(params.locale)) {
+  if (!isLocale(resolvedLocale)) {
     return null
   }
 
-  const locale = params.locale
+  const locale = resolvedLocale
   const t = getDictionary(locale)
   const { items, removeFromWishlist } = useWishlist()
   const [products, setProducts] = useState<StoreProduct[]>([])

@@ -7,6 +7,13 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
   },
+  "[github-workflows-yml]": {
+    "yaml.validate": false
+  },
+  "files.associations": {
+    ".github/workflows/*.yml": "github-workflows-yml",
+    ".github/workflows/*.yaml": "github-workflows-yml"
+  },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   }

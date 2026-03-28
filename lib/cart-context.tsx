@@ -113,7 +113,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total }}>
-      {children}
+      {mounted ? children : null}
     </CartContext.Provider>
   )
 }

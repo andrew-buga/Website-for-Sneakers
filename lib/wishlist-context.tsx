@@ -99,7 +99,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <WishlistContext.Provider value={{ items, addToWishlist, removeFromWishlist, isInWishlist, addSnapshotToWishlist }}>
-      {children}
+      {mounted ? children : null}
     </WishlistContext.Provider>
   );
 }

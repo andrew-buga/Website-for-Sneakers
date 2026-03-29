@@ -668,3 +668,132 @@ Before starting ANY task in this project, automatically read and apply all skill
 ### For new projects:
 Copy Claude.md and docs/skills/ folder to the new project root.
 The skills library travels with you automatically.
+
+---
+
+## Comprehensive Skills & Verification Framework
+
+**For Andrew Buga projects: Next.js, React, Python, Vercel, GitHub**
+
+### TECH STACK
+- Next.js 15 (App Router, TypeScript)
+- Tailwind CSS + shadcn/ui
+- PostgreSQL + Prisma ORM
+- JWT authentication + bcrypt
+- pnpm package manager
+- Vercel deployment
+- Python (scripts, automation)
+- GitHub Actions CI/CD
+
+---
+
+## INSTALLED SKILLS — APPLY AUTOMATICALLY
+
+The following skills are installed globally and must be applied automatically without being asked.
+
+### Vercel Skills (apply to all Next.js/React tasks)
+- **vercel-react-best-practices** → apply when writing any React/Next.js component
+- **vercel-composition-patterns** → apply when designing component APIs
+- **web-design-guidelines** → apply when writing any UI code
+- **deploy-to-vercel** → apply when deploying or configuring Vercel
+- **frontend-design** → apply when building UI — avoid generic AI aesthetics
+
+### Trail of Bits Skills (apply to all code)
+- **ask-questions-if-underspecified** → ALWAYS ask clarifying questions before implementing anything non-trivial
+- **differential-review** → run security review before every commit
+- **insecure-defaults** → check for hardcoded credentials, unsafe configs
+- **git-cleanup** → use when cleaning branches or worktrees
+- **modern-python** → apply when writing any Python code
+- **agentic-actions-auditor** → apply when modifying GitHub Actions workflows
+- **sharp-edges** → identify dangerous APIs and footgun designs
+- **supply-chain-risk-auditor** → audit dependencies when adding new packages
+
+### Project Skills (from docs/skills/ in this project)
+- **SKILL-001: Next.js 15 async params** → ALWAYS use `use(params)` in client components
+- **SKILL-002: pnpm lockfile sync** → ALWAYS commit pnpm-lock.yaml after any dependency change
+- **SKILL-003: Hydration safety** → ALWAYS use mounted guard with localStorage
+- **SKILL-004: Vercel diagnosis** → systematic black screen debugging checklist
+- **SKILL-005: AI verification** → NEVER say "fixed" without showing diff + build output
+- **SKILL-006: Deployment guard** → checklist before every commit and push
+- **SKILL-007: Multi-locale static** → generateStaticParams for all [locale] routes
+
+---
+
+## AUTOMATIC RULES (non-negotiable)
+
+1. **Before implementing anything** → ask-questions-if-underspecified
+2. **Any client component with [locale] or [id]** → `use(params)`
+3. **Any pnpm/package.json change** → commit pnpm-lock.yaml immediately
+4. **Any localStorage or Context Provider** → mounted guard pattern
+5. **Any new npm/pip package** → supply-chain-risk-auditor
+6. **Any UI component** → web-design-guidelines + frontend-design
+7. **Any Python code** → modern-python patterns
+8. **Any GitHub Actions change** → agentic-actions-auditor
+9. **Before every commit** → differential-review + insecure-defaults
+10. **After every fix** → show diff + pnpm build output (SKILL-005)
+
+---
+
+## VERIFICATION PROTOCOL
+
+After every change you make:
+- □ Show the exact diff (before/after)
+- □ Run `pnpm build` (or `python -m pytest` for Python)
+- □ Show build output — zero errors required
+- □ Confirm which skill was applied
+- □ Never say "I fixed it" without evidence
+
+---
+
+## FOR NEW PROJECTS — Setup Commands
+
+When starting a new project:
+
+1. **Copy foundation files**:
+   ```bash
+   git clone https://github.com/andrew-buga/Website-for-Sneakers
+   cp Website-for-Sneakers/Claude.md my-new-project/
+   cp -r Website-for-Sneakers/docs/skills/ my-new-project/docs/
+   ```
+
+2. **Install Vercel skills**:
+   ```bash
+   npx skills add vercel-labs/agent-skills -y -g
+   ```
+
+3. **Install frontend-design skill**:
+   ```bash
+   npx skills add https://github.com/anthropics/skills --skill frontend-design -y -g
+   ```
+
+4. **Install Trail of Bits skills**:
+   ```bash
+   npx skills add https://github.com/trailofbits/skills \
+     --skill ask-questions-if-underspecified \
+     --skill differential-review \
+     --skill insecure-defaults \
+     --skill git-cleanup \
+     --skill modern-python \
+     --skill agentic-actions-auditor \
+     --skill sharp-edges \
+     --skill supply-chain-risk-auditor \
+     -y -g
+   ```
+
+5. **Apply all skills from day 1** — do not wait for bugs to discover patterns
+
+---
+
+## COMMUNICATION STYLE
+
+- Always state which skill you are applying
+- Always show evidence after fixes (diff + build output)
+- Ask clarifying questions before writing code for non-trivial tasks
+- Never produce generic AI output — follow frontend-design skill
+- If unsure about requirements → stop and ask, do not guess
+
+---
+
+## For Chat Prompts with Copilot or Other Agents
+
+You can copy the section above ("TECH STACK" through "COMMUNICATION STYLE") and paste it at the beginning of any new chat to ensure the same skills and rules are applied across all interactions.

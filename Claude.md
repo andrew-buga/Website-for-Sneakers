@@ -640,3 +640,31 @@ git add -A && git commit -m "type: message" && git push origin main
 
 **Last Updated**: March 26, 2026  
 **Next Review**: After each major feature or critical fix
+
+---
+
+## Auto-Applied Skills Library
+
+Before starting ANY task in this project, automatically read and apply all skill files from docs/skills/. No need to ask — just apply them.
+
+### Skills to load automatically:
+- docs/skills/SKILL-001-nextjs-15-async-params.md
+- docs/skills/SKILL-002-pnpm-lockfile-sync.md
+- docs/skills/SKILL-003-hydration-localstorage.md
+- docs/skills/SKILL-004-vercel-diagnosis.md
+- docs/skills/SKILL-005-ai-verification.md
+- docs/skills/SKILL-006-deployment-guard.md
+- docs/skills/SKILL-007-multi-locale-static.md
+
+### Rules (apply without being asked):
+1. Any client component with dynamic [locale] or [id] params → apply SKILL-001
+2. Any pnpm/package.json change → apply SKILL-002
+3. Any localStorage or Context Provider → apply SKILL-003
+4. Any production issue or black screen → apply SKILL-004
+5. After every fix → apply SKILL-005 (show diff + build output)
+6. Before every commit → apply SKILL-006
+7. Any [locale] route → apply SKILL-007
+
+### For new projects:
+Copy Claude.md and docs/skills/ folder to the new project root.
+The skills library travels with you automatically.

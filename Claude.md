@@ -122,6 +122,26 @@ if (!isMounted) return <LoadingSkeleton />
 
 ---
 
+## 📚 Technical Skills Library
+
+**Location**: [docs/skills/SKILLS-INDEX.md](docs/skills/SKILLS-INDEX.md)
+
+This project includes a **7-skill technical library** with tested solutions for common problems:
+
+| Skill | Problem | Solution |
+|-------|---------|----------|
+| [SKILL-001](docs/skills/SKILL-001-nextjs-15-async-params.md) | Route params are undefined or cause build errors | Use React `use()` hook to unwrap params Promise |
+| [SKILL-002](docs/skills/SKILL-002-pnpm-lockfile-sync.md) | lockfile out of sync, dependency errors | Run `pnpm install` to regenerate lockfile |
+| [SKILL-003](docs/skills/SKILL-003-hydration-localstorage.md) | Black screen / hydration mismatch / error #310 | StorageAdapter + isMounted guard for localStorage |
+| [SKILL-004](docs/skills/SKILL-004-vercel-diagnosis.md) | Works locally, broken on Vercel | Systematic diagnosis: logs → env vars → API → database |
+| [SKILL-005](docs/skills/SKILL-005-ai-verification.md) | Need to verify code before deployment | Use AI checklist: types, logic, security, performance |
+| [SKILL-006](docs/skills/SKILL-006-deployment-guard.md) | Prevent broken code from reaching production | 3-level guard: pre-commit hooks + post-merge + CI/CD |
+| [SKILL-007](docs/skills/SKILL-007-multi-locale-static.md) | Non-English routes broken or 404 | Middleware redirect + generateStaticParams for all locales |
+
+**Read SKILL-005 before every merge, SKILL-006 for deployment, SKILL-003 for state components.**
+
+---
+
 ## File Structure & Conventions
 
 ### Key Directories

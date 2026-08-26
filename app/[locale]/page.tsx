@@ -30,6 +30,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: t.pages.home.ogDescription,
       url: canonical,
     },
+    verification: {
+      other: {
+        "tiktok-developers-site-verification": "b8axbizBv8DSSLZOMQ4qeQGNKzNrC6fH",
+      },
+    },
   }
 }
 

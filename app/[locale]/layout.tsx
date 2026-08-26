@@ -29,6 +29,11 @@ export async function generateMetadata(
         "x-default": `${siteUrl}/en`,
       },
     },
+    verification: {
+      other: {
+        "tiktok-developers-site-verification": "b8axbizBv8DSSLZOMQ4qeQGNKzNrC6fH",
+      },
+    },
   }
 }
 
@@ -39,11 +44,3 @@ export default function LocaleLayout({ children }: { children: ReactNode }) {
     </LocaleLayoutClient>
   )
 }
-
-export const metadata: Metadata = {
-  verification: {
-    other: {
-      "tiktok-developers-site-verification": "b8axbizBv8DSSLZOMQ4qeQGNKzNrC6fH",
-    },
-  },
-};
